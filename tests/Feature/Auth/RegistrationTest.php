@@ -1,19 +1,23 @@
 <?php
 
-test('registration screen can be rendered', function () {
+use App\Models\User;
+
+test('register url redirects to login', function () {
     $response = $this->get(route('register'));
 
-    $response->assertOk();
+    $response->assertRedirect(route('login'));
 });
 
-test('new users can register', function () {
-    $response = $this->post(route('register.store'), [
-        'name' => 'Test User',
-        'email' => 'test@example.com',
-        'password' => 'password',
-        'password_confirmation' => 'password',
-    ]);
+test('guest is redirected to login when visiting home', function () {
+    $response = $this->get(route('home'));
 
-    $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard', absolute: false));
+    $response->assertRedirect(route('login'));
+});
+
+test('authenticated user is redirected to dashboard when visiting home', function () {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->get(route('home'));
+
+    $response->assertRedirect(route('dashboard'));
 });

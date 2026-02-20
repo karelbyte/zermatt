@@ -1,0 +1,12 @@
+---
+alwaysApply: false
+globs: resources/js/**/*.tsx
+---
+# Convenciones frontend
+
+## Confirmación de eliminación
+
+- **No usar** `window.confirm()` para eliminar registros.
+- **Usar** el componente `ConfirmModal` en `@/components/confirm-modal` para cualquier confirmación de eliminar (o acción destructiva) en listados o tablas.
+- Patrón: estado `itemToDelete` (o similar), al hacer clic en eliminar se asigna el ítem y se abre el modal; al confirmar se llama a `router.delete(...)` con `onFinish` para cerrar el modal y limpiar el estado; pasar `loading` mientras la petición está en curso.
+- Textos por defecto en español: "¿Eliminar …?", "Esta acción no se puede deshacer.", "Eliminar", "Cancelar", y `variant="destructive"` para el botón de confirmar.

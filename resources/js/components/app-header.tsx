@@ -33,8 +33,15 @@ import { useInitials } from '@/hooks/use-initials';
 import { cn, toUrl } from '@/lib/utils';
 import type { BreadcrumbItem, NavItem } from '@/types';
 import AppLogo from './app-logo';
-import AppLogoIcon from './app-logo-icon';
 import { dashboard } from '@/routes';
+import { index as clientsIndex } from '@/routes/clients';
+import { index as obrasIndex } from '@/routes/obras';
+import { index as ollasIndex } from '@/routes/ollas';
+import { index as operatorsIndex } from '@/routes/operators';
+import { index as cementsIndex } from '@/routes/cements';
+import { index as suppliersIndex } from '@/routes/suppliers';
+import { index as usersIndex } from '@/routes/users';
+import { Building2, CookingPot, HardHat, Package, Truck, UserCog, Users } from 'lucide-react';
 
 type Props = {
     breadcrumbs?: BreadcrumbItem[];
@@ -42,20 +49,55 @@ type Props = {
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Dashboard',
+        title: 'Panel',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Usuarios',
+        href: usersIndex(),
+        icon: Users,
+    },
+    {
+        title: 'Clientes',
+        href: clientsIndex(),
+        icon: Building2,
+    },
+    {
+        title: 'Obras',
+        href: obrasIndex(),
+        icon: HardHat,
+    },
+    {
+        title: 'Ollas',
+        href: ollasIndex(),
+        icon: CookingPot,
+    },
+    {
+        title: 'Operadores',
+        href: operatorsIndex(),
+        icon: UserCog,
+    },
+    {
+        title: 'Proveedores',
+        href: suppliersIndex(),
+        icon: Truck,
+    },
+    {
+        title: 'Cemento',
+        href: cementsIndex(),
+        icon: Package,
     },
 ];
 
 const rightNavItems: NavItem[] = [
     {
-        title: 'Repository',
+        title: 'Repositorio',
         href: 'https://github.com/laravel/react-starter-kit',
         icon: Folder,
     },
     {
-        title: 'Documentation',
+        title: 'Documentación',
         href: 'https://laravel.com/docs/starter-kits#react',
         icon: BookOpen,
     },
@@ -90,10 +132,14 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                                 className="flex h-full w-64 flex-col items-stretch justify-between bg-sidebar"
                             >
                                 <SheetTitle className="sr-only">
-                                    Navigation Menu
+                                    Menú de navegación
                                 </SheetTitle>
                                 <SheetHeader className="flex justify-start text-left">
-                                    <AppLogoIcon className="h-6 w-6 fill-current text-black dark:text-white" />
+                                    <img
+                                        src="/icono.png"
+                                        alt="Zermatt"
+                                        className="h-6 w-6 rounded object-contain"
+                                    />
                                 </SheetHeader>
                                 <div className="flex h-full flex-1 flex-col space-y-4 p-4">
                                     <div className="flex h-full flex-col justify-between text-sm">
