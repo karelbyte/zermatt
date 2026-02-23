@@ -9,7 +9,7 @@ export type Client = {
     [key: string]: unknown;
 };
 
-export type Obra = {
+export type Work = {
     id: number;
     client_id: number;
     name: string;

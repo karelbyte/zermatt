@@ -89,6 +89,7 @@ test('se puede actualizar un registro de cemento', function () {
         'date' => $cement->date?->format('Y-m-d'),
         'tons' => 120,
         'supplier_id' => $cement->supplier_id,
+        'document' => $cement->document,
     ]);
 
     $response->assertRedirect(route('cements.index'));

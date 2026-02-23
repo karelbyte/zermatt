@@ -59,7 +59,7 @@ export default function ConcreteTypesEdit({ concreteType }: Props) {
                                     name="concept"
                                     maxLength={20}
                                     defaultValue={concreteType.concept ?? ''}
-                                    placeholder="Concepto (opcional)"
+                                    placeholder="Concepto "
                                 />
                                 <InputError message={errors.concept} />
                             </div>
@@ -71,7 +71,7 @@ export default function ConcreteTypesEdit({ concreteType }: Props) {
                                     name="description"
                                     maxLength={30}
                                     defaultValue={concreteType.description ?? ''}
-                                    placeholder="Descripción (opcional)"
+                                    placeholder="Descripción "
                                 />
                                 <InputError message={errors.description} />
                             </div>

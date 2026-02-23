@@ -1,0 +1,48 @@
+export type Remission = {
+    id: number;
+    order_number: number | null;
+    client_id: number;
+    work_id: number;
+    usage_id: number | null;
+    fc: number | null;
+    concrete_type_id: number | null;
+    concept: string | null;
+    added: number | null;
+    slump: number | null;
+    pump: boolean;
+    impermeable: boolean;
+    fiber: boolean;
+    quantity: string | null;
+    specification: string | null;
+    product: string | null;
+    observations: string | null;
+    departure_date: string | null;
+    pot_id: number | null;
+    operator_id: number | null;
+    cement_amount: number | null;
+    additive_amount: string | null;
+    fiber_amount: string | null;
+    gravel: string | null;
+    sand: string | null;
+    water: string | null;
+    tp: string | null;
+    invoice: string | null;
+    created_at: string;
+    updated_at: string;
+    client?: { id: number; name: string };
+    work?: { id: number; name: string };
+    usage?: { id: number; description: string };
+    concrete_type?: { id: number; type: string };
+    pot?: { id: number; number: string };
+    operator?: { id: number; name: string };
+    [key: string]: unknown;
+};
+
+export type RemissionDropdowns = {
+    clients: { id: number; name: string }[];
+    works: { id: number; name: string; client_id: number }[];
+    usages: { id: number; description: string }[];
+    concreteTypes: { id: number; type: string; concept: string | null }[];
+    pots: { id: number; number: string }[];
+    operators: { id: number; name: string }[];
+};

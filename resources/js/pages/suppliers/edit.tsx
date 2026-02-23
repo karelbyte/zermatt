@@ -83,7 +83,7 @@ export default function SuppliersEdit({ supplier }: Props) {
                                     id="rfc"
                                     name="rfc"
                                     defaultValue={supplier.rfc ?? ''}
-                                    placeholder="RFC (opcional)"
+                                    placeholder="RFC "
                                 />
                                 <InputError message={errors.rfc} />
                             </div>

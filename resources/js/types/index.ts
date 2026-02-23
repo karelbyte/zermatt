@@ -1,10 +1,14 @@
+export type * from './additives';
 export type * from './auth';
 export type * from './cement';
 export type * from './clients';
 export type * from './concrete-types';
+export type * from './designs';
 export type * from './moisture-absorption';
 export type * from './navigation';
-export type * from './ollas';
+export type * from './pots';
+export type * from './remissions';
 export type * from './operators';
 export type * from './suppliers';
+export type * from './usages';
 export type * from './ui';

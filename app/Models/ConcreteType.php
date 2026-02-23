@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ConcreteType extends Model
 {
@@ -32,5 +33,13 @@ class ConcreteType extends Model
         return [
             'active' => 'boolean',
         ];
+    }
+
+    /**
+     * @return HasMany<Design, $this>
+     */
+    public function designs(): HasMany
+    {
+        return $this->hasMany(Design::class);
     }
 }

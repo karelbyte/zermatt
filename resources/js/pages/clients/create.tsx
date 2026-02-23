@@ -75,7 +75,7 @@ export default function ClientsCreate() {
                                 <Input
                                     id="rfc"
                                     name="rfc"
-                                    placeholder="RFC (opcional)"
+                                    placeholder="RFC "
                                 />
                                 <InputError message={errors.rfc} />
                             </div>

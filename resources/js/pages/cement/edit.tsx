@@ -76,7 +76,7 @@ export default function CementEdit({ cement, suppliers }: Props) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="supplier_id">Proveedor (opcional)</Label>
+                                <Label htmlFor="supplier_id">Proveedor </Label>
                                 <select
                                     id="supplier_id"
                                     name="supplier_id"
@@ -91,6 +91,18 @@ export default function CementEdit({ cement, suppliers }: Props) {
                                     ))}
                                 </select>
                                 <InputError message={errors.supplier_id} />
+                            </div>
+
+                            <div className="grid gap-2">
+                                <Label htmlFor="document">Documento </Label>
+                                <Input
+                                    id="document"
+                                    name="document"
+                                    maxLength={255}
+                                    defaultValue={cement.document ?? ''}
+                                    placeholder="Documento"
+                                />
+                                <InputError message={errors.document} />
                             </div>
 
                             <div className="flex gap-4">

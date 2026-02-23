@@ -21,6 +21,7 @@ class CementFactory extends Factory
             'date' => fake()->dateTimeBetween('-1 year'),
             'tons' => fake()->randomFloat(2, 1, 500),
             'supplier_id' => Supplier::factory(),
+            'document' => fake()->optional(0.7)->regexify('[A-Z0-9]{5,20}'),
         ];
     }
 

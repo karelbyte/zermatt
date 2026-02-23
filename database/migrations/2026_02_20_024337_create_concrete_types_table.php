@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('concrete_types', function (Blueprint $table) {
             $table->id();
-            $table->string('type', 5)->unique();
+            $table->string('type', 10);
             $table->string('concept', 20)->nullable();
             $table->string('description', 30)->nullable();
             $table->boolean('active')->nullable();

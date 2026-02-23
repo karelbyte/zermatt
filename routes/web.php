@@ -1,14 +1,18 @@
 <?php
 
+use App\Http\Controllers\AdditiveController;
 use App\Http\Controllers\CementController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ConcreteTypeController;
+use App\Http\Controllers\DesignController;
 use App\Http\Controllers\MoistureAbsorptionController;
-use App\Http\Controllers\ObraController;
-use App\Http\Controllers\OllaController;
 use App\Http\Controllers\OperatorController;
+use App\Http\Controllers\PotController;
+use App\Http\Controllers\RemissionController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\UsageController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WorkController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -32,12 +36,16 @@ Route::get('dashboard', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('users', UserController::class)->except(['show']);
     Route::resource('clients', ClientController::class)->except(['show']);
-    Route::resource('obras', ObraController::class)->except(['show']);
-    Route::resource('ollas', OllaController::class)->except(['show']);
+    Route::resource('works', WorkController::class)->except(['show']);
+    Route::resource('pots', PotController::class)->except(['show']);
     Route::resource('operators', OperatorController::class)->except(['show']);
     Route::resource('suppliers', SupplierController::class)->except(['show']);
     Route::resource('cements', CementController::class)->except(['show']);
+    Route::resource('additives', AdditiveController::class)->except(['show']);
     Route::resource('concrete-types', ConcreteTypeController::class)->except(['show']);
+    Route::resource('designs', DesignController::class)->except(['show']);
+    Route::resource('usages', UsageController::class)->except(['show']);
+    Route::resource('remissions', RemissionController::class)->except(['show']);
     Route::get('humedad-absorcion', [MoistureAbsorptionController::class, 'edit'])->name('moisture-absorption.edit');
     Route::put('humedad-absorcion', [MoistureAbsorptionController::class, 'update'])->name('moisture-absorption.update');
 });

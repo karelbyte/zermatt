@@ -83,7 +83,7 @@ export default function ClientsEdit({ client }: Props) {
                                     id="rfc"
                                     name="rfc"
                                     defaultValue={client.rfc ?? ''}
-                                    placeholder="RFC (opcional)"
+                                    placeholder="RFC "
                                 />
                                 <InputError message={errors.rfc} />
                             </div>

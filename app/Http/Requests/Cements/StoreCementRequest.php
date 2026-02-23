@@ -22,6 +22,7 @@ class StoreCementRequest extends FormRequest
             'date' => ['nullable', 'date'],
             'tons' => ['nullable', 'numeric', 'min:0'],
             'supplier_id' => ['nullable', Rule::exists('suppliers', 'id')],
+            'document' => ['nullable', 'string', 'max:255'],
         ];
     }
 
@@ -42,6 +43,7 @@ class StoreCementRequest extends FormRequest
             'date' => __('Fecha'),
             'tons' => __('Toneladas'),
             'supplier_id' => __('Proveedor'),
+            'document' => __('Documento'),
         ];
     }
 }

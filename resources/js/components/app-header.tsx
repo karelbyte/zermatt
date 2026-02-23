@@ -35,8 +35,8 @@ import type { BreadcrumbItem, NavItem } from '@/types';
 import AppLogo from './app-logo';
 import { dashboard } from '@/routes';
 import { index as clientsIndex } from '@/routes/clients';
-import { index as obrasIndex } from '@/routes/obras';
-import { index as ollasIndex } from '@/routes/ollas';
+import { index as worksIndex } from '@/routes/works';
+import { index as potsIndex } from '@/routes/pots';
 import { index as operatorsIndex } from '@/routes/operators';
 import { index as cementsIndex } from '@/routes/cements';
 import { index as suppliersIndex } from '@/routes/suppliers';
@@ -65,12 +65,12 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Obras',
-        href: obrasIndex(),
+        href: worksIndex(),
         icon: HardHat,
     },
     {
         title: 'Ollas',
-        href: ollasIndex(),
+        href: potsIndex(),
         icon: CookingPot,
     },
     {

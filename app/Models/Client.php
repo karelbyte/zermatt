@@ -24,10 +24,10 @@ class Client extends Model
     ];
 
     /**
-     * @return HasMany<Obra, $this>
+     * @return HasMany<Work, $this>
      */
-    public function obras(): HasMany
+    public function works(): HasMany
     {
-        return $this->hasMany(Obra::class);
+        return $this->hasMany(Work::class);
     }
 }

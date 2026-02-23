@@ -15,7 +15,7 @@ type Props = {
 export default function ResetPassword({ token, email }: Props) {
     return (
         <AuthLayout
-            title="Restablecer contraseña"
+            title="Zermatt Concretos"
             description="Ingresa tu nueva contraseña a continuación"
         >
             <Head title="Restablecer contraseña" />

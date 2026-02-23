@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, Building2, CookingPot, Folder, HardHat, Layers, LayoutGrid, Package, Truck, UserCog, Users } from 'lucide-react';
+import { BookOpen, Building2, CookingPot, FileText, FlaskConical, HardHat, Layers, LayoutGrid, Package, Tag, Truck, UserCog, Users, UserCheck2Icon } from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -16,13 +16,17 @@ import type { NavItem } from '@/types';
 import AppLogo from './app-logo';
 import { dashboard } from '@/routes';
 import { index as clientsIndex } from '@/routes/clients';
-import { index as obrasIndex } from '@/routes/obras';
-import { index as ollasIndex } from '@/routes/ollas';
+import { index as worksIndex } from '@/routes/works';
+import { index as potsIndex } from '@/routes/pots';
 import { index as operatorsIndex } from '@/routes/operators';
 import { index as cementsIndex } from '@/routes/cements';
+import { index as additivesIndex } from '@/routes/additives';
 import { index as suppliersIndex } from '@/routes/suppliers';
 import { index as usersIndex } from '@/routes/users';
 import { index as concreteTypesIndex } from '@/routes/concrete-types';
+import { index as designsIndex } from '@/routes/designs';
+import { index as usagesIndex } from '@/routes/usages';
+import { index as remissionsIndex } from '@/routes/remissions';
 
 const mainNavItems: NavItem[] = [
     {
@@ -34,12 +38,12 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Clientes',
         href: clientsIndex(),
-        icon: Building2,
+        icon: UserCheck2Icon,
     },
     {
         title: 'Obras',
-        href: obrasIndex(),
-        icon: HardHat,
+        href: worksIndex(),
+        icon: Building2,
     },
     {
         title: 'Operadores',
@@ -54,7 +58,7 @@ const mainNavItems: NavItem[] = [
 
     {
         title: 'Ollas',
-        href: ollasIndex(),
+        href: potsIndex(),
         icon: CookingPot,
     },
 
@@ -64,9 +68,29 @@ const mainNavItems: NavItem[] = [
         icon: Package,
     },
     {
+        title: 'Aditivos',
+        href: additivesIndex(),
+        icon: FlaskConical,
+    },
+    {
+        title: 'Usos',
+        href: usagesIndex(),
+        icon: Tag,
+    },
+    {
         title: 'Tipos de concreto',
         href: concreteTypesIndex(),
         icon: Layers,
+    },
+    {
+        title: 'Diseños',
+        href: designsIndex(),
+        icon: BookOpen,
+    },
+    {
+        title: 'Remisiones',
+        href: remissionsIndex(),
+        icon: FileText,
     },
     {
         title: 'Usuarios',

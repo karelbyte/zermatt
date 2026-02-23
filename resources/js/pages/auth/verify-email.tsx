@@ -10,7 +10,7 @@ import { send } from '@/routes/verification';
 export default function VerifyEmail({ status }: { status?: string }) {
     return (
         <AuthLayout
-            title="Verifica tu correo electrónico"
+            title="Zermatt Concretos"
             description="Por favor verifica tu dirección de correo haciendo clic en el enlace que te acabamos de enviar."
         >
             <Head title="Verificación de correo" />

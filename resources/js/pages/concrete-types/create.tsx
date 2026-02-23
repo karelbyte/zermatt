@@ -53,7 +53,7 @@ export default function ConcreteTypesCreate() {
                                     id="concept"
                                     name="concept"
                                     maxLength={20}
-                                    placeholder="Concepto (opcional)"
+                                    placeholder="Concepto "
                                 />
                                 <InputError message={errors.concept} />
                             </div>
@@ -64,7 +64,7 @@ export default function ConcreteTypesCreate() {
                                     id="description"
                                     name="description"
                                     maxLength={30}
-                                    placeholder="Descripción (opcional)"
+                                    placeholder="Descripción "
                                 />
                                 <InputError message={errors.description} />
                             </div>

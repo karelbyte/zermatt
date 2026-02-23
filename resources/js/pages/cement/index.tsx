@@ -106,6 +106,7 @@ export default function CementIndex({ cements }: Props) {
                                         <th className="p-3 font-medium">Fecha</th>
                                         <th className="p-3 font-medium">Toneladas</th>
                                         <th className="p-3 font-medium">Proveedor</th>
+                                        <th className="p-3 font-medium">Documento</th>
                                         <th className="p-3 text-right font-medium">
                                             Acciones
                                         </th>
@@ -127,6 +128,9 @@ export default function CementIndex({ cements }: Props) {
                                             </td>
                                             <td className="p-3">
                                                 {cement.supplier?.name ?? '—'}
+                                            </td>
+                                            <td className="p-3">
+                                                {cement.document ?? '—'}
                                             </td>
                                             <td className="flex justify-end gap-2 p-3">
                                                 <Button variant="ghost" size="icon" asChild>

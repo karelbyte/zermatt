@@ -20,6 +20,7 @@ class Cement extends Model
         'date',
         'tons',
         'supplier_id',
+        'document',
     ];
 
     /**
