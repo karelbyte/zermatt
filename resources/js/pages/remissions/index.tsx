@@ -26,8 +26,14 @@ type Props = {
 
 function formatDate(value: string | null): string {
     if (!value) return '—';
+    // If it looks like a time (HH:MM or HH:MM:SS), just return it
+    if (/^\d{2}:\d{2}(:\d{2})?$/.test(value)) {
+        return value;
+    }
     try {
-        return new Date(value).toLocaleDateString('es-MX', {
+        const date = new Date(value);
+        if (isNaN(date.getTime())) return value;
+        return date.toLocaleDateString('es-MX', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
@@ -154,9 +160,8 @@ export default function RemissionsIndex({ remissions }: Props) {
                                         {link.url ? (
                                             <Link
                                                 href={link.url}
-                                                className={`inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm ${
-                                                    link.active ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'
-                                                }`}
+                                                className={`inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm ${link.active ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'
+                                                    }`}
                                             >
                                                 {link.label}
                                             </Link>

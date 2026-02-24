@@ -11,10 +11,11 @@ test('remissions index se muestra a usuarios autenticados', function () {
     $response = $this->actingAs($user)->get(route('remissions.index'));
 
     $response->assertOk();
-    $response->assertInertia(fn ($page) => $page
-        ->component('remissions/index')
-        ->has('remissions')
-        ->has('remissions.data')
+    $response->assertInertia(
+        fn($page) => $page
+            ->component('remissions/index')
+            ->has('remissions')
+            ->has('remissions.data')
     );
 });
 
@@ -24,14 +25,16 @@ test('formulario de creación de remisión se muestra con listas', function () {
     $response = $this->actingAs($user)->get(route('remissions.create'));
 
     $response->assertOk();
-    $response->assertInertia(fn ($page) => $page
-        ->component('remissions/create')
-        ->has('clients')
-        ->has('works')
-        ->has('usages')
-        ->has('concreteTypes')
-        ->has('pots')
-        ->has('operators')
+    $response->assertInertia(
+        fn($page) => $page
+            ->component('remissions/create')
+            ->has('clients')
+            ->has('works')
+            ->has('usages')
+            ->has('concreteTypes')
+            ->has('pots')
+            ->has('operators')
+            ->has('designs')
     );
 });
 
@@ -62,10 +65,12 @@ test('formulario de edición de remisión se muestra', function () {
     $response = $this->actingAs($admin)->get(route('remissions.edit', $remission));
 
     $response->assertOk();
-    $response->assertInertia(fn ($page) => $page
-        ->component('remissions/edit')
-        ->has('remission')
-        ->where('remission.id', $remission->id)
+    $response->assertInertia(
+        fn($page) => $page
+            ->component('remissions/edit')
+            ->has('remission')
+            ->where('remission.id', $remission->id)
+            ->has('designs')
     );
 });
 

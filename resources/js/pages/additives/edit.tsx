@@ -62,7 +62,7 @@ export default function AdditivesEdit({ additive, suppliers }: Props) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="tons">Toneladas</Label>
+                                <Label htmlFor="tons">Cantidad</Label>
                                 <Input
                                     id="tons"
                                     name="tons"
@@ -70,7 +70,7 @@ export default function AdditivesEdit({ additive, suppliers }: Props) {
                                     step="any"
                                     min="0"
                                     defaultValue={additive.tons ?? ''}
-                                    placeholder="Toneladas"
+                                    placeholder="Ejemplo: 100"
                                 />
                                 <InputError message={errors.tons} />
                             </div>

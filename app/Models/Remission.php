@@ -54,7 +54,6 @@ class Remission extends Model
     protected function casts(): array
     {
         return [
-            'departure_date' => 'date',
             'pump' => 'boolean',
             'impermeable' => 'boolean',
             'fiber' => 'boolean',

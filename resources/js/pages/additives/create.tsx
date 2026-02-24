@@ -50,14 +50,14 @@ export default function AdditivesCreate({ suppliers }: Props) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="tons">Toneladas</Label>
+                                <Label htmlFor="tons">Cantidad</Label>
                                 <Input
                                     id="tons"
                                     name="tons"
                                     type="number"
                                     step="any"
                                     min="0"
-                                    placeholder="Toneladas"
+                                    placeholder="Ejemplo: 100"
                                 />
                                 <InputError message={errors.tons} />
                             </div>

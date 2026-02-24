@@ -47,6 +47,7 @@ export function RemissionFormFields({
     concreteTypes,
     pots,
     operators,
+    designs,
     errors,
     defaultValues = {},
 }: Props) {
@@ -56,7 +57,7 @@ export function RemissionFormFields({
         <div className="space-y-8">
             <section className="space-y-4">
                 <h3 className="text-sm font-medium text-muted-foreground">Datos generales</h3>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-3">
                     <div className="grid gap-2">
                         <Label htmlFor="order_number">Pedido</Label>
                         <Input id="order_number" name="order_number" type="number" min={0} defaultValue={d.order_number ?? ''} />
@@ -97,7 +98,7 @@ export function RemissionFormFields({
                         <Input
                             id="departure_date"
                             name="departure_date"
-                            type="date"
+                            type="time"
                             className={selectClass}
                             defaultValue={d.departure_date ?? ''}
                         />
@@ -113,10 +114,17 @@ export function RemissionFormFields({
 
             <section className="space-y-4">
                 <h3 className="text-sm font-medium text-muted-foreground">Concreto</h3>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-3">
                     <div className="grid gap-2">
-                        <Label htmlFor="fc">fc</Label>
-                        <Input id="fc" name="fc" type="number" min={0} defaultValue={d.fc ?? ''} />
+                        <Label htmlFor="fc">Fc</Label>
+                        <select id="fc" name="fc" className={selectClass} defaultValue={d.fc ?? ''}>
+                            <option value="">Seleccione Fc</option>
+                            {designs.map((design) => (
+                                <option key={design.id} value={design.fc ?? ''}>
+                                    Fc: {design.fc} - {(design.concrete_type as any)?.type} - {design.added}
+                                </option>
+                            ))}
+                        </select>
                         <InputError message={errors.fc} />
                     </div>
                     <div className="grid gap-2">
@@ -135,7 +143,7 @@ export function RemissionFormFields({
                         <InputError message={errors.concept} />
                     </div>
                     <div className="grid gap-2">
-                        <Label htmlFor="added">Added</Label>
+                        <Label htmlFor="added">Añadido</Label>
                         <Input id="added" name="added" type="number" min={0} defaultValue={d.added ?? ''} />
                         <InputError message={errors.added} />
                     </div>
@@ -178,7 +186,7 @@ export function RemissionFormFields({
 
             <section className="space-y-4">
                 <h3 className="text-sm font-medium text-muted-foreground">Especificación y producto</h3>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-3">
                     <div className="grid gap-2">
                         <Label htmlFor="specification">Especificación</Label>
                         <Input id="specification" name="specification" maxLength={500} defaultValue={d.specification} />
@@ -189,7 +197,7 @@ export function RemissionFormFields({
                         <Input id="product" name="product" maxLength={255} defaultValue={d.product} />
                         <InputError message={errors.product} />
                     </div>
-                    <div className="grid gap-2 sm:col-span-2">
+                    <div className="grid gap-2">
                         <Label htmlFor="observations">Observaciones</Label>
                         <textarea
                             id="observations"
@@ -206,7 +214,7 @@ export function RemissionFormFields({
 
             <section className="space-y-4">
                 <h3 className="text-sm font-medium text-muted-foreground">Olla y operador</h3>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-3">
                     <div className="grid gap-2">
                         <Label htmlFor="pot_id">Olla</Label>
                         <select id="pot_id" name="pot_id" className={selectClass} defaultValue={d.pot_id ?? ''}>

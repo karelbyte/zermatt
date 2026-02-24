@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $adminEmail = config('seeder.admin.email', 'admin@zermatt.com');
+        $adminEmail = config('seeder.admin.email', 'admin@zermattconcretos.com');
         $adminPassword = config('seeder.admin.password', '12345');
 
         User::query()->firstOrCreate(

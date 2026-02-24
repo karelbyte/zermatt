@@ -90,7 +90,7 @@ export default function DesignsEdit({ design, concreteTypes }: Props) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="fc">fc</Label>
+                                <Label htmlFor="fc">Fc</Label>
                                 <Input
                                     id="fc"
                                     name="fc"
@@ -98,7 +98,7 @@ export default function DesignsEdit({ design, concreteTypes }: Props) {
                                     min="0"
                                     step="1"
                                     defaultValue={design.fc ?? ''}
-                                    placeholder="fc "
+                                    placeholder="Ejemplo: 250"
                                 />
                                 <InputError message={errors.fc} />
                             </div>

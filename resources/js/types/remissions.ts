@@ -1,3 +1,5 @@
+import type { Design } from './designs';
+
 export type Remission = {
     id: number;
     order_number: number | null;
@@ -45,4 +47,5 @@ export type RemissionDropdowns = {
     concreteTypes: { id: number; type: string; concept: string | null }[];
     pots: { id: number; number: string }[];
     operators: { id: number; name: string }[];
+    designs: Design[];
 };

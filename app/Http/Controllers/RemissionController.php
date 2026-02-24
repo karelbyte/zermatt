@@ -6,6 +6,7 @@ use App\Http\Requests\Remissions\StoreRemissionRequest;
 use App\Http\Requests\Remissions\UpdateRemissionRequest;
 use App\Models\Client;
 use App\Models\ConcreteType;
+use App\Models\Design;
 use App\Models\Operator;
 use App\Models\Pot;
 use App\Models\Remission;
@@ -82,6 +83,7 @@ class RemissionController extends Controller
             'concreteTypes' => ConcreteType::query()->orderBy('type')->get(['id', 'type', 'concept']),
             'pots' => Pot::query()->orderBy('number')->get(['id', 'number']),
             'operators' => Operator::query()->orderBy('name')->get(['id', 'name']),
+            'designs' => Design::query()->with('concreteType:id,type')->orderByDesc('id')->get(),
         ];
     }
 }
