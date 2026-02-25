@@ -21,6 +21,7 @@ class ConcreteType extends Model
         'concept',
         'description',
         'active',
+        'base_price',
     ];
 
     /**
@@ -32,6 +33,7 @@ class ConcreteType extends Model
     {
         return [
             'active' => 'boolean',
+            'base_price' => 'decimal:2',
         ];
     }
 

@@ -34,7 +34,7 @@ const mainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
     },
- 
+
     {
         title: 'Clientes',
         href: clientsIndex(),
@@ -78,7 +78,7 @@ const mainNavItems: NavItem[] = [
         icon: Tag,
     },
     {
-        title: 'Tipos de concreto',
+        title: 'Precios (Concretos)',
         href: concreteTypesIndex(),
         icon: Layers,
     },
@@ -100,16 +100,16 @@ const mainNavItems: NavItem[] = [
 ];
 
 const footerNavItems: NavItem[] = [
-   /* {
-        title: 'Repositorio',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentación',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },*/
+    /* {
+         title: 'Repositorio',
+         href: 'https://github.com/laravel/react-starter-kit',
+         icon: Folder,
+     },
+     {
+         title: 'Documentación',
+         href: 'https://laravel.com/docs/starter-kits#react',
+         icon: BookOpen,
+     },*/
 ];
 
 export function AppSidebar() {

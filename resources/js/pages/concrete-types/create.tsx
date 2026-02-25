@@ -11,20 +11,20 @@ import ConcreteTypeController from '@/actions/App/Http/Controllers/ConcreteTypeC
 import { index } from '@/routes/concrete-types';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Tipos de concreto', href: index().url },
-    { title: 'Nuevo tipo', href: '#' },
+    { title: 'Precios', href: index().url },
+    { title: 'Nuevo precio', href: '#' },
 ];
 
 export default function ConcreteTypesCreate() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Nuevo tipo de concreto" />
+            <Head title="Nuevo precio de concreto" />
 
             <div className="space-y-6">
                 <Heading
                     variant="small"
-                    title="Nuevo tipo de concreto"
-                    description="Registra un nuevo tipo de concreto"
+                    title="Nuevo precio de concreto"
+                    description="Registra un nuevo precio de concreto"
                 />
 
                 <Form
@@ -69,6 +69,19 @@ export default function ConcreteTypesCreate() {
                                 <InputError message={errors.description} />
                             </div>
 
+                            <div className="grid gap-2">
+                                <Label htmlFor="base_price">Precio base ($)</Label>
+                                <Input
+                                    id="base_price"
+                                    name="base_price"
+                                    type="number"
+                                    step="0.01"
+                                    min={0}
+                                    placeholder="0.00"
+                                />
+                                <InputError message={errors.base_price} />
+                            </div>
+
                             <div className="flex items-center space-x-2">
                                 <input
                                     type="hidden"
@@ -87,7 +100,7 @@ export default function ConcreteTypesCreate() {
 
                             <div className="flex gap-4">
                                 <Button type="submit" disabled={processing}>
-                                    Crear tipo
+                                    Crear precio
                                 </Button>
                                 <Button variant="outline" asChild>
                                     <Link href={index().url}>Cancelar</Link>

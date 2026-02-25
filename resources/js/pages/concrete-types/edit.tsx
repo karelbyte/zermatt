@@ -17,19 +17,19 @@ type Props = {
 
 export default function ConcreteTypesEdit({ concreteType }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Tipos de concreto', href: index().url },
+        { title: 'Precios', href: index().url },
         { title: concreteType.type, href: edit(concreteType.id).url },
     ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={`Editar tipo ${concreteType.type}`} />
+            <Head title={`Editar precio ${concreteType.type}`} />
 
             <div className="space-y-6">
                 <Heading
                     variant="small"
-                    title="Editar tipo de concreto"
-                    description="Modifica los datos del tipo de concreto"
+                    title="Editar precio de concreto"
+                    description="Modifica los datos del precio del concreto"
                 />
 
                 <Form
@@ -74,6 +74,20 @@ export default function ConcreteTypesEdit({ concreteType }: Props) {
                                     placeholder="Descripción "
                                 />
                                 <InputError message={errors.description} />
+                            </div>
+
+                            <div className="grid gap-2">
+                                <Label htmlFor="base_price">Precio base ($)</Label>
+                                <Input
+                                    id="base_price"
+                                    name="base_price"
+                                    type="number"
+                                    step="0.01"
+                                    min={0}
+                                    defaultValue={concreteType.base_price ?? ''}
+                                    placeholder="0.00"
+                                />
+                                <InputError message={errors.base_price} />
                             </div>
 
                             <div className="flex items-center space-x-2">

@@ -29,6 +29,11 @@ export type Remission = {
     water: string | null;
     tp: string | null;
     invoice: string | null;
+    unit_price: string | null;
+    subtotal: string | null;
+    iva: string | null;
+    total: string | null;
+    iva_percentage: number | null;
     created_at: string;
     updated_at: string;
     client?: { id: number; name: string };
@@ -44,7 +49,7 @@ export type RemissionDropdowns = {
     clients: { id: number; name: string }[];
     works: { id: number; name: string; client_id: number }[];
     usages: { id: number; description: string }[];
-    concreteTypes: { id: number; type: string; concept: string | null }[];
+    concreteTypes: { id: number; type: string; concept: string | null; base_price: string | number | null }[];
     pots: { id: number; number: string }[];
     operators: { id: number; name: string }[];
     designs: Design[];

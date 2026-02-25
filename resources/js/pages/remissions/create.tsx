@@ -1,4 +1,4 @@
-import { Form, Head, Link } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { RemissionFormFields } from '@/components/remission-form-fields';
 import AppLayout from '@/layouts/app-layout';
@@ -15,6 +15,41 @@ export default function RemissionsCreate(props: Props) {
         { title: 'Nueva remisión', href: '#' },
     ];
 
+    const { data, setData, post, processing, errors } = useForm({
+        order_number: '',
+        client_id: '',
+        work_id: '',
+        usage_id: '',
+        fc: '',
+        concrete_type_id: '',
+        concept: '',
+        added: '',
+        slump: '',
+        pump: false,
+        impermeable: false,
+        fiber: false,
+        quantity: '',
+        specification: '',
+        product: '',
+        observations: '',
+        departure_date: '',
+        pot_id: '',
+        operator_id: '',
+        cement_amount: '',
+        additive_amount: '',
+        fiber_amount: '',
+        gravel: '',
+        sand: '',
+        water: '',
+        tp: '',
+        invoice: '',
+    });
+
+    const submit = (e: React.FormEvent) => {
+        e.preventDefault();
+        post(RemissionController.store.url());
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Nueva remisión" />
@@ -22,26 +57,18 @@ export default function RemissionsCreate(props: Props) {
             <div className="space-y-6">
                 <h1 className="text-xl font-semibold">Nueva remisión</h1>
 
-                <Form
-                    action={RemissionController.store.url()}
-                    method="post"
-                    className="space-y-6"
-                    resetOnSuccess
-                >
-                    {({ processing, errors }) => (
-                        <>
-                            <RemissionFormFields {...props} errors={errors} />
-                            <div className="flex gap-4">
-                                <Button type="submit" disabled={processing}>
-                                    Crear remisión
-                                </Button>
-                                <Button variant="outline" asChild>
-                                    <Link href={index().url}>Cancelar</Link>
-                                </Button>
-                            </div>
-                        </>
-                    )}
-                </Form>
+                <form onSubmit={submit} className="space-y-6">
+                    <RemissionFormFields {...props} data={data} setData={setData} errors={errors} />
+
+                    <div className="flex gap-4">
+                        <Button type="submit" disabled={processing}>
+                            Crear remisión
+                        </Button>
+                        <Button variant="outline" asChild>
+                            <Link href={index().url}>Cancelar</Link>
+                        </Button>
+                    </div>
+                </form>
             </div>
         </AppLayout>
     );

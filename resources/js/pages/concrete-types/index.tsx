@@ -44,22 +44,22 @@ export default function ConcreteTypesIndex({ concreteTypes }: Props) {
     return (
         <AppLayout
             breadcrumbs={[
-                { title: 'Tipos de concreto', href: index().url },
+                { title: 'Precios', href: index().url },
             ] as BreadcrumbItem[]}
         >
-            <Head title="Tipos de concreto" />
+            <Head title="Precios (Concretos)" />
 
             <div className="space-y-6">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <Heading
                         variant="small"
-                        title="Tipos de concreto"
-                        description="Gestiona los tipos de concreto de la aplicación"
+                        title="Precios (Concretos)"
+                        description="Gestiona la lista de precios por tipo de concreto"
                     />
                     <Button asChild>
                         <Link href={create().url}>
                             <Plus className="mr-2 size-4" />
-                            Nuevo tipo
+                            Nuevo precio
                         </Link>
                     </Button>
                 </div>
@@ -73,13 +73,13 @@ export default function ConcreteTypesIndex({ concreteTypes }: Props) {
                 {concreteTypes.data.length === 0 ? (
                     <EmptyState
                         icon={Layers}
-                        title="No hay tipos de concreto"
-                        description="Aún no has registrado ningún tipo de concreto. Crea el primero para comenzar."
+                        title="No hay precios registrados"
+                        description="Aún no has registrado ningún precio de concreto. Crea el primero para comenzar."
                         action={
                             <Button asChild>
                                 <Link href={create().url}>
                                     <Plus className="mr-2 size-4" />
-                                    Nuevo tipo
+                                    Nuevo precio
                                 </Link>
                             </Button>
                         }
@@ -93,6 +93,7 @@ export default function ConcreteTypesIndex({ concreteTypes }: Props) {
                                         <th className="p-3 font-medium">Tipo</th>
                                         <th className="p-3 font-medium">Concepto</th>
                                         <th className="p-3 font-medium">Descripción</th>
+                                        <th className="p-3 font-medium">Precio base</th>
                                         <th className="p-3 font-medium">Activo</th>
                                         <th className="p-3 text-right font-medium">
                                             Acciones
@@ -108,6 +109,9 @@ export default function ConcreteTypesIndex({ concreteTypes }: Props) {
                                             <td className="p-3">{item.type}</td>
                                             <td className="p-3">{item.concept ?? '—'}</td>
                                             <td className="p-3">{item.description ?? '—'}</td>
+                                            <td className="p-3">
+                                                {item.base_price ? `$${item.base_price}` : '—'}
+                                            </td>
                                             <td className="p-3">
                                                 {item.active === true ? 'Sí' : item.active === false ? 'No' : '—'}
                                             </td>
@@ -145,11 +149,10 @@ export default function ConcreteTypesIndex({ concreteTypes }: Props) {
                                         {link.url ? (
                                             <Link
                                                 href={link.url}
-                                                className={`inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm ${
-                                                    link.active
+                                                className={`inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm ${link.active
                                                         ? 'bg-primary text-primary-foreground'
                                                         : 'hover:bg-muted'
-                                                }`}
+                                                    }`}
                                             >
                                                 {link.label}
                                             </Link>
@@ -168,8 +171,8 @@ export default function ConcreteTypesIndex({ concreteTypes }: Props) {
                 <ConfirmModal
                     open={!!typeToDelete}
                     onOpenChange={(open) => !open && setTypeToDelete(null)}
-                    title="¿Eliminar tipo de concreto?"
-                    description="Se eliminará el tipo y sus datos. Esta acción no se puede deshacer."
+                    title="¿Eliminar precio?"
+                    description="Se eliminará la configuración de precio y sus datos. Esta acción no se puede deshacer."
                     confirmLabel="Eliminar"
                     cancelLabel="Cancelar"
                     variant="destructive"

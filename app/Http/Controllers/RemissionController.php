@@ -80,10 +80,10 @@ class RemissionController extends Controller
             'clients' => Client::query()->orderBy('name')->get(['id', 'name']),
             'works' => Work::query()->with('client:id,name')->orderBy('name')->get(['id', 'name', 'client_id']),
             'usages' => Usage::query()->orderBy('description')->get(['id', 'description']),
-            'concreteTypes' => ConcreteType::query()->orderBy('type')->get(['id', 'type', 'concept']),
+            'concreteTypes' => ConcreteType::query()->orderBy('type')->get(['id', 'type', 'concept', 'base_price']),
             'pots' => Pot::query()->orderBy('number')->get(['id', 'number']),
             'operators' => Operator::query()->orderBy('name')->get(['id', 'name']),
-            'designs' => Design::query()->with('concreteType:id,type')->orderByDesc('id')->get(),
+            'designs' => Design::query()->with('concreteType:id,type,base_price')->orderByDesc('id')->get(),
         ];
     }
 }

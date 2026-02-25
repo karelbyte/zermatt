@@ -44,6 +44,11 @@ class Remission extends Model
         'water',
         'tp',
         'invoice',
+        'unit_price',
+        'subtotal',
+        'iva',
+        'total',
+        'iva_percentage',
     ];
 
     /**
@@ -63,6 +68,10 @@ class Remission extends Model
             'gravel' => 'decimal:2',
             'sand' => 'decimal:2',
             'water' => 'decimal:2',
+            'unit_price' => 'decimal:2',
+            'subtotal' => 'decimal:2',
+            'iva' => 'decimal:2',
+            'total' => 'decimal:2',
         ];
     }
 
