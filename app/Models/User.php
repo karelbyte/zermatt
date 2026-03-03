@@ -22,6 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_admin',
+        'permissions',
         'is_active',
     ];
 
@@ -49,6 +51,8 @@ class User extends Authenticatable
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
             'is_active' => 'boolean',
+            'is_admin' => 'boolean',
+            'permissions' => 'array',
         ];
     }
 }

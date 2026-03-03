@@ -20,6 +20,7 @@ class UpdateRemissionRequest extends FormRequest
     {
         return [
             'order_number' => ['nullable', 'integer', 'min:0'],
+            'remision' => ['nullable', 'string', 'max:255'],
             'client_id' => ['required', 'integer', Rule::exists('clients', 'id')],
             'work_id' => ['required', 'integer', Rule::exists('works', 'id')],
             'usage_id' => ['nullable', 'integer', Rule::exists('usages', 'id')],
@@ -32,10 +33,11 @@ class UpdateRemissionRequest extends FormRequest
             'impermeable' => ['boolean'],
             'fiber' => ['boolean'],
             'quantity' => ['nullable', 'numeric', 'min:0'],
+            'pending_delivery' => ['nullable', 'numeric', 'min:0'],
             'specification' => ['nullable', 'string', 'max:500'],
             'product' => ['nullable', 'string', 'max:255'],
             'observations' => ['nullable', 'string', 'max:2000'],
-            'departure_date' => ['nullable', 'date'],
+            'departure_date' => ['nullable', 'string'],
             'pot_id' => ['nullable', 'integer', Rule::exists('pots', 'id')],
             'operator_id' => ['nullable', 'integer', Rule::exists('operators', 'id')],
             'cement_amount' => ['nullable', 'integer', 'min:0'],
@@ -75,6 +77,7 @@ class UpdateRemissionRequest extends FormRequest
     {
         return [
             'order_number' => __('Order number'),
+            'remision' => __('Remisión'),
             'client_id' => __('Cliente'),
             'work_id' => __('Obra'),
             'usage_id' => __('Uso'),
@@ -87,6 +90,7 @@ class UpdateRemissionRequest extends FormRequest
             'impermeable' => __('Imper'),
             'fiber' => __('Fibra'),
             'quantity' => __('Cantidad'),
+            'pending_delivery' => __('Pendiente de entrega'),
             'specification' => __('Especificación'),
             'product' => __('Producto'),
             'observations' => __('Observaciones'),

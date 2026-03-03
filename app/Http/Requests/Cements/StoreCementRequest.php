@@ -23,6 +23,7 @@ class StoreCementRequest extends FormRequest
             'tons' => ['nullable', 'numeric', 'min:0'],
             'supplier_id' => ['nullable', Rule::exists('suppliers', 'id')],
             'document' => ['nullable', 'string', 'max:255'],
+            'status' => ['nullable', Rule::in(['open', 'closed'])],
         ];
     }
 

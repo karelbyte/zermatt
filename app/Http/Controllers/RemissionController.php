@@ -47,7 +47,7 @@ class RemissionController extends Controller
 
     public function edit(Remission $remission): Response
     {
-        $remission->load(['client:id,name', 'work:id,name', 'usage:id,description', 'concreteType:id,type', 'pot:id,number', 'operator:id,name']);
+        $remission->load(['client:id,name', 'work:id,name', 'usage:id,description', 'concreteType:id,type,description', 'pot:id,number', 'operator:id,name']);
 
         return Inertia::render('remissions/edit', [
             'remission' => $remission,
@@ -71,6 +71,15 @@ class RemissionController extends Controller
             ->with('status', __('Remisión eliminada correctamente.'));
     }
 
+    public function print(Remission $remission): Response
+    {
+        $remission->load(['client:id,name', 'work:id,name', 'usage:id,description', 'concreteType:id,type,description', 'pot:id,number', 'operator:id,name']);
+
+        return Inertia::render('remissions/print', [
+            'remission' => $remission,
+        ]);
+    }
+
     /**
      * @return array{clients: \Illuminate\Support\Collection, works: \Illuminate\Support\Collection, usages: \Illuminate\Support\Collection, concreteTypes: \Illuminate\Support\Collection, pots: \Illuminate\Support\Collection, operators: \Illuminate\Support\Collection}
      */
@@ -80,10 +89,10 @@ class RemissionController extends Controller
             'clients' => Client::query()->orderBy('name')->get(['id', 'name']),
             'works' => Work::query()->with('client:id,name')->orderBy('name')->get(['id', 'name', 'client_id']),
             'usages' => Usage::query()->orderBy('description')->get(['id', 'description']),
-            'concreteTypes' => ConcreteType::query()->orderBy('type')->get(['id', 'type', 'concept', 'base_price']),
+            'concreteTypes' => ConcreteType::query()->orderBy('type')->get(['id', 'type', 'concept', 'description']),
             'pots' => Pot::query()->orderBy('number')->get(['id', 'number']),
             'operators' => Operator::query()->orderBy('name')->get(['id', 'name']),
-            'designs' => Design::query()->with('concreteType:id,type,base_price')->orderByDesc('id')->get(),
+            'designs' => Design::query()->with('concreteType:id,type')->orderByDesc('id')->get(),
         ];
     }
 }

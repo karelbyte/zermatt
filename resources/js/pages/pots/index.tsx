@@ -91,7 +91,7 @@ export default function PotsIndex({ pots }: Props) {
                                 <thead className="border-b border-sidebar-border/70 bg-muted/50">
                                     <tr>
                                         <th className="p-3 font-medium">Número</th>
-                                        <th className="p-3 font-medium">Capacidad</th>
+                                        <th className="p-3 font-medium">Capacidad m³ </th>
                                         <th className="p-3 font-medium">Activa</th>
                                         <th className="p-3 text-right font-medium">
                                             Acciones

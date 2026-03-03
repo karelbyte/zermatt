@@ -46,6 +46,10 @@ class CementController extends Controller
 
     public function edit(Cement $cement): Response
     {
+        if ($cement->status === 'closed' && !request()->user()->is_admin) {
+            abort(403, 'No puedes editar un registro cerrado.');
+        }
+
         $cement->load('supplier:id,name');
         $suppliers = Supplier::query()->orderBy('name')->get(['id', 'name']);
 
@@ -57,6 +61,10 @@ class CementController extends Controller
 
     public function update(UpdateCementRequest $request, Cement $cement): RedirectResponse
     {
+        if ($cement->status === 'closed' && !$request->user()->is_admin) {
+            abort(403, 'No puedes actualizar un registro cerrado.');
+        }
+
         $cement->update($request->validated());
 
         return redirect()->route('cements.index')
@@ -65,6 +73,10 @@ class CementController extends Controller
 
     public function destroy(Cement $cement): RedirectResponse
     {
+        if ($cement->status === 'closed' && !request()->user()->is_admin) {
+            abort(403, 'No puedes eliminar un registro cerrado.');
+        }
+
         $cement->delete();
 
         return redirect()->route('cements.index')

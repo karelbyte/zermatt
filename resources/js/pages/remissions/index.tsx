@@ -1,5 +1,5 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { FileText, Pencil, Plus, Trash2 } from 'lucide-react';
+import { FileText, Pencil, Plus, Printer, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { ConfirmModal } from '@/components/confirm-modal';
 import { EmptyState } from '@/components/empty-state';
@@ -9,7 +9,7 @@ import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
 import type { Remission } from '@/types';
 import RemissionController from '@/actions/App/Http/Controllers/RemissionController';
-import { create, edit, index } from '@/routes/remissions';
+import { create, edit, index, print } from '@/routes/remissions';
 
 type PaginatedRemissions = {
     data: Remission[];
@@ -109,12 +109,15 @@ export default function RemissionsIndex({ remissions }: Props) {
                             <table className="w-full min-w-[800px] text-left text-sm">
                                 <thead className="border-b border-sidebar-border/70 bg-muted/50">
                                     <tr>
-                                        <th className="p-3 font-medium">Pedido</th>
-                                        <th className="p-3 font-medium">Cliente</th>
-                                        <th className="p-3 font-medium">Obra</th>
-                                        <th className="p-3 font-medium">Cantidad</th>
-                                        <th className="p-3 font-medium">Fecha salida</th>
-                                        <th className="p-3 font-medium">Factura</th>
+                                        <th className="p-3 font-medium">Remisión / Pedido</th>
+                                        <th className="p-3 font-medium">Cliente / Obra</th>
+                                        <th className="p-3 font-medium">Producto</th>
+                                        <th className="p-3 font-medium text-center">Cantidad</th>
+                                        <th className="p-3 font-medium text-center">Cemento</th>
+                                        <th className="p-3 font-medium text-center">Arena</th>
+                                        <th className="p-3 font-medium text-center">Grava</th>
+                                        <th className="p-3 font-medium text-center">Agua</th>
+                                        <th className="p-3 font-medium text-center">Salida</th>
                                         <th className="p-3 text-right font-medium">Acciones</th>
                                     </tr>
                                 </thead>
@@ -124,13 +127,28 @@ export default function RemissionsIndex({ remissions }: Props) {
                                             key={r.id}
                                             className="border-b border-sidebar-border/50 hover:bg-muted/30"
                                         >
-                                            <td className="p-3">{r.order_number != null ? r.order_number : '—'}</td>
-                                            <td className="p-3">{r.client?.name ?? '—'}</td>
-                                            <td className="p-3">{r.work?.name ?? '—'}</td>
-                                            <td className="p-3">{r.quantity != null ? r.quantity : '—'}</td>
-                                            <td className="p-3">{formatDate(r.departure_date)}</td>
-                                            <td className="p-3">{r.invoice ?? '—'}</td>
+                                            <td className="p-3">
+                                                <div className="font-medium text-foreground">{r.remision ?? '—'}</div>
+                                                <div className="text-xs text-muted-foreground">Pedido: {r.order_number ?? '—'}</div>
+                                            </td>
+                                            <td className="p-3">
+                                                <div className="font-medium text-foreground">{r.client?.name ?? '—'}</div>
+                                                <div className="text-xs text-muted-foreground">{r.work?.name ?? '—'}</div>
+                                            </td>
+                                            <td className="p-3 text-xs">{r.product ?? '—'}</td>
+                                            <td className="p-3 text-center">{r.quantity != null ? r.quantity : '—'}</td>
+                                            <td className="p-3 text-center">{r.cement_amount ?? '—'}</td>
+                                            <td className="p-3 text-center">{r.sand ?? '—'}</td>
+                                            <td className="p-3 text-center">{r.gravel ?? '—'}</td>
+                                            <td className="p-3 text-center">{r.water ?? '—'}</td>
+                                            <td className="p-3 text-center">{formatDate(r.departure_date)}</td>
                                             <td className="flex justify-end gap-2 p-3">
+                                                <Button variant="ghost" size="icon" asChild>
+                                                    <a href={print(r).url} target="_blank" rel="noreferrer">
+                                                        <Printer className="size-4" />
+                                                        <span className="sr-only">Imprimir</span>
+                                                    </a>
+                                                </Button>
                                                 <Button variant="ghost" size="icon" asChild>
                                                     <Link href={edit(r).url}>
                                                         <Pencil className="size-4" />
@@ -160,8 +178,8 @@ export default function RemissionsIndex({ remissions }: Props) {
                                         {link.url ? (
                                             <Link
                                                 href={link.url}
-                                                className={`inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm ${link.active ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'
-                                                    }`}
+                                                className={`inline - flex items - center justify - center rounded - md px - 3 py - 1.5 text - sm ${link.active ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'
+                                                    } `}
                                             >
                                                 {link.label}
                                             </Link>

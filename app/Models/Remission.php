@@ -18,6 +18,7 @@ class Remission extends Model
      */
     protected $fillable = [
         'order_number',
+        'remision',
         'client_id',
         'work_id',
         'usage_id',
@@ -30,6 +31,7 @@ class Remission extends Model
         'impermeable',
         'fiber',
         'quantity',
+        'pending_delivery',
         'specification',
         'product',
         'observations',
@@ -42,13 +44,11 @@ class Remission extends Model
         'gravel',
         'sand',
         'water',
+        'gravel',
+        'sand',
+        'water',
         'tp',
         'invoice',
-        'unit_price',
-        'subtotal',
-        'iva',
-        'total',
-        'iva_percentage',
     ];
 
     /**
@@ -63,15 +63,12 @@ class Remission extends Model
             'impermeable' => 'boolean',
             'fiber' => 'boolean',
             'quantity' => 'decimal:2',
+            'pending_delivery' => 'decimal:2',
             'additive_amount' => 'decimal:2',
             'fiber_amount' => 'decimal:2',
             'gravel' => 'decimal:2',
             'sand' => 'decimal:2',
             'water' => 'decimal:2',
-            'unit_price' => 'decimal:2',
-            'subtotal' => 'decimal:2',
-            'iva' => 'decimal:2',
-            'total' => 'decimal:2',
         ];
     }
 

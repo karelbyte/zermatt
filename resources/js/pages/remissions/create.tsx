@@ -17,6 +17,7 @@ export default function RemissionsCreate(props: Props) {
 
     const { data, setData, post, processing, errors } = useForm({
         order_number: '',
+        remision: '',
         client_id: '',
         work_id: '',
         usage_id: '',
@@ -29,6 +30,7 @@ export default function RemissionsCreate(props: Props) {
         impermeable: false,
         fiber: false,
         quantity: '',
+        pending_delivery: '',
         specification: '',
         product: '',
         observations: '',
@@ -41,7 +43,6 @@ export default function RemissionsCreate(props: Props) {
         gravel: '',
         sand: '',
         water: '',
-        tp: '',
         invoice: '',
     });
 

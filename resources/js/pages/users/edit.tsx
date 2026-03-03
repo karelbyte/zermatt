@@ -13,9 +13,10 @@ import { edit, index } from '@/routes/users';
 
 type Props = {
     user: User;
+    modules: string[];
 };
 
-export default function UsersEdit({ user }: Props) {
+export default function UsersEdit({ user, modules }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Usuarios', href: index().url },
         { title: user.name, href: edit(user).url },
@@ -35,7 +36,7 @@ export default function UsersEdit({ user }: Props) {
                 <Form
                     action={UserController.update.url({ user: user.id })}
                     method="put"
-                    className="space-y-6"
+                    className="space-y-6 pb-20"
                     resetOnSuccess={['password', 'password_confirmation']}
                 >
                     {({ processing, errors }) => (
@@ -98,21 +99,69 @@ export default function UsersEdit({ user }: Props) {
                                 />
                             </div>
 
-                            <div className="flex items-center space-x-2">
-                                <input
-                                    type="hidden"
-                                    name="is_active"
-                                    value="0"
-                                />
-                                <Checkbox
-                                    id="is_active"
-                                    name="is_active"
-                                    value="1"
-                                    defaultChecked={user.is_active}
-                                />
-                                <Label htmlFor="is_active">Activo</Label>
+                            <div className="space-y-4">
+                                <Label>Rol y Permisos</Label>
+
+                                <div className="flex items-center space-x-2">
+                                    <input
+                                        type="hidden"
+                                        name="is_admin"
+                                        value="0"
+                                    />
+                                    <Checkbox
+                                        id="is_admin"
+                                        name="is_admin"
+                                        value="1"
+                                        defaultChecked={user.is_admin}
+                                    />
+                                    <Label htmlFor="is_admin">
+                                        Administrador (Tiene todos los permisos
+                                        por defecto)
+                                    </Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <input
+                                        type="hidden"
+                                        name="is_active"
+                                        value="0"
+                                    />
+                                    <Checkbox
+                                        id="is_active"
+                                        name="is_active"
+                                        value="1"
+                                        defaultChecked={user.is_active}
+                                    />
+                                    <Label htmlFor="is_active">Activo</Label>
+                                </div>
                             </div>
-                            <InputError message={errors.is_active} />
+
+                            <div className="space-y-4 rounded-lg border p-4">
+                                <Label className="text-base">
+                                    Permisos a Módulos
+                                </Label>
+                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+                                    {modules.map((module) => (
+                                        <div
+                                            key={module}
+                                            className="flex items-center space-x-2"
+                                        >
+                                            <Checkbox
+                                                id={`perm_${module}`}
+                                                name="permissions[]"
+                                                value={module}
+                                                defaultChecked={user.permissions?.includes(
+                                                    module,
+                                                )}
+                                            />
+                                            <Label htmlFor={`perm_${module}`}>
+                                                {module}
+                                            </Label>
+                                        </div>
+                                    ))}
+                                </div>
+                                <InputError message={errors.permissions} />
+                            </div>
 
                             <div className="flex gap-4">
                                 <Button type="submit" disabled={processing}>

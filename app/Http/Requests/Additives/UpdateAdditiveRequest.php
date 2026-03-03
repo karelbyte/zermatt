@@ -20,9 +20,10 @@ class UpdateAdditiveRequest extends FormRequest
     {
         return [
             'date' => ['nullable', 'date'],
-            'tons' => ['nullable', 'numeric', 'min:0'],
+            'lit' => ['nullable', 'numeric', 'min:0'],
             'supplier_id' => ['nullable', Rule::exists('suppliers', 'id')],
             'document' => ['nullable', 'string', 'max:255'],
+            'status' => ['nullable', Rule::in(['open', 'closed'])],
         ];
     }
 
@@ -41,7 +42,7 @@ class UpdateAdditiveRequest extends FormRequest
     {
         return [
             'date' => __('Fecha'),
-            'tons' => __('Toneladas'),
+            'lit' => __('Litros'),
             'supplier_id' => __('Proveedor'),
             'document' => __('Documento'),
         ];

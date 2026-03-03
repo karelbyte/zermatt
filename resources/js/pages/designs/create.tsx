@@ -59,7 +59,7 @@ export default function DesignsCreate({ concreteTypes }: Props) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="added">Agregado</Label>
+                                <Label htmlFor="added">Agregado (cm)</Label>
                                 <Input
                                     id="added"
                                     name="added"

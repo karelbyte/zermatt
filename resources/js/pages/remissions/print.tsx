@@ -1,0 +1,131 @@
+import { Head } from '@inertiajs/react';
+import type { Remission } from '@/types';
+import { useEffect } from 'react';
+
+interface Props {
+    remission: Remission;
+}
+
+export default function PrintRemission({ remission }: Props) {
+    useEffect(() => {
+        // Auto-trigger print dialog
+        window.print();
+    }, []);
+
+    // Use updated_at as requested, falling back to current date if missing
+    const dateStr = remission.updated_at ?? new Date().toISOString();
+    const date = new Date(dateStr);
+
+    // Check for valid date
+    const isValidDate = !isNaN(date.getTime());
+    const day = isValidDate ? date.getDate().toString().padStart(2, '0') : '--';
+    const month = isValidDate ? (date.getMonth() + 1).toString().padStart(2, '0') : '--';
+    const year = isValidDate ? date.getFullYear().toString() : '----';
+
+    return (
+        <div className="bg-white min-h-screen font-serif p-0 m-0 print:m-0 print:p-0">
+            <Head title={`Imprimir Remisión ${remission.order_number}`} />
+
+            {/* Background Image Container - Adjusted to Letter Size (8.5in x 11in) */}
+            <div className="relative w-[8.5in] h-[11in] mx-auto overflow-hidden text-black uppercase text-[10px]">
+                {/* The letterhead image - Assuming the user will provide this file */}
+                <img
+                    src="/images/remission-bg.jpg"
+                    className="absolute inset-0 w-full h-auto opacity-30 print:opacity-100"
+                    alt="Membrete"
+                />*
+
+                {/* Data Overlay - Precisely positioned based on the image layout (Shisted down 20px) */}
+
+                {/* Folio */}
+
+
+                {/* Date - Shifted up 5px from previous position (130px -> 125px) */}
+                <div className="absolute top-[125px] right-[205px] text-center w-8 font-semibold">{day}</div>
+                <div className="absolute top-[125px] right-[118px] text-center w-8 font-semibold">{month}</div>
+                <div className="absolute top-[125px] right-[44px] text-center w-10 font-semibold">{year}</div>
+
+                {/* Cliente y Obra */}
+                <div className="absolute top-[165px] left-[65px] w-[300px] truncate font-semibold">{remission.client?.name}</div>
+                <div className="absolute top-[165px] left-[550px] w-[200px] truncate font-semibold">{remission.work?.name}</div>
+
+                {/* Pedido, Producto Solicitado, Uso, Surtidos, Por Surtir, Horario */}
+                <div className="absolute top-[218px] left-[50px] w-20 text-center font-semibold">{remission.order_number}</div>
+                <div className="absolute top-[218px] left-[150px] w-[230px] truncate font-semibold">{remission.product ?? remission.concrete_type?.type}</div>
+                <div className="absolute top-[218px] left-[400px] w-[70px] text-center font-semibold">{remission.usage?.description}</div>
+                <div className="absolute top-[218px] left-[510px] w-[50px] text-center font-semibold">{remission.quantity}</div>
+                {/* survido, por_surtir, horario are not in DB currently, but we can put placeholders or empty */}
+                <div className="absolute top-[218px] left-[600px] w-[50px] text-center font-semibold">{remission.pending_delivery}</div>
+
+
+                {/* Detalle Producto */}
+                <div className="absolute top-[285px] left-[55px] w-[90px] text-centerfont-semibold">Fc: {remission.fc} Kg/Cm2</div>
+                <div className="absolute top-[305px] left-[55px] w-[90px] text-centerfont-semibold">TIPO: {remission.concrete_type?.type}</div>
+                <div className="absolute top-[325px] left-[55px] w-[90px] text-centerfont-semibold">GRAVA: {remission.added}mm</div>
+                <div className="absolute top-[285px] left-[145px] w-[70px] text-center font-semibold">{remission.quantity}</div>
+                <div className="absolute top-[285px] left-[325px] w-[450px] leading-tight text-[9px] font-semibold">{remission.specification}</div>
+
+                {/* F'c and Slump (Revenimiento) */}
+
+                {/* Slump checkmarks based on common values in the form or value */}
+
+                {remission.fc === 100 && <div className="absolute top-[360px] left-[300px]  leading-none ">{remission.slump}</div>}
+                {remission.fc === 150 && <div className="absolute top-[357px] left-[328px] ]leading-none font-semibold">{remission.slump}</div>}
+                {remission.fc === 200 && <div className="absolute top-[360px] left-[360px]  leading-none font-semibold">{remission.slump}</div>}
+                {remission.fc === 250 && <div className="absolute top-[360px] left-[385px] leading-none font-semibold">{remission.slump}</div>}
+                {remission.fc === 300 && <div className="absolute top-[360px] left-[418px]  leading-none font-semibold">{remission.slump}</div>}
+                {remission.fc === 350 && <div className="absolute top-[360px] left-[448px] leading-none font-semibold">{remission.slump}</div>}
+                {remission.fc && remission.fc > 350 && <div className="absolute top-[360px] left-[300px]  leading-none font-semibold">{remission.slump}</div>}
+                {/* ... add more checkmark positions if needed ... */}
+
+                {/* Observaciones */}
+                <div className="absolute top-[410px] left-[270px] w-[450px] h-[30px] overflow-hidden lowercase italic font-semibold">
+                    {remission.observations}
+                </div>
+
+                {/* Horas y Operador */}
+                <div className="absolute top-[470px] left-[40px] w-12 text-center font-semibold">  {remission.departure_date}</div> {/* Salida Planta */}
+                <div className="absolute top-[470px] left-[95px] w-12 text-center font-semibold"></div>  {/* Entrada Planta */}
+                <div className="absolute top-[470px] left-[150px] w-12 text-center font-semibold"></div> {/* Entrada Obra */}
+                <div className="absolute top-[470px] left-[205px] w-12 text-center font-semibold"></div> {/* Salida Obra */}
+
+                <div className="absolute top-[460px] left-[270px] w-[180px] text-center font-semibold uppercase">
+                    {remission.operator?.name}
+                </div>
+            </div>
+
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                @media print {
+                    @page {
+                        size: letter;
+                        margin: 0;
+                    }
+                    body {
+                        margin: 0;
+                        -webkit-print-color-adjust: exact;
+                    }
+                    .no-print {
+                        display: none !important;
+                    }
+                }
+            ` }} />
+
+            {/* Helper to reload if needed */}
+            <div className="no-print fixed bottom-4 right-4 flex gap-2">
+                <button
+                    onClick={() => window.print()}
+                    className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 transition"
+                >
+                    Re-Imprimir
+                </button>
+                <button
+                    onClick={() => window.close()}
+                    className="bg-gray-600 text-white px-4 py-2 rounded shadow hover:bg-gray-700 transition"
+                >
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    );
+}

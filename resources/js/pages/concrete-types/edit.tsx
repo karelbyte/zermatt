@@ -76,20 +76,6 @@ export default function ConcreteTypesEdit({ concreteType }: Props) {
                                 <InputError message={errors.description} />
                             </div>
 
-                            <div className="grid gap-2">
-                                <Label htmlFor="base_price">Precio base ($)</Label>
-                                <Input
-                                    id="base_price"
-                                    name="base_price"
-                                    type="number"
-                                    step="0.01"
-                                    min={0}
-                                    defaultValue={concreteType.base_price ?? ''}
-                                    placeholder="0.00"
-                                />
-                                <InputError message={errors.base_price} />
-                            </div>
-
                             <div className="flex items-center space-x-2">
                                 <input
                                     type="hidden"

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ConfirmModal } from '@/components/confirm-modal';
 import { EmptyState } from '@/components/empty-state';
 import Heading from '@/components/heading';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
@@ -38,7 +39,8 @@ function formatDate(value: string | null): string {
 }
 
 export default function CementIndex({ cements }: Props) {
-    const { status } = usePage().props as { status?: string };
+    const { status, auth } = usePage().props as any;
+    const user = auth.user;
     const [cementToDelete, setCementToDelete] = useState<Cement | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
 
@@ -67,7 +69,7 @@ export default function CementIndex({ cements }: Props) {
                     <Heading
                         variant="small"
                         title="Cemento"
-                        description="Registro de entradas de cemento por fecha y proveedor"
+                        description="Registro de entradas de cemento por fecha, kilogramos y proveedor"
                     />
                     <Button asChild>
                         <Link href={create().url}>
@@ -104,9 +106,10 @@ export default function CementIndex({ cements }: Props) {
                                 <thead className="border-b border-sidebar-border/70 bg-muted/50">
                                     <tr>
                                         <th className="p-3 font-medium">Fecha</th>
-                                        <th className="p-3 font-medium">Toneladas</th>
+                                        <th className="p-3 font-medium">Kilogramos</th>
                                         <th className="p-3 font-medium">Proveedor</th>
                                         <th className="p-3 font-medium">Documento</th>
+                                        <th className="p-3 font-medium text-center">Estado</th>
                                         <th className="p-3 text-right font-medium">
                                             Acciones
                                         </th>
@@ -132,26 +135,35 @@ export default function CementIndex({ cements }: Props) {
                                             <td className="p-3">
                                                 {cement.document ?? '—'}
                                             </td>
+                                            <td className="p-3 text-center">
+                                                <Badge variant={cement.status === 'closed' ? 'default' : 'outline'}>
+                                                    {cement.status === 'closed' ? 'Cerrado' : 'Abierto'}
+                                                </Badge>
+                                            </td>
                                             <td className="flex justify-end gap-2 p-3">
-                                                <Button variant="ghost" size="icon" asChild>
-                                                    <Link href={edit(cement).url}>
-                                                        <Pencil className="size-4" />
-                                                        <span className="sr-only">
-                                                            Editar
-                                                        </span>
-                                                    </Link>
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="text-destructive hover:text-destructive"
-                                                    onClick={() => setCementToDelete(cement)}
-                                                >
-                                                    <Trash2 className="size-4" />
-                                                    <span className="sr-only">
-                                                        Eliminar
-                                                    </span>
-                                                </Button>
+                                                {(cement.status === 'open' || user.is_admin) && (
+                                                    <>
+                                                        <Button variant="ghost" size="icon" asChild>
+                                                            <Link href={edit(cement).url}>
+                                                                <Pencil className="size-4" />
+                                                                <span className="sr-only">
+                                                                    Editar
+                                                                </span>
+                                                            </Link>
+                                                        </Button>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            className="text-destructive hover:text-destructive"
+                                                            onClick={() => setCementToDelete(cement)}
+                                                        >
+                                                            <Trash2 className="size-4" />
+                                                            <span className="sr-only">
+                                                                Eliminar
+                                                            </span>
+                                                        </Button>
+                                                    </>
+                                                )}
                                             </td>
                                         </tr>
                                     ))}
@@ -166,11 +178,10 @@ export default function CementIndex({ cements }: Props) {
                                         {link.url ? (
                                             <Link
                                                 href={link.url}
-                                                className={`inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm ${
-                                                    link.active
-                                                        ? 'bg-primary text-primary-foreground'
-                                                        : 'hover:bg-muted'
-                                                }`}
+                                                className={`inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm ${link.active
+                                                    ? 'bg-primary text-primary-foreground'
+                                                    : 'hover:bg-muted'
+                                                    }`}
                                             >
                                                 {link.label}
                                             </Link>

@@ -39,7 +39,7 @@ export default function CementEdit({ cement, suppliers }: Props) {
                 <Heading
                     variant="small"
                     title="Editar registro de cemento"
-                    description="Modifica fecha, toneladas o proveedor"
+                    description="Modifica fecha, kilogramos o proveedor"
                 />
 
                 <Form
@@ -62,7 +62,7 @@ export default function CementEdit({ cement, suppliers }: Props) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="tons">Toneladas</Label>
+                                <Label htmlFor="tons">Kilogramos</Label>
                                 <Input
                                     id="tons"
                                     name="tons"
@@ -70,7 +70,7 @@ export default function CementEdit({ cement, suppliers }: Props) {
                                     step="any"
                                     min="0"
                                     defaultValue={cement.tons ?? ''}
-                                    placeholder="Toneladas"
+                                    placeholder="Kilogramos"
                                 />
                                 <InputError message={errors.tons} />
                             </div>
@@ -108,6 +108,15 @@ export default function CementEdit({ cement, suppliers }: Props) {
                             <div className="flex gap-4">
                                 <Button type="submit" disabled={processing}>
                                     Guardar cambios
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    name="status"
+                                    value="closed"
+                                    variant="secondary"
+                                    disabled={processing}
+                                >
+                                    Guardar y cerrar
                                 </Button>
                                 <Button variant="outline" asChild>
                                     <Link href={index().url}>Cancelar</Link>

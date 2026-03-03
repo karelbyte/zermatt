@@ -15,7 +15,6 @@ return new class extends Migration {
             $table->string('type', 10);
             $table->string('concept', 20)->nullable();
             $table->string('description', 30)->nullable();
-            $table->decimal('base_price', 15, 2)->nullable();
             $table->boolean('active')->nullable();
             $table->timestamps();
         });

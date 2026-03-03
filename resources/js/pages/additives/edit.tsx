@@ -39,7 +39,7 @@ export default function AdditivesEdit({ additive, suppliers }: Props) {
                 <Heading
                     variant="small"
                     title="Editar registro de aditivo"
-                    description="Modifica fecha, toneladas, documento o proveedor"
+                    description="Modifica fecha, cantidad, documento o proveedor"
                 />
 
                 <Form
@@ -62,17 +62,17 @@ export default function AdditivesEdit({ additive, suppliers }: Props) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="tons">Cantidad</Label>
+                                <Label htmlFor="tons">Cantidad (Lt)</Label>
                                 <Input
                                     id="tons"
-                                    name="tons"
+                                    name="lit"
                                     type="number"
                                     step="any"
                                     min="0"
-                                    defaultValue={additive.tons ?? ''}
+                                    defaultValue={additive.lit ?? ''}
                                     placeholder="Ejemplo: 100"
                                 />
-                                <InputError message={errors.tons} />
+                                <InputError message={errors.lit} />
                             </div>
 
                             <div className="grid gap-2">
@@ -108,6 +108,15 @@ export default function AdditivesEdit({ additive, suppliers }: Props) {
                             <div className="flex gap-4">
                                 <Button type="submit" disabled={processing}>
                                     Guardar cambios
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    name="status"
+                                    value="closed"
+                                    variant="secondary"
+                                    disabled={processing}
+                                >
+                                    Guardar y cerrar
                                 </Button>
                                 <Button variant="outline" asChild>
                                     <Link href={index().url}>Cancelar</Link>

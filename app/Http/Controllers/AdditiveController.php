@@ -46,6 +46,10 @@ class AdditiveController extends Controller
 
     public function edit(Additive $additive): Response
     {
+        if ($additive->status === 'closed' && !request()->user()->is_admin) {
+            abort(403, 'No puedes editar un registro cerrado.');
+        }
+
         $additive->load('supplier:id,name');
         $suppliers = Supplier::query()->orderBy('name')->get(['id', 'name']);
 
@@ -57,6 +61,10 @@ class AdditiveController extends Controller
 
     public function update(UpdateAdditiveRequest $request, Additive $additive): RedirectResponse
     {
+        if ($additive->status === 'closed' && !$request->user()->is_admin) {
+            abort(403, 'No puedes actualizar un registro cerrado.');
+        }
+
         $additive->update($request->validated());
 
         return redirect()->route('additives.index')
@@ -65,6 +73,10 @@ class AdditiveController extends Controller
 
     public function destroy(Additive $additive): RedirectResponse
     {
+        if ($additive->status === 'closed' && !request()->user()->is_admin) {
+            abort(403, 'No puedes eliminar un registro cerrado.');
+        }
+
         $additive->delete();
 
         return redirect()->route('additives.index')

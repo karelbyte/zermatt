@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { BookOpen, Building2, CookingPot, FileText, FlaskConical, HardHat, Layers, LayoutGrid, Package, Tag, Truck, UserCog, Users, UserCheck2Icon } from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -78,7 +78,7 @@ const mainNavItems: NavItem[] = [
         icon: Tag,
     },
     {
-        title: 'Precios (Concretos)',
+        title: 'Tipos de Concretos',
         href: concreteTypesIndex(),
         icon: Layers,
     },
@@ -113,6 +113,17 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { auth } = usePage().props;
+    const user = auth.user;
+
+    const filteredNavItems = mainNavItems.filter((item) => {
+        if (user.is_admin) {
+            return true;
+        }
+
+        return user.permissions?.includes(item.title);
+    });
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -128,7 +139,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={filteredNavItems} />
             </SidebarContent>
 
             <SidebarFooter>

@@ -48,7 +48,7 @@ export default function PotsCreate() {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="capacity">Capacidad</Label>
+                                <Label htmlFor="capacity">Capacidad m³ </Label>
                                 <Input
                                     id="capacity"
                                     name="capacity"

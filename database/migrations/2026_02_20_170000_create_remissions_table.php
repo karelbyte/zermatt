@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('remissions', function (Blueprint $table) {
             $table->id();
             $table->integer('order_number')->nullable();
+            $table->string('remision')->nullable();
             $table->foreignId('client_id')->constrained('clients')->cascadeOnDelete();
             $table->foreignId('work_id')->constrained('works')->cascadeOnDelete();
             $table->foreignId('usage_id')->nullable()->constrained('usages')->nullOnDelete();
@@ -25,6 +26,7 @@ return new class extends Migration {
             $table->boolean('impermeable')->default(false);
             $table->boolean('fiber')->default(false);
             $table->decimal('quantity', 10, 2)->nullable();
+            $table->decimal('pending_delivery', 10, 2)->nullable();
             $table->string('specification')->nullable();
             $table->string('product')->nullable();
             $table->text('observations')->nullable();
@@ -39,11 +41,6 @@ return new class extends Migration {
             $table->decimal('water', 10, 2)->nullable();
             $table->string('tp')->nullable();
             $table->string('invoice')->nullable();
-            $table->decimal('unit_price', 15, 2)->nullable();
-            $table->decimal('subtotal', 15, 2)->nullable();
-            $table->decimal('iva', 15, 2)->nullable();
-            $table->decimal('total', 15, 2)->nullable();
-            $table->integer('iva_percentage')->default(16);
             $table->timestamps();
         });
     }

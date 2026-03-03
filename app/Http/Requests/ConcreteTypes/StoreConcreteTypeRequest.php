@@ -23,7 +23,6 @@ class StoreConcreteTypeRequest extends FormRequest
             'concept' => ['nullable', 'string', 'max:20'],
             'description' => ['nullable', 'string', 'max:30'],
             'active' => ['boolean'],
-            'base_price' => ['nullable', 'numeric', 'min:0'],
         ];
     }
 
@@ -37,7 +36,6 @@ class StoreConcreteTypeRequest extends FormRequest
             'concept' => __('Concepto'),
             'description' => __('Descripción'),
             'active' => __('Activo'),
-            'base_price' => __('Precio base'),
         ];
     }
 

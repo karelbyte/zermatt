@@ -3,6 +3,7 @@ import type { Design } from './designs';
 export type Remission = {
     id: number;
     order_number: number | null;
+    remision: string | null;
     client_id: number;
     work_id: number;
     usage_id: number | null;
@@ -15,6 +16,7 @@ export type Remission = {
     impermeable: boolean;
     fiber: boolean;
     quantity: string | null;
+    pending_delivery: string | null;
     specification: string | null;
     product: string | null;
     observations: string | null;
@@ -49,7 +51,7 @@ export type RemissionDropdowns = {
     clients: { id: number; name: string }[];
     works: { id: number; name: string; client_id: number }[];
     usages: { id: number; description: string }[];
-    concreteTypes: { id: number; type: string; concept: string | null; base_price: string | number | null }[];
+    concreteTypes: { id: number; type: string; concept: string | null; description: string | null; base_price: string | number | null }[];
     pots: { id: number; number: string }[];
     operators: { id: number; name: string }[];
     designs: Design[];

@@ -18,9 +18,10 @@ class Additive extends Model
      */
     protected $fillable = [
         'date',
-        'tons',
+        'lit',
         'supplier_id',
         'document',
+        'status',
     ];
 
     /**
@@ -32,7 +33,7 @@ class Additive extends Model
     {
         return [
             'date' => 'date',
-            'tons' => 'float',
+            'lit' => 'float',
         ];
     }
 

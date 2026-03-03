@@ -96,7 +96,7 @@ export default function DesignsIndex({ designs }: Props) {
                                         <th className="p-3 font-medium">Tipo de concreto</th>
                                         <th className="p-3 font-medium">Agregado</th>
                                         <th className="p-3 font-medium">Revenimiento</th>
-                                        <th className="p-3 font-medium">fc</th>
+                                        <th className="p-3 font-medium">Fc</th>
                                         <th className="p-3 font-medium">Cemento</th>
                                         <th className="p-3 font-medium">Arena</th>
                                         <th className="p-3 font-medium">Grava</th>

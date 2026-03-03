@@ -26,6 +26,8 @@ class StoreUserRequest extends FormRequest
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique(User::class)],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'is_active' => ['boolean'],
+            'is_admin' => ['boolean'],
+            'permissions' => ['nullable', 'array'],
         ];
     }
 
@@ -41,6 +43,8 @@ class StoreUserRequest extends FormRequest
             'email' => __('Correo electrónico'),
             'password' => __('Contraseña'),
             'is_active' => __('Activo'),
+            'is_admin' => __('Administrador'),
+            'permissions' => __('Permisos'),
         ];
     }
 
@@ -51,6 +55,7 @@ class StoreUserRequest extends FormRequest
     {
         $this->merge([
             'is_active' => $this->boolean('is_active'),
+            'is_admin' => $this->boolean('is_admin'),
         ]);
     }
 }

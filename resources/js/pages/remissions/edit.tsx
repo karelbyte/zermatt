@@ -19,6 +19,7 @@ export default function RemissionsEdit({ remission, ...dropdowns }: Props) {
 
     const { data, setData, put, processing, errors } = useForm({
         order_number: remission.order_number ?? '',
+        remision: remission.remision ?? '',
         client_id: remission.client_id ?? '',
         work_id: remission.work_id ?? '',
         usage_id: remission.usage_id ?? '',
@@ -31,6 +32,7 @@ export default function RemissionsEdit({ remission, ...dropdowns }: Props) {
         impermeable: !!remission.impermeable,
         fiber: !!remission.fiber,
         quantity: remission.quantity != null ? String(remission.quantity) : '',
+        pending_delivery: remission.pending_delivery != null ? String(remission.pending_delivery) : '',
         specification: remission.specification ?? '',
         product: remission.product ?? '',
         observations: remission.observations ?? '',
@@ -43,7 +45,6 @@ export default function RemissionsEdit({ remission, ...dropdowns }: Props) {
         gravel: remission.gravel != null ? String(remission.gravel) : '',
         sand: remission.sand != null ? String(remission.sand) : '',
         water: remission.water != null ? String(remission.water) : '',
-        tp: remission.tp ?? '',
         invoice: remission.invoice ?? '',
     });
 

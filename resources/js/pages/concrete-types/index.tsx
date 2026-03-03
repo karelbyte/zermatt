@@ -44,16 +44,16 @@ export default function ConcreteTypesIndex({ concreteTypes }: Props) {
     return (
         <AppLayout
             breadcrumbs={[
-                { title: 'Precios', href: index().url },
+                { title: 'Tipos de Concretos', href: index().url },
             ] as BreadcrumbItem[]}
         >
-            <Head title="Precios (Concretos)" />
+            <Head title="Tipos de Concretos" />
 
             <div className="space-y-6">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <Heading
                         variant="small"
-                        title="Precios (Concretos)"
+                        title="Tipos de Concretos"
                         description="Gestiona la lista de precios por tipo de concreto"
                     />
                     <Button asChild>
@@ -93,7 +93,6 @@ export default function ConcreteTypesIndex({ concreteTypes }: Props) {
                                         <th className="p-3 font-medium">Tipo</th>
                                         <th className="p-3 font-medium">Concepto</th>
                                         <th className="p-3 font-medium">Descripción</th>
-                                        <th className="p-3 font-medium">Precio base</th>
                                         <th className="p-3 font-medium">Activo</th>
                                         <th className="p-3 text-right font-medium">
                                             Acciones
@@ -109,9 +108,6 @@ export default function ConcreteTypesIndex({ concreteTypes }: Props) {
                                             <td className="p-3">{item.type}</td>
                                             <td className="p-3">{item.concept ?? '—'}</td>
                                             <td className="p-3">{item.description ?? '—'}</td>
-                                            <td className="p-3">
-                                                {item.base_price ? `$${item.base_price}` : '—'}
-                                            </td>
                                             <td className="p-3">
                                                 {item.active === true ? 'Sí' : item.active === false ? 'No' : '—'}
                                             </td>
@@ -150,8 +146,8 @@ export default function ConcreteTypesIndex({ concreteTypes }: Props) {
                                             <Link
                                                 href={link.url}
                                                 className={`inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm ${link.active
-                                                        ? 'bg-primary text-primary-foreground'
-                                                        : 'hover:bg-muted'
+                                                    ? 'bg-primary text-primary-foreground'
+                                                    : 'hover:bg-muted'
                                                     }`}
                                             >
                                                 {link.label}

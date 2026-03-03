@@ -27,7 +27,7 @@ export default function CementCreate({ suppliers }: Props) {
                 <Heading
                     variant="small"
                     title="Nuevo registro de cemento"
-                    description="Registra una entrada de cemento (fecha, toneladas y opcionalmente proveedor)"
+                    description="Registra una entrada de cemento (fecha, kilogramos y opcionalmente proveedor)"
                 />
 
                 <Form
@@ -50,14 +50,14 @@ export default function CementCreate({ suppliers }: Props) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="tons">Toneladas</Label>
+                                <Label htmlFor="tons">Kilogramos</Label>
                                 <Input
                                     id="tons"
                                     name="tons"
                                     type="number"
                                     step="any"
                                     min="0"
-                                    placeholder="Toneladas"
+                                    placeholder="Kilogramos"
                                 />
                                 <InputError message={errors.tons} />
                             </div>
@@ -80,12 +80,12 @@ export default function CementCreate({ suppliers }: Props) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="document">Documento </Label>
+                                <Label htmlFor="document">Nota o remision </Label>
                                 <Input
                                     id="document"
                                     name="document"
                                     maxLength={255}
-                                    placeholder="Documento"
+                                    placeholder="Nota o remision"
                                 />
                                 <InputError message={errors.document} />
                             </div>
@@ -93,6 +93,15 @@ export default function CementCreate({ suppliers }: Props) {
                             <div className="flex gap-4">
                                 <Button type="submit" disabled={processing}>
                                     Crear registro
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    name="status"
+                                    value="closed"
+                                    variant="secondary"
+                                    disabled={processing}
+                                >
+                                    Guardar y cerrar
                                 </Button>
                                 <Button variant="outline" asChild>
                                     <Link href={index().url}>Cancelar</Link>

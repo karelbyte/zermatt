@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ConfirmModal } from '@/components/confirm-modal';
 import { EmptyState } from '@/components/empty-state';
 import Heading from '@/components/heading';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
@@ -38,7 +39,8 @@ function formatDate(value: string | null): string {
 }
 
 export default function AdditivesIndex({ additives }: Props) {
-    const { status } = usePage().props as { status?: string };
+    const { status, auth } = usePage().props as any;
+    const user = auth.user;
     const [additiveToDelete, setAdditiveToDelete] = useState<Additive | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
 
@@ -104,9 +106,10 @@ export default function AdditivesIndex({ additives }: Props) {
                                 <thead className="border-b border-sidebar-border/70 bg-muted/50">
                                     <tr>
                                         <th className="p-3 font-medium">Fecha</th>
-                                        <th className="p-3 font-medium">Toneladas</th>
+                                        <th className="p-3 font-medium">Litros</th>
                                         <th className="p-3 font-medium">Proveedor</th>
                                         <th className="p-3 font-medium">Documento</th>
+                                        <th className="p-3 font-medium text-center">Estado</th>
                                         <th className="p-3 text-right font-medium">
                                             Acciones
                                         </th>
@@ -122,8 +125,8 @@ export default function AdditivesIndex({ additives }: Props) {
                                                 {formatDate(additive.date)}
                                             </td>
                                             <td className="p-3">
-                                                {additive.tons != null
-                                                    ? Number(additive.tons).toLocaleString('es-MX')
+                                                {additive.lit != null
+                                                    ? Number(additive.lit).toLocaleString('es-MX')
                                                     : '—'}
                                             </td>
                                             <td className="p-3">
@@ -132,22 +135,31 @@ export default function AdditivesIndex({ additives }: Props) {
                                             <td className="p-3">
                                                 {additive.document ?? '—'}
                                             </td>
+                                            <td className="p-3 text-center">
+                                                <Badge variant={additive.status === 'closed' ? 'default' : 'outline'}>
+                                                    {additive.status === 'closed' ? 'Cerrado' : 'Abierto'}
+                                                </Badge>
+                                            </td>
                                             <td className="flex justify-end gap-2 p-3">
-                                                <Button variant="ghost" size="icon" asChild>
-                                                    <Link href={edit(additive).url}>
-                                                        <Pencil className="size-4" />
-                                                        <span className="sr-only">Editar</span>
-                                                    </Link>
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="text-destructive hover:text-destructive"
-                                                    onClick={() => setAdditiveToDelete(additive)}
-                                                >
-                                                    <Trash2 className="size-4" />
-                                                    <span className="sr-only">Eliminar</span>
-                                                </Button>
+                                                {(additive.status === 'open' || user.is_admin) && (
+                                                    <>
+                                                        <Button variant="ghost" size="icon" asChild>
+                                                            <Link href={edit(additive).url}>
+                                                                <Pencil className="size-4" />
+                                                                <span className="sr-only">Editar</span>
+                                                            </Link>
+                                                        </Button>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            className="text-destructive hover:text-destructive"
+                                                            onClick={() => setAdditiveToDelete(additive)}
+                                                        >
+                                                            <Trash2 className="size-4" />
+                                                            <span className="sr-only">Eliminar</span>
+                                                        </Button>
+                                                    </>
+                                                )}
                                             </td>
                                         </tr>
                                     ))}
@@ -162,11 +174,10 @@ export default function AdditivesIndex({ additives }: Props) {
                                         {link.url ? (
                                             <Link
                                                 href={link.url}
-                                                className={`inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm ${
-                                                    link.active
-                                                        ? 'bg-primary text-primary-foreground'
-                                                        : 'hover:bg-muted'
-                                                }`}
+                                                className={`inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm ${link.active
+                                                    ? 'bg-primary text-primary-foreground'
+                                                    : 'hover:bg-muted'
+                                                    }`}
                                             >
                                                 {link.label}
                                             </Link>

@@ -30,99 +30,75 @@ export function RemissionFormFields({
     const { moistureAbsorption } = usePage().props as any;
 
     useEffect(() => {
-        if (!data.fc || !data.quantity) return;
+        const ct = concreteTypes.find((c) => String(c.id) === String(data.concrete_type_id));
+        const fcStr = data.fc ? `${data.fc}` : '';
+        const ctStr = ct ? ct.type : '';
+        const addedStr = data.added ? `${data.added}` : '';
+        const slumpStr = data.slump ? `${data.slump}` : '';
+        const orderStr = data.order_number ? `${data.order_number}` : '';
 
-        // Find the design by fc. If multiple, pick the first one for now as per user instruction.
-        // Ideally we should use design.id, but the user wants to link by fc.
-        const design = designs.find((d) => String(d.fc) === String(data.fc));
-        if (!design) return;
+        const product = [fcStr, ctStr, addedStr, slumpStr, orderStr.padStart(2, '0')].filter(Boolean).join('-');
 
-        const qty = parseFloat(data.quantity);
-        if (isNaN(qty)) return;
+        const updateData: any = {
+            product: product,
+        };
 
-        // Base quantities from design
-        const baseCement = (design.cement || 0) * qty;
-        const baseSand = (design.sand || 0) * qty;
-        const baseGravel = (design.gravel || 0) * qty;
-        const baseWater = (design.water || 0) * qty;
+        if (data.fc) {
+            const design = designs.find((d) => String(d.fc) === String(data.fc));
+            if (design) {
+                const ctDesign = concreteTypes.find((c) => c.id === design.concrete_type_id);
+                const pumpText = ', CON SERVICIO DE BOMBA PLUMA';
+                let spec = ctDesign ? ctDesign.description || '' : '';
+                if (data.pump && !spec.includes(pumpText)) {
+                    spec += pumpText;
+                }
 
-        // Moisture corrections
-        const humiditySand = moistureAbsorption?.humidity_sand || 0;
-        const absorptionSand = moistureAbsorption?.absorption_sand || 0;
-        const humidityGravel = moistureAbsorption?.humidity_gravel || 0;
-        const absorptionGravel = moistureAbsorption?.absorption_gravel || 0;
+                updateData.added = design.added;
+                updateData.slump = design.slump;
+                updateData.concrete_type_id = design.concrete_type_id;
+                updateData.specification = spec;
 
-        // Sand correction
-        const sandWaterContrib = (baseSand * (humiditySand - absorptionSand)) / 100;
-        const gravelWaterContrib = (baseGravel * (humidityGravel - absorptionGravel)) / 100;
+                if (data.quantity) {
+                    const qty = parseFloat(data.quantity);
+                    if (!isNaN(qty)) {
+                        const baseCement = (design.cement || 0) * qty;
+                        const baseSand = (design.sand || 0) * qty;
+                        const baseGravel = (design.gravel || 0) * qty;
+                        const baseWater = (design.water || 0) * qty;
 
-        const finalSand = baseSand * (1 + humiditySand / 100);
-        const finalGravel = baseGravel * (1 + humidityGravel / 100);
-        const finalWater = baseWater - sandWaterContrib - gravelWaterContrib;
-        const finalCement = baseCement;
+                        const humiditySand = moistureAbsorption?.humidity_sand || 0;
+                        const absorptionSand = moistureAbsorption?.absorption_sand || 0;
+                        const humidityGravel = moistureAbsorption?.humidity_gravel || 0;
+                        const absorptionGravel = moistureAbsorption?.absorption_gravel || 0;
 
-        setData((d: any) => ({
-            ...d,
-            cement_amount: finalCement.toFixed(2),
-            sand: finalSand.toFixed(2),
-            gravel: finalGravel.toFixed(2),
-            water: finalWater.toFixed(2),
-            // Also sync other design fields if they are empty
-            added: d.added || design.added,
-            concrete_type_id: d.concrete_type_id || design.concrete_type_id,
-        }));
-    }, [data.fc, data.quantity, moistureAbsorption, designs, setData]);
+                        const sandWaterContrib = (baseSand * (humiditySand - absorptionSand)) / 100;
+                        const gravelWaterContrib = (baseGravel * (humidityGravel - absorptionGravel)) / 100;
 
-    // Pricing calculation logic
-    useEffect(() => {
-        const qty = parseFloat(data.quantity || '0');
-        const price = parseFloat(data.unit_price || '0');
-        const taxPercent = parseFloat(data.iva_percentage || '16');
-
-        if (isNaN(qty) || isNaN(price)) return;
-
-        const subtotal = qty * price;
-        const iva = subtotal * (taxPercent / 100);
-        const total = subtotal + iva;
-
-        // Update local state if different (prevent loops)
-        if (
-            data.subtotal !== subtotal.toFixed(2) ||
-            data.iva !== iva.toFixed(2) ||
-            data.total !== total.toFixed(2)
-        ) {
-            setData((d: any) => ({
-                ...d,
-                subtotal: subtotal.toFixed(2),
-                iva: iva.toFixed(2),
-                total: total.toFixed(2),
-                iva_percentage: taxPercent,
-            }));
+                        updateData.cement_amount = Math.round(baseCement).toString();
+                        updateData.sand = (baseSand * (1 + humiditySand / 100)).toFixed(2);
+                        updateData.gravel = (baseGravel * (1 + humidityGravel / 100)).toFixed(2);
+                        updateData.water = (baseWater - sandWaterContrib - gravelWaterContrib).toFixed(2);
+                    }
+                }
+            }
         }
-    }, [data.quantity, data.unit_price, data.iva_percentage]);
 
-    // Price lookup when design changes
-    useEffect(() => {
-        if (!data.fc) return;
-        const design = designs.find((d) => String(d.fc) === String(data.fc));
-        if (!design) return;
-
-        const basePrice = (design as any).concrete_type?.base_price;
-        // Only set if unit_price is empty or hasn't been manually set yet (or user just switched design)
-        if (basePrice && (!data.unit_price || data.unit_price === '0' || data.unit_price === '0.00' || data._design_picked !== data.fc)) {
-            setData((d: any) => ({
+        // Only update if there is a change to avoid infinite loops if fields are in dependencies
+        setData((d: any) => {
+            const hasChanged = Object.keys(updateData).some(key => d[key] !== updateData[key]);
+            if (!hasChanged) return d;
+            return {
                 ...d,
-                unit_price: basePrice,
-                _design_picked: data.fc // Track that we picked this design's price
-            }));
-        }
-    }, [data.fc, designs]);
+                ...updateData,
+            };
+        });
+    }, [data.fc, data.quantity, data.added, data.slump, data.order_number, data.concrete_type_id, data.pump, moistureAbsorption, designs, setData]);
 
     return (
         <div className="space-y-8">
             <section className="space-y-4">
                 <h3 className="text-sm font-medium text-muted-foreground">Datos generales</h3>
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-4 sm:grid-cols-4">
                     <div className="grid gap-2">
                         <Label htmlFor="order_number">Pedido</Label>
                         <Input
@@ -134,6 +110,16 @@ export function RemissionFormFields({
                             onChange={(e) => setData('order_number', e.target.value)}
                         />
                         <InputError message={errors.order_number} />
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="remision">Remisión</Label>
+                        <Input
+                            id="remision"
+                            name="remision"
+                            value={data.remision ?? ''}
+                            onChange={(e) => setData('remision', e.target.value)}
+                        />
+                        <InputError message={errors.remision} />
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="client_id">Cliente *</Label>
@@ -198,6 +184,38 @@ export function RemissionFormFields({
                         <InputError message={errors.departure_date} />
                     </div>
                     <div className="grid gap-2">
+                        <Label htmlFor="pot_id">Olla</Label>
+                        <select
+                            id="pot_id"
+                            name="pot_id"
+                            className={selectClass}
+                            value={data.pot_id ?? ''}
+                            onChange={(e) => setData('pot_id', e.target.value)}
+                        >
+                            <option value="">Seleccione</option>
+                            {pots.map((p) => (
+                                <option key={p.id} value={p.id}>{p.number}</option>
+                            ))}
+                        </select>
+                        <InputError message={errors.pot_id} />
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="operator_id">Operador</Label>
+                        <select
+                            id="operator_id"
+                            name="operator_id"
+                            className={selectClass}
+                            value={data.operator_id ?? ''}
+                            onChange={(e) => setData('operator_id', e.target.value)}
+                        >
+                            <option value="">Seleccione</option>
+                            {operators.map((op) => (
+                                <option key={op.id} value={op.id}>{op.name}</option>
+                            ))}
+                        </select>
+                        <InputError message={errors.operator_id} />
+                    </div>
+                    <div className="grid gap-2">
                         <Label htmlFor="invoice">Factura</Label>
                         <Input
                             id="invoice"
@@ -239,7 +257,18 @@ export function RemissionFormFields({
                             name="concrete_type_id"
                             className={selectClass}
                             value={data.concrete_type_id ?? ''}
-                            onChange={(e) => setData('concrete_type_id', e.target.value)}
+                            onChange={(e) => {
+                                const val = e.target.value;
+                                const ct = concreteTypes.find((c) => String(c.id) === String(val));
+                                const pumpText = ', CON SERVICIO DE BOMBA PLUMA';
+                                setData((prev: any) => {
+                                    let newSpec = ct ? ct.description || '' : prev.specification || '';
+                                    if (prev.pump && !newSpec.includes(pumpText)) {
+                                        newSpec += pumpText;
+                                    }
+                                    return { ...prev, concrete_type_id: val, specification: newSpec };
+                                });
+                            }}
                         >
                             <option value="">Seleccione</option>
                             {concreteTypes.map((ct) => (
@@ -248,7 +277,55 @@ export function RemissionFormFields({
                         </select>
                         <InputError message={errors.concrete_type_id} />
                     </div>
-                    <div className="grid gap-2">
+                    <section className="space-y-4">
+                        <h3 className="text-sm font-medium text-muted-foreground">Opciones</h3>
+                        <div className="flex flex-wrap gap-6">
+                            <div className="flex items-center gap-2">
+                                <Checkbox
+                                    id="pump"
+                                    name="pump"
+                                    checked={!!data.pump}
+                                    onCheckedChange={(checked) => {
+                                        const pumpText = ', CON SERVICIO DE BOMBA PLUMA';
+                                        setData((prev: any) => {
+                                            let newSpec = prev.specification || '';
+                                            if (checked) {
+                                                if (!newSpec.includes(pumpText)) {
+                                                    newSpec += pumpText;
+                                                }
+                                            } else {
+                                                newSpec = newSpec.replace(pumpText, '');
+                                            }
+                                            return { ...prev, pump: checked, specification: newSpec };
+                                        });
+                                    }}
+                                />
+                                <Label htmlFor="pump">Bomba</Label>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Checkbox
+                                    id="impermeable"
+                                    name="impermeable"
+                                    checked={!!data.impermeable}
+                                    onCheckedChange={(checked) => setData('impermeable', checked)}
+                                />
+                                <Label htmlFor="impermeable">Imper</Label>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Checkbox
+                                    id="fiber"
+                                    name="fiber"
+                                    checked={!!data.fiber}
+                                    onCheckedChange={(checked) => setData('fiber', checked)}
+                                />
+                                <Label htmlFor="fiber">Fibra</Label>
+                            </div>
+                        </div>
+                        <InputError message={errors.pump} />
+                        <InputError message={errors.impermeable} />
+                        <InputError message={errors.fiber} />
+                    </section>
+                    {/*  <div className="grid gap-2">
                         <Label htmlFor="concept">Concepto</Label>
                         <Input
                             id="concept"
@@ -258,9 +335,9 @@ export function RemissionFormFields({
                             onChange={(e) => setData('concept', e.target.value)}
                         />
                         <InputError message={errors.concept} />
-                    </div>
+                    </div>*/}
                     <div className="grid gap-2">
-                        <Label htmlFor="added">Añadido</Label>
+                        <Label htmlFor="added">Añadido (cm)</Label>
                         <Input
                             id="added"
                             name="added"
@@ -296,59 +373,27 @@ export function RemissionFormFields({
                         />
                         <InputError message={errors.quantity} />
                     </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="pending_delivery">Pendiente de entrega</Label>
+                        <Input
+                            id="pending_delivery"
+                            name="pending_delivery"
+                            type="number"
+                            step="0.01"
+                            min={0}
+                            value={data.pending_delivery ?? ''}
+                            onChange={(e) => setData('pending_delivery', e.target.value)}
+                        />
+                        <InputError message={errors.pending_delivery} />
+                    </div>
                 </div>
             </section>
 
-            <section className="space-y-4">
-                <h3 className="text-sm font-medium text-muted-foreground">Opciones</h3>
-                <div className="flex flex-wrap gap-6">
-                    <div className="flex items-center gap-2">
-                        <Checkbox
-                            id="pump"
-                            name="pump"
-                            checked={!!data.pump}
-                            onCheckedChange={(checked) => setData('pump', checked)}
-                        />
-                        <Label htmlFor="pump">Bomba</Label>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Checkbox
-                            id="impermeable"
-                            name="impermeable"
-                            checked={!!data.impermeable}
-                            onCheckedChange={(checked) => setData('impermeable', checked)}
-                        />
-                        <Label htmlFor="impermeable">Imper</Label>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Checkbox
-                            id="fiber"
-                            name="fiber"
-                            checked={!!data.fiber}
-                            onCheckedChange={(checked) => setData('fiber', checked)}
-                        />
-                        <Label htmlFor="fiber">Fibra</Label>
-                    </div>
-                </div>
-                <InputError message={errors.pump} />
-                <InputError message={errors.impermeable} />
-                <InputError message={errors.fiber} />
-            </section>
+
 
             <section className="space-y-4">
                 <h3 className="text-sm font-medium text-muted-foreground">Especificación y producto</h3>
                 <div className="grid gap-4 sm:grid-cols-3">
-                    <div className="grid gap-2">
-                        <Label htmlFor="specification">Especificación</Label>
-                        <Input
-                            id="specification"
-                            name="specification"
-                            maxLength={500}
-                            value={data.specification ?? ''}
-                            onChange={(e) => setData('specification', e.target.value)}
-                        />
-                        <InputError message={errors.specification} />
-                    </div>
                     <div className="grid gap-2">
                         <Label htmlFor="product">Producto</Label>
                         <Input
@@ -360,6 +405,18 @@ export function RemissionFormFields({
                         />
                         <InputError message={errors.product} />
                     </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="specification">Especificación</Label>
+                        <Input
+                            id="specification"
+                            name="specification"
+                            maxLength={500}
+                            value={data.specification ?? ''}
+                            onChange={(e) => setData('specification', e.target.value)}
+                        />
+                        <InputError message={errors.specification} />
+                    </div>
+
                     <div className="grid gap-2">
                         <Label htmlFor="observations">Observaciones</Label>
                         <textarea
@@ -376,43 +433,12 @@ export function RemissionFormFields({
                 </div>
             </section>
 
-            <section className="space-y-4">
+            {/* <section className="space-y-4">
                 <h3 className="text-sm font-medium text-muted-foreground">Olla y operador</h3>
                 <div className="grid gap-4 sm:grid-cols-3">
-                    <div className="grid gap-2">
-                        <Label htmlFor="pot_id">Olla</Label>
-                        <select
-                            id="pot_id"
-                            name="pot_id"
-                            className={selectClass}
-                            value={data.pot_id ?? ''}
-                            onChange={(e) => setData('pot_id', e.target.value)}
-                        >
-                            <option value="">Seleccione</option>
-                            {pots.map((p) => (
-                                <option key={p.id} value={p.id}>{p.number}</option>
-                            ))}
-                        </select>
-                        <InputError message={errors.pot_id} />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="operator_id">Operador</Label>
-                        <select
-                            id="operator_id"
-                            name="operator_id"
-                            className={selectClass}
-                            value={data.operator_id ?? ''}
-                            onChange={(e) => setData('operator_id', e.target.value)}
-                        >
-                            <option value="">Seleccione</option>
-                            {operators.map((op) => (
-                                <option key={op.id} value={op.id}>{op.name}</option>
-                            ))}
-                        </select>
-                        <InputError message={errors.operator_id} />
-                    </div>
+
                 </div>
-            </section>
+            </section> */}
 
             <section className="space-y-4">
                 <h3 className="text-sm font-medium text-muted-foreground">Cantidades (materiales)</h3>
@@ -497,57 +523,7 @@ export function RemissionFormFields({
                 </div>
             </section>
 
-            <section className="space-y-4">
-                <h3 className="text-sm font-medium text-muted-foreground">Precios</h3>
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    <div className="grid gap-2">
-                        <Label htmlFor="unit_price">Precio unitario ($)</Label>
-                        <Input
-                            id="unit_price"
-                            name="unit_price"
-                            type="number"
-                            step="0.01"
-                            min={0}
-                            value={data.unit_price ?? ''}
-                            onChange={(e) => setData('unit_price', e.target.value)}
-                        />
-                        <InputError message={errors.unit_price} />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="iva_percentage">IVA (%)</Label>
-                        <Input
-                            id="iva_percentage"
-                            name="iva_percentage"
-                            type="number"
-                            min={0}
-                            max={100}
-                            value={data.iva_percentage ?? '16'}
-                            onChange={(e) => setData('iva_percentage', e.target.value)}
-                        />
-                        <InputError message={errors.iva_percentage} />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="subtotal">Subtotal</Label>
-                        <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm shadow-sm transition-colors flex-items-center">
-                            {data.subtotal ?? '0.00'}
-                        </div>
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="iva">IVA ($)</Label>
-                        <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm shadow-sm transition-colors flex-items-center">
-                            {data.iva ?? '0.00'}
-                        </div>
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="total">Total ($)</Label>
-                        <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm shadow-sm transition-colors flex-items-center font-bold">
-                            {data.total ?? '0.00'}
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section className="space-y-4">
+            {/*<section className="space-y-4">
                 <h3 className="text-sm font-medium text-muted-foreground">Otros</h3>
                 <div className="grid gap-4 sm:grid-cols-2">
                     <div className="grid gap-2">
@@ -562,7 +538,7 @@ export function RemissionFormFields({
                         <InputError message={errors.tp} />
                     </div>
                 </div>
-            </section>
-        </div>
+            </section>*/}
+        </div >
     );
 }
