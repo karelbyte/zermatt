@@ -23,25 +23,7 @@ type PaginatedRemissions = {
 type Props = {
     remissions: PaginatedRemissions;
 };
-
-function formatDate(value: string | null): string {
-    if (!value) return '—';
-    // If it looks like a time (HH:MM or HH:MM:SS), just return it
-    if (/^\d{2}:\d{2}(:\d{2})?$/.test(value)) {
-        return value;
-    }
-    try {
-        const date = new Date(value);
-        if (isNaN(date.getTime())) return value;
-        return date.toLocaleDateString('es-MX', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-        });
-    } catch {
-        return value;
-    }
-}
+import { formatDate } from '@/lib/utils';
 
 export default function RemissionsIndex({ remissions }: Props) {
     const { status } = usePage().props as { status?: string };

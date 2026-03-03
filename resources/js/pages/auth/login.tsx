@@ -21,7 +21,7 @@ export default function Login({
 }: Props) {
     return (
         <AuthLayout
-            title="Zermatt Concretos"
+            title=""
             description="Ingresa tu correo y contraseña para iniciar sesión"
         >
             <Head title="Iniciar sesión" />

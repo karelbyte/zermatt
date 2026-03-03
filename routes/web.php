@@ -36,12 +36,23 @@ use App\Models\Client;
 use App\Models\Work;
 use App\Models\Remission;
 use App\Models\Supplier;
+use App\Models\Cement;
+use App\Models\Additive;
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function (AdditiveService $additiveService, CementService $cementService) {
+        $todayRemissions = Remission::whereDate('updated_at', today())->get();
+        $todayCementUsed = $todayRemissions->sum('cement_amount');
+        $todayCementReceived = Cement::whereDate('date', today())->where('status', 'closed')->sum('tons');
+        $currentCement = $cementService->getTotalKg();
+
+        $todayAdditivesUsed = $todayRemissions->sum('additive_amount');
+        $todayAdditivesReceived = Additive::whereDate('date', today())->where('status', 'closed')->sum('lit');
+        $currentAdditives = $additiveService->getTotalLiters();
+
         return Inertia::render('dashboard', [
-            'total_additives' => $additiveService->getTotalLiters(),
-            'total_cement' => $cementService->getTotalKg(),
+            'total_additives' => $currentAdditives,
+            'total_cement' => $currentCement,
             'count_clients' => Client::count(),
             'count_works' => Work::count(),
             'count_remissions' => Remission::count(),
@@ -50,6 +61,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->orderByDesc('created_at')
                 ->limit(10)
                 ->get(),
+            'daily_remissions' => Remission::with(['client', 'work', 'concreteType', 'pot'])
+                ->whereDate('updated_at', today())
+                ->get(),
+            'inventory_stats' => [
+                'cement' => [
+                    'received' => $todayCementReceived,
+                    'used' => $todayCementUsed,
+                    'previous' => $currentCement + $todayCementUsed - $todayCementReceived,
+                ],
+                'additives' => [
+                    'received' => $todayAdditivesReceived,
+                    'used' => $todayAdditivesUsed,
+                    'previous' => $currentAdditives + $todayAdditivesUsed - $todayAdditivesReceived,
+                ]
+            ]
         ]);
     })->middleware(['permission:Panel'])->name('dashboard');
 
@@ -65,6 +91,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('designs', DesignController::class)->except(['show'])->middleware('permission:Diseños');
     Route::resource('usages', UsageController::class)->except(['show'])->middleware('permission:Usos');
     Route::resource('remissions', RemissionController::class)->except(['show'])->middleware('permission:Remisiones');
+    Route::get('remissions/export-daily', [RemissionController::class, 'exportDailyReport'])->name('remissions.export-daily')->middleware('permission:Remisiones');
+    Route::get('remissions/export-daily-pdf', [RemissionController::class, 'exportDailyPdf'])->name('remissions.export-daily-pdf')->middleware('permission:Remisiones');
     Route::get('remissions/{remission}/print', [RemissionController::class, 'print'])->name('remissions.print')->middleware('permission:Remisiones');
 
     Route::get('humedad-absorcion', [MoistureAbsorptionController::class, 'edit'])->name('moisture-absorption.edit')->middleware('permission:Tipos de Concretos');

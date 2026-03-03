@@ -41,7 +41,7 @@ export type Remission = {
     client?: { id: number; name: string };
     work?: { id: number; name: string };
     usage?: { id: number; description: string };
-    concrete_type?: { id: number; type: string };
+    concreteType?: { id: number; type: string };
     pot?: { id: number; number: string };
     operator?: { id: number; name: string };
     [key: string]: unknown;

@@ -129,11 +129,11 @@ export function AppSidebar() {
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
+                        <div className="flex items-center gap-2">
                             <Link href={dashboard()} prefetch>
                                 <AppLogo />
                             </Link>
-                        </SidebarMenuButton>
+                        </div>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>

@@ -5,6 +5,8 @@ import type { BreadcrumbItem } from '@/types';
 import { dashboard } from '@/routes';
 import { Button } from '@/components/ui/button';
 import { edit as editRemission } from '@/routes/remissions';
+import { DailyProductionReport } from '@/components/daily-production-report';
+import type { Remission } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -32,26 +34,13 @@ interface Props {
     count_remissions: number;
     count_suppliers: number;
     recent_remissions: PropRemission[];
+    daily_remissions: Remission[];
+    inventory_stats: {
+        cement: { received: number; used: number; previous: number };
+        additives: { received: number; used: number; previous: number };
+    };
 }
-
-function formatDate(value: string | null): string {
-    if (!value) return '—';
-    // If it looks like a time (HH:MM or HH:MM:SS), just return it
-    if (/^\d{2}:\d{2}(:\d{2})?$/.test(value)) {
-        return value;
-    }
-    try {
-        const date = new Date(value);
-        if (isNaN(date.getTime())) return value;
-        return date.toLocaleDateString('es-MX', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-        });
-    } catch {
-        return value;
-    }
-}
+import { formatDate } from '@/lib/utils';
 
 export default function Dashboard({
     total_additives,
@@ -60,12 +49,64 @@ export default function Dashboard({
     count_works,
     count_remissions,
     count_suppliers,
-    recent_remissions
+    recent_remissions,
+    daily_remissions,
+    inventory_stats
 }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Panel" />
-            <div className="flex h-full flex-1 flex-col gap-6 p-4">
+            <div className="flex h-full flex-1 flex-col gap-8 p-4">
+
+                {/* Statistics Cards */}
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    <StatCard
+                        title="Clientes"
+                        value={count_clients}
+                        icon={<Users className="size-5" />}
+                        subtitle="Clientes registrados"
+                    />
+                    <StatCard
+                        title="Obras"
+                        value={count_works}
+                        icon={<Building2 className="size-5" />}
+                        subtitle="Proyectos activos"
+                    />
+                    <StatCard
+                        title="Remisiones"
+                        value={count_remissions}
+                        icon={<FileText className="size-5" />}
+                        subtitle="Folios emitidos"
+                    />
+                    <StatCard
+                        title="Proveedores"
+                        value={count_suppliers}
+                        icon={<Truck className="size-5" />}
+                        subtitle="Aliados comerciales"
+                    />
+                    <StatCard
+                        title="Inventario Cemento"
+                        value={`${total_cement.toLocaleString('es-MX', { maximumFractionDigits: 1 })} Kg`}
+                        icon={<Package className="size-5" />}
+                        subtitle="Existencia actual"
+                        variant="accent"
+                    />
+                    <StatCard
+                        title="Inventario Aditivos"
+                        value={`${total_additives.toLocaleString('es-MX', { maximumFractionDigits: 1 })} Lts`}
+                        icon={<Droplets className="size-5" />}
+                        subtitle="Existencia actual"
+                        variant="accent"
+                    />
+                </div>
+
+                {/* Daily Production Report Section */}
+                <div className="rounded-xl border border-sidebar-border/70 p-6 bg-card shadow-sm">
+                    <DailyProductionReport
+                        remissions={daily_remissions}
+                        inventoryStats={inventory_stats}
+                    />
+                </div>
 
                 {/* Recent Remissions Section */}
                 <div className="space-y-4">
@@ -125,7 +166,7 @@ export default function Dashboard({
                     </div>
                 </div>
 
-                {/* Statistics Cards */}
+                {/* Statistics Cards 
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     <StatCard
                         title="Clientes"
@@ -165,7 +206,7 @@ export default function Dashboard({
                         subtitle="Existencia actual"
                         variant="accent"
                     />
-                </div>
+                </div>*/}
             </div>
         </AppLayout>
     );

@@ -17,9 +17,9 @@ export default function AuthSimpleLayout({
                             className="flex flex-col items-center gap-2 font-medium"
                         >
                             <img
-                                src="/icono.png"
+                                src="/zermatt01.jpeg"
                                 alt="Zermatt Concretos"
-                                className="h-16 w-auto object-contain md:h-20"
+                                className="h-auto w-auto object-contain"
                             />
                             <span className="sr-only">{title}</span>
                         </Link>

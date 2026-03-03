@@ -13,7 +13,7 @@ import { email } from '@/routes/password';
 export default function ForgotPassword({ status }: { status?: string }) {
     return (
         <AuthLayout
-            title="Zermatt Concretos"
+            title=""
             description="Ingresa tu correo electrónico para recibir un enlace de restablecimiento"
         >
             <Head title="Olvidé mi contraseña" />

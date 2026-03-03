@@ -14,7 +14,10 @@ export default function PrintRemission({ remission }: Props) {
 
     // Use updated_at as requested, falling back to current date if missing
     const dateStr = remission.updated_at ?? new Date().toISOString();
-    const date = new Date(dateStr);
+
+    // If it's a simple YYYY-MM-DD string, append time to force local parsing
+    const finalDateStr = (dateStr.length === 10 && dateStr.includes('-')) ? dateStr + 'T00:00:00' : dateStr;
+    const date = new Date(finalDateStr);
 
     // Check for valid date
     const isValidDate = !isNaN(date.getTime());
@@ -28,12 +31,12 @@ export default function PrintRemission({ remission }: Props) {
 
             {/* Background Image Container - Adjusted to Letter Size (8.5in x 11in) */}
             <div className="relative w-[8.5in] h-[11in] mx-auto overflow-hidden text-black uppercase text-[10px]">
-                {/* The letterhead image - Assuming the user will provide this file */}
+                {/* The letterhead image - Assuming the user will provide this file 
                 <img
                     src="/images/remission-bg.jpg"
                     className="absolute inset-0 w-full h-auto opacity-30 print:opacity-100"
                     alt="Membrete"
-                />*
+                />*/}
 
                 {/* Data Overlay - Precisely positioned based on the image layout (Shisted down 20px) */}
 
@@ -51,7 +54,7 @@ export default function PrintRemission({ remission }: Props) {
 
                 {/* Pedido, Producto Solicitado, Uso, Surtidos, Por Surtir, Horario */}
                 <div className="absolute top-[218px] left-[50px] w-20 text-center font-semibold">{remission.order_number}</div>
-                <div className="absolute top-[218px] left-[150px] w-[230px] truncate font-semibold">{remission.product ?? remission.concrete_type?.type}</div>
+                <div className="absolute top-[218px] left-[150px] w-[230px] truncate font-semibold">{remission.product ?? remission.concreteType?.type}</div>
                 <div className="absolute top-[218px] left-[400px] w-[70px] text-center font-semibold">{remission.usage?.description}</div>
                 <div className="absolute top-[218px] left-[510px] w-[50px] text-center font-semibold">{remission.quantity}</div>
                 {/* survido, por_surtir, horario are not in DB currently, but we can put placeholders or empty */}
@@ -60,7 +63,7 @@ export default function PrintRemission({ remission }: Props) {
 
                 {/* Detalle Producto */}
                 <div className="absolute top-[285px] left-[55px] w-[90px] text-centerfont-semibold">Fc: {remission.fc} Kg/Cm2</div>
-                <div className="absolute top-[305px] left-[55px] w-[90px] text-centerfont-semibold">TIPO: {remission.concrete_type?.type}</div>
+                <div className="absolute top-[305px] left-[55px] w-[90px] text-centerfont-semibold">TIPO: {remission.concreteType?.type}</div>
                 <div className="absolute top-[325px] left-[55px] w-[90px] text-centerfont-semibold">GRAVA: {remission.added}mm</div>
                 <div className="absolute top-[285px] left-[145px] w-[70px] text-center font-semibold">{remission.quantity}</div>
                 <div className="absolute top-[285px] left-[325px] w-[450px] leading-tight text-[9px] font-semibold">{remission.specification}</div>
@@ -87,7 +90,7 @@ export default function PrintRemission({ remission }: Props) {
                 <div className="absolute top-[470px] left-[40px] w-12 text-center font-semibold">  {remission.departure_date}</div> {/* Salida Planta */}
                 <div className="absolute top-[470px] left-[95px] w-12 text-center font-semibold"></div>  {/* Entrada Planta */}
                 <div className="absolute top-[470px] left-[150px] w-12 text-center font-semibold"></div> {/* Entrada Obra */}
-                <div className="absolute top-[470px] left-[205px] w-12 text-center font-semibold"></div> {/* Salida Obra */}
+                <div className="absolute top-[205px] left-[205px] w-12 text-center font-semibold"></div> {/* Salida Obra */}
 
                 <div className="absolute top-[460px] left-[270px] w-[180px] text-center font-semibold uppercase">
                     {remission.operator?.name}

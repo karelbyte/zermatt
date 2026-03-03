@@ -12,10 +12,13 @@ use App\Models\Pot;
 use App\Models\Remission;
 use App\Models\Usage;
 use App\Models\Work;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Services\AdditiveService;
+use App\Services\CementService;
 
 class RemissionController extends Controller
 {
@@ -71,13 +74,76 @@ class RemissionController extends Controller
             ->with('status', __('Remisión eliminada correctamente.'));
     }
 
-    public function print(Remission $remission): Response
+    public function print(Remission $remission)
     {
-        $remission->load(['client:id,name', 'work:id,name', 'usage:id,description', 'concreteType:id,type,description', 'pot:id,number', 'operator:id,name']);
+        $remission->load(['client', 'work', 'usage', 'concreteType', 'operator', 'pot']);
 
         return Inertia::render('remissions/print', [
-            'remission' => $remission,
+            'remission' => $remission
         ]);
+    }
+
+    public function exportDailyReport(AdditiveService $additiveService, CementService $cementService)
+    {
+        $todayRemissions = Remission::whereDate('updated_at', today())->get();
+        $todayCementUsed = $todayRemissions->sum('cement_amount');
+        $todayCementReceived = \App\Models\Cement::whereDate('date', today())->where('status', 'closed')->sum('tons');
+        $currentCement = $cementService->getTotalKg();
+
+        $todayAdditivesUsed = $todayRemissions->sum('additive_amount');
+        $todayAdditivesReceived = \App\Models\Additive::whereDate('date', today())->where('status', 'closed')->sum('lit');
+        $currentAdditives = $additiveService->getTotalLiters();
+
+        $inventoryStats = [
+            'cement' => [
+                'received' => $todayCementReceived,
+                'used' => $todayCementUsed,
+                'previous' => $currentCement + $todayCementUsed - $todayCementReceived,
+            ],
+            'additives' => [
+                'received' => $todayAdditivesReceived,
+                'used' => $todayAdditivesUsed,
+                'previous' => $currentAdditives + $todayAdditivesUsed - $todayAdditivesReceived,
+            ]
+        ];
+
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\DailyProductionExport(null, $inventoryStats),
+            'reporte-produccion-' . now()->format('Y-m-d') . '.xlsx'
+        );
+    }
+
+    public function exportDailyPdf(AdditiveService $additiveService, CementService $cementService)
+    {
+        $remissions = Remission::with(['client', 'work', 'concreteType', 'pot'])
+            ->whereDate('updated_at', today())
+            ->get();
+
+        $todayCementUsed = $remissions->sum('cement_amount');
+        $todayCementReceived = \App\Models\Cement::whereDate('date', today())->where('status', 'closed')->sum('tons');
+        $currentCement = $cementService->getTotalKg();
+
+        $todayAdditivesUsed = $remissions->sum('additive_amount');
+        $todayAdditivesReceived = \App\Models\Additive::whereDate('date', today())->where('status', 'closed')->sum('lit');
+        $currentAdditives = $additiveService->getTotalLiters();
+
+        $inventoryStats = [
+            'cement' => [
+                'received' => $todayCementReceived,
+                'used' => $todayCementUsed,
+                'previous' => $currentCement + $todayCementUsed - $todayCementReceived,
+            ],
+            'additives' => [
+                'received' => $todayAdditivesReceived,
+                'used' => $todayAdditivesUsed,
+                'previous' => $currentAdditives + $todayAdditivesUsed - $todayAdditivesReceived,
+            ]
+        ];
+
+        $pdf = Pdf::loadView('reports.daily-production', compact('remissions', 'inventoryStats'));
+        $pdf->setPaper('letter', 'landscape');
+
+        return $pdf->download('reporte-produccion-' . now()->format('Y-m-d') . '.pdf');
     }
 
     /**

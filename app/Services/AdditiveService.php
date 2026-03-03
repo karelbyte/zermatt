@@ -3,17 +3,21 @@
 namespace App\Services;
 
 use App\Models\Additive;
+use App\Models\Remission;
 
 class AdditiveService
 {
     /**
      * Get the total amount of additives in liters.
-     * This sums all positive and negative amounts.
+     * Calculated as (Total Additive Entries - Total Additive Used in Remissions).
      *
      * @return float
      */
     public function getTotalLiters(): float
     {
-        return (float) Additive::where('status', 'closed')->sum('lit');
+        $totalInput = (float) Additive::where('status', 'closed')->sum('lit');
+        $totalUsedLiters = (float) Remission::sum('additive_amount');
+
+        return $totalInput - $totalUsedLiters;
     }
 }

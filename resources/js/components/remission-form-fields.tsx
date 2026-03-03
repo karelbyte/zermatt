@@ -215,7 +215,7 @@ export function RemissionFormFields({
                         </select>
                         <InputError message={errors.operator_id} />
                     </div>
-                    <div className="grid gap-2">
+                    {/*<div className="grid gap-2">
                         <Label htmlFor="invoice">Factura</Label>
                         <Input
                             id="invoice"
@@ -225,7 +225,7 @@ export function RemissionFormFields({
                             onChange={(e) => setData('invoice', e.target.value)}
                         />
                         <InputError message={errors.invoice} />
-                    </div>
+                    </div> */}
                 </div>
             </section>
 

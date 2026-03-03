@@ -24,19 +24,7 @@ type PaginatedCements = {
 type Props = {
     cements: PaginatedCements;
 };
-
-function formatDate(value: string | null): string {
-    if (!value) return '—';
-    try {
-        return new Date(value).toLocaleDateString('es-MX', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-        });
-    } catch {
-        return value;
-    }
-}
+import { formatDate } from '@/lib/utils';
 
 export default function CementIndex({ cements }: Props) {
     const { status, auth } = usePage().props as any;
