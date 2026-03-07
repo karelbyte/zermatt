@@ -15,14 +15,28 @@ class DesignController extends Controller
 {
     public function index(Request $request): Response
     {
+        $search = $request->query('search');
+
         $designs = Design::query()
             ->with('concreteType:id,type,concept')
+            ->when($search, function ($query, $search) {
+                $query->whereHas('concreteType', function ($q) use ($search) {
+                    $q->where('type', 'ilike', "%{$search}%")
+                        ->orWhere('concept', 'ilike', "%{$search}%");
+                })
+                    ->orWhere('fc', 'ilike', "%{$search}%")
+                    ->orWhere('slump', 'ilike', "%{$search}%")
+                    ->orWhere('added', 'ilike', "%{$search}%");
+            })
             ->orderBy('id')
             ->paginate(15)
             ->withQueryString();
 
         return Inertia::render('designs/index', [
             'designs' => $designs,
+            'filters' => [
+                'search' => $search,
+            ],
         ]);
     }
 

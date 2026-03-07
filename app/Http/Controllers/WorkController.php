@@ -15,14 +15,26 @@ class WorkController extends Controller
 {
     public function index(Request $request): Response
     {
+        $search = $request->query('search');
+
         $works = Work::query()
             ->with('client:id,name')
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'ilike', "%{$search}%")
+                    ->orWhere('description', 'ilike', "%{$search}%")
+                    ->orWhereHas('client', function ($q) use ($search) {
+                        $q->where('name', 'ilike', "%{$search}%");
+                    });
+            })
             ->orderBy('name')
             ->paginate(15)
             ->withQueryString();
 
         return Inertia::render('works/index', [
             'works' => $works,
+            'filters' => [
+                'search' => $search,
+            ],
         ]);
     }
 

@@ -1,0 +1,889 @@
+[
+    {
+        "name": "ZERMATT CONSTRUCCIONES",
+        "works": [
+            {
+                "description": "PLANTA DE CONCCRETO"
+            },
+            {
+                "description": "CALLE 6 PUNTA GARROBO"
+            },
+            {
+                "description": "CALLE AMENIDADES,GARROBO"
+            },
+            {
+                "description": "POR PLANTA DE GEO"
+            },
+            {
+                "description": "LOMA BONITA"
+            },
+            {
+                "description": "C.MARINA VILLAS P.GARROBO"
+            },
+            {
+                "description": "PUNTA GARROBO C.3A"
+            },
+            {
+                "description": "CALLE 4"
+            },
+            {
+                "description": "PUNTA GARROBO CALLE 4"
+            },
+            {
+                "description": "VILLA 1 PUNTA GARROBO"
+            },
+            {
+                "description": "ACCESO CLUB DE PLAYA (GARROBO)"
+            },
+            {
+                "description": "PUNTA GARROBO"
+            }
+        ]
+    },
+    {
+        "name": "ING. CESAR CANO",
+        "works": [
+            {
+                "description": "PUNTA GARROBO LOTE 30"
+            }
+        ]
+    },
+    {
+        "name": "ING. JAIME ROSAS G.",
+        "works": []
+    },
+    {
+        "name": "OTROS",
+        "works": [
+            {
+                "description": "VARIAS"
+            }
+        ]
+    },
+    {
+        "name": "ARQ. ZOZAYA",
+        "works": [
+            {
+                "description": "PLAYA LA ROPA COND. ARMADILLOS"
+            },
+            {
+                "description": "GARROBO LOTE 31"
+            },
+            {
+                "description": "MADERA.CARPINTEROS"
+            },
+            {
+                "description": "PLAYA BLACA,MAR DE COCOS"
+            }
+        ]
+    },
+    {
+        "name": "GRUPO INMOB. HERMON",
+        "works": []
+    },
+    {
+        "name": "MIGUEL BARRETO",
+        "works": [
+            {
+                "description": "SALADITA ,CASA KONA"
+            }
+        ]
+    },
+    {
+        "name": "ARQ.SAAVEDRA",
+        "works": [
+            {
+                "description": "PLAYA BLANCA"
+            },
+            {
+                "description": "COLINA DE LAS CALANDRIAS"
+            },
+            {
+                "description": "CERRADA DE PELICANO"
+            },
+            {
+                "description": "CERRO DEL VIJIA,CASA GLEN Y AN"
+            },
+            {
+                "description": "CERRADA DE PELICANOS"
+            },
+            {
+                "description": "CERRO DEL VIGIA GLEN Y ANNET"
+            },
+            {
+                "description": "PLAYA LARGA"
+            },
+            {
+                "description": "PLAYA DE LA SALADITA"
+            },
+            {
+                "description": "POR DELFINES, LA ROPA"
+            },
+            {
+                "description": "PLAYA LA SALADITA L. E-F"
+            },
+            {
+                "description": "PLAYA DE LA SALADITA L-10-11"
+            },
+            {
+                "description": "EL ROBLE"
+            },
+            {
+                "description": "LOMA BONITA"
+            },
+            {
+                "description": "IXTAPA,AGUA DE CORREA"
+            }
+        ]
+    },
+    {
+        "name": "BRAMDON MONDRAGON",
+        "works": [
+            {
+                "description": "SALADITA,DESARROLLO LOS MANGOS"
+            }
+        ]
+    },
+    {
+        "name": "GUSTAVO MARROQUIN",
+        "works": [
+            {
+                "description": "BARBULILLAS"
+            }
+        ]
+    },
+    {
+        "name": "JOSE LUIS LEYVA",
+        "works": [
+            {
+                "description": "PLAYA DE LA ROPA"
+            },
+            {
+                "description": "LA CEUJIC"
+            }
+        ]
+    },
+    {
+        "name": "CEARM CONSTRUCCIONES",
+        "works": []
+    },
+    {
+        "name": "VALENTIN CHAVEZ",
+        "works": [
+            {
+                "description": "ENT. POSQUELITE,COND. PALMAS"
+            }
+        ]
+    },
+    {
+        "name": "INGENIERIA RESPONSABLE",
+        "works": [
+            {
+                "description": "EL CEDRAL"
+            },
+            {
+                "description": "JOLUTA"
+            },
+            {
+                "description": "CORRALES"
+            },
+            {
+                "description": "LAGUNILLAS"
+            },
+            {
+                "description": "LA MAJAHUA"
+            },
+            {
+                "description": "LA MAJAHUA"
+            },
+            {
+                "description": "LA UNION"
+            },
+            {
+                "description": "PLAYA DE TRONCONES"
+            }
+        ]
+    },
+    {
+        "name": "SEIRO ARQUITECTURA",
+        "works": [
+            {
+                "description": "CERRO DEL VIGIA ,CASA PURA VIA"
+            }
+        ]
+    },
+    {
+        "name": "COMAQSO",
+        "works": [
+            {
+                "description": "LOTE 7 PUNTA GARROBO"
+            }
+        ]
+    },
+    {
+        "name": "GREGORIO QUIRINO",
+        "works": [
+            {
+                "description": "PUNTA GARROBO LOTE 19"
+            }
+        ]
+    },
+    {
+        "name": "ARQ. JORGE AQUINO",
+        "works": [
+            {
+                "description": "SUBIR POR OXXO AGUITAS"
+            },
+            {
+                "description": "POR LA AQUILES ZERDAN"
+            },
+            {
+                "description": "MERCADO DE PETATLAN"
+            },
+            {
+                "description": "VASO DE MIRAFLORES"
+            },
+            {
+                "description": "CALLE A. NAVA"
+            },
+            {
+                "description": "AVENIDA MORELOS"
+            }
+        ]
+    },
+    {
+        "name": "JONNY CRISTOBAL",
+        "works": [
+            {
+                "description": "CERRO ALMACEN"
+            },
+            {
+                "description": "BARRA DE POTOSI"
+            }
+        ]
+    },
+    {
+        "name": "MDS CONSTRUCCIONES",
+        "works": [
+            {
+                "description": "LOTE 9 CERRO VIGIA"
+            }
+        ]
+    },
+    {
+        "name": "DISEÑO Y CONSTRUCCION",
+        "works": [
+            {
+                "description": "LOS LLANOS"
+            }
+        ]
+    },
+    {
+        "name": "LUIS GARCIA",
+        "works": [
+            {
+                "description": "CERRADA PELICANOS"
+            }
+        ]
+    },
+    {
+        "name": "ARQ. DARIO FIGUEROA",
+        "works": []
+    },
+    {
+        "name": "LOTE 5",
+        "works": [
+            {
+                "description": "PUNTA GARROBO"
+            }
+        ]
+    },
+    {
+        "name": "ARQ. FERNANDO VEJAR",
+        "works": [
+            {
+                "description": "PLAYA DE LA ROPA"
+            },
+            {
+                "description": "PLAYA LARGA"
+            },
+            {
+                "description": "TERRAZOLA"
+            }
+        ]
+    },
+    {
+        "name": "ARQ. BRAYAN AMEZQUITA",
+        "works": [
+            {
+                "description": "PLAYA DE LA SALADITA"
+            },
+            {
+                "description": "FTE. A VILLAS DEL PACIFICO(BAC"
+            },
+            {
+                "description": "POR LA ESPERANZA"
+            }
+        ]
+    },
+    {
+        "name": "ARQ. LUIS A. RESENDIZ",
+        "works": [
+            {
+                "description": "EL ZARCO"
+            },
+            {
+                "description": "LOS ACHOTES"
+            },
+            {
+                "description": "COL VISTA MAR"
+            },
+            {
+                "description": "LOS ALMENDROS"
+            },
+            {
+                "description": "SAN MIGUELITO"
+            },
+            {
+                "description": "COL. EL AEROPUERTO"
+            },
+            {
+                "description": "COL. LAS POZAS"
+            },
+            {
+                "description": "EL COACOYUL"
+            },
+            {
+                "description": "PANTLA"
+            },
+            {
+                "description": "BARRIO NUEVO"
+            },
+            {
+                "description": "PLAYA LINDA(MUELLE)"
+            },
+            {
+                "description": "BARBULILLAS"
+            },
+            {
+                "description": "SAN JOSE IXTAPA"
+            },
+            {
+                "description": "LA SALITRERA"
+            },
+            {
+                "description": "EL POZQUELITE"
+            },
+            {
+                "description": "MUELLE DE ZIHUATANEJO"
+            },
+            {
+                "description": "ZIHUATANEJO GRO,COL. QUEBRACHA"
+            },
+            {
+                "description": "COL. LA ESPERANZA"
+            },
+            {
+                "description": "COL LA JOYA"
+            },
+            {
+                "description": "COL EL BARRIL"
+            },
+            {
+                "description": "COL. AGUA DE CORREA"
+            },
+            {
+                "description": "COL. EL EMBALCE"
+            },
+            {
+                "description": "BUENA VISTA"
+            },
+            {
+                "description": "POR EL CETIS 45"
+            },
+            {
+                "description": "COL. LA LAJA"
+            },
+            {
+                "description": "COL. MILENIUM"
+            },
+            {
+                "description": "COL. 20 DE NOV."
+            },
+            {
+                "description": "COL,MORELOS PTE. ALTA"
+            },
+            {
+                "description": "COL. CONVERGENCIA"
+            },
+            {
+                "description": "COL. 12 DE MARZO"
+            },
+            {
+                "description": "COL. 6 DE ENERO"
+            },
+            {
+                "description": "COL. PRIMER PASO CARD."
+            },
+            {
+                "description": "COL. VICENTE GRO."
+            },
+            {
+                "description": "VALLECITOS DE ZARAGOZA"
+            },
+            {
+                "description": "COL. BRISAS DEL MAR"
+            },
+            {
+                "description": "MESAS DE BRAVO"
+            },
+            {
+                "description": "ZACOALOYA"
+            },
+            {
+                "description": "PLAYA LARGA"
+            }
+        ]
+    },
+    {
+        "name": "ARQ. HUMBERTO LEYVA",
+        "works": [
+            {
+                "description": "ARRECIFE,COL. LA PUERTA"
+            },
+            {
+                "description": "CLUB MED IXTAPA"
+            },
+            {
+                "description": "CONJUNTO LAS PERLAS"
+            },
+            {
+                "description": "BODEGA ( LA PUERTA)"
+            },
+            {
+                "description": "POR LA UPN ,PLAYA LA ROPA"
+            },
+            {
+                "description": "POR LA UPN ,PLAYA LA ROPA"
+            }
+        ]
+    },
+    {
+        "name": "CONST. DEL PARQUE",
+        "works": [
+            {
+                "description": "PACIFICA IXTAPA"
+            }
+        ]
+    },
+    {
+        "name": "VILLAS TSANDA",
+        "works": [
+            {
+                "description": "PLAYA BLANCA"
+            }
+        ]
+    },
+    {
+        "name": "SAIN SOVERANIZ",
+        "works": [
+            {
+                "description": "PLAYA DE TRONCONES"
+            },
+            {
+                "description": "POR FUNERALES PACIFICO"
+            },
+            {
+                "description": "POR CERRO DEL VIGIA"
+            },
+            {
+                "description": "PLAYA DE LA ROPA"
+            },
+            {
+                "description": "COL. LA ESPERANZA"
+            },
+            {
+                "description": "PLAYA LARGA"
+            }
+        ]
+    },
+    {
+        "name": "NOE RODRIGUEZ",
+        "works": [
+            {
+                "description": "PLAYA LARGA.CASA FIESTA"
+            },
+            {
+                "description": "POR EL AEROPUERTO"
+            },
+            {
+                "description": "COL. CENTRO POR EL GATO PARDO"
+            },
+            {
+                "description": "POR EL GATO PARDO"
+            },
+            {
+                "description": "BARRA DE POTOSI"
+            },
+            {
+                "description": "POR ENTRONQUE IXTAPA"
+            },
+            {
+                "description": "POR EL FARO IXTAPA"
+            },
+            {
+                "description": "CONTRAMAR IXTAPA"
+            }
+        ]
+    },
+    {
+        "name": "ING GARCIA",
+        "works": [
+            {
+                "description": "OXXO DE LA ROPA"
+            }
+        ]
+    },
+    {
+        "name": "GONZALO ROLANDO",
+        "works": [
+            {
+                "description": "PLAYA DE TRONCONES"
+            }
+        ]
+    },
+    {
+        "name": "MULLER ARQ.",
+        "works": [
+            {
+                "description": "PLAYA LARGA"
+            },
+            {
+                "description": "CERRO DEL VIGIA CASA CLEMEN"
+            },
+            {
+                "description": "PUNTA IXTAPA L.2 B2"
+            },
+            {
+                "description": "CASA CERVANTES CONTRAMAR"
+            },
+            {
+                "description": "CERRO DEL VIJIA CASA LAYDIES"
+            },
+            {
+                "description": "CASA KURI"
+            },
+            {
+                "description": "LOTE 13-A PUNTA IXTAPA"
+            }
+        ]
+    },
+    {
+        "name": "ING. JORGE GUTIERREZ",
+        "works": [
+            {
+                "description": "CASA \"BELECO DEL MAR\""
+            },
+            {
+                "description": "ROTTERDAM"
+            },
+            {
+                "description": "LOTE 1 IBARGUENGOITIA"
+            },
+            {
+                "description": "CASA PUENTE L-22 GARROBO"
+            },
+            {
+                "description": "CERRO DEL VIGIA"
+            },
+            {
+                "description": "CASA ARCO L4 PTA. GARROBO"
+            },
+            {
+                "description": "L-5 CASA ROCA PTA. GARROBO"
+            },
+            {
+                "description": "COL.DARIO GALEANA"
+            },
+            {
+                "description": "CASA MELMAR TRONCONES"
+            },
+            {
+                "description": "LOTE 5 PUNTA GAROBO"
+            },
+            {
+                "description": "MARINA VILLAS EDIF. B3"
+            },
+            {
+                "description": "CASA BEACHFRON 2 BELECO"
+            }
+        ]
+    },
+    {
+        "name": "SDN.CONST.SEG.PUB.EDO.GRO, FT1 2020",
+        "works": [
+            {
+                "description": "DESTACAMENTO GUARDIA NAL,"
+            }
+        ]
+    },
+    {
+        "name": "DESARROLLO PUNTA GARROBO",
+        "works": [
+            {
+                "description": "PUNTA GARROBO"
+            },
+            {
+                "description": "PUNTA GARROBO CALLE 4"
+            },
+            {
+                "description": "PUNTA GARROBO CALLE 4"
+            }
+        ]
+    },
+    {
+        "name": "OMAR RIOS",
+        "works": [
+            {
+                "description": "PLAYA TRONCONES HIGUERA"
+            },
+            {
+                "description": "BARRIO NUEVO"
+            },
+            {
+                "description": "PANTLA"
+            },
+            {
+                "description": "POR LA MAJAHUA"
+            },
+            {
+                "description": "POR EL CIE"
+            },
+            {
+                "description": "HOTEL JOSET PLAYA TRONCONES"
+            },
+            {
+                "description": "COL. EL AEROPUERTO"
+            },
+            {
+                "description": "PANTLA"
+            },
+            {
+                "description": "TRONCONES EL CHIRINGUITO"
+            },
+            {
+                "description": "LOS ACHOTES"
+            },
+            {
+                "description": "VASO DE MIRAFLORES"
+            },
+            {
+                "description": "CETIS 45 ZIGUATANEJO"
+            },
+            {
+                "description": "ACADEMIA DE POLICIA"
+            },
+            {
+                "description": "CANCHA DE LA DARIO"
+            },
+            {
+                "description": "CALLE ,COL. LA NORIA"
+            },
+            {
+                "description": "COL. PARAISO LIMON"
+            },
+            {
+                "description": "COL. BENITO JUAREZ"
+            },
+            {
+                "description": "COL. EL HUJAL (POR KISES)"
+            }
+        ]
+    },
+    {
+        "name": "ARQ, MANZANAREZ",
+        "works": [
+            {
+                "description": "PLAYA DE TRONCONES"
+            },
+            {
+                "description": "COL. LOS AMUSGOS"
+            }
+        ]
+    },
+    {
+        "name": "ARQ. JOSE NAVARRETE",
+        "works": [
+            {
+                "description": "UNIDA DEP. EL COACOYUL"
+            },
+            {
+                "description": "POR EL PANTEON DE LA CORREA"
+            }
+        ]
+    },
+    {
+        "name": "RAUL MANDUJANO",
+        "works": [
+            {
+                "description": "FTE. A LOS BOMBEROS"
+            },
+            {
+                "description": "FTE. A LOS BOMBEROS"
+            },
+            {
+                "description": "RUMBO ARISCALILO"
+            }
+        ]
+    },
+    {
+        "name": "CASA CASUCA",
+        "works": [
+            {
+                "description": "PUNTA IXTAPA LOTE 35"
+            },
+            {
+                "description": "PUNTA IXTAPA LOTE 35"
+            }
+        ]
+    },
+    {
+        "name": "JUAN PABLO CONTRERAS",
+        "works": [
+            {
+                "description": "CERRADA DE PELICANOS"
+            }
+        ]
+    },
+    {
+        "name": "MIGUEL GARCIA",
+        "works": [
+            {
+                "description": "POR LA APAAZ COL. DARIO G."
+            }
+        ]
+    },
+    {
+        "name": "ARQ. VALDOVINOS",
+        "works": [
+            {
+                "description": "PLAYA DE TRONCONES"
+            }
+        ]
+    },
+    {
+        "name": "HUGO SALAS",
+        "works": [
+            {
+                "description": "POR LA ACADEMIA,ZIHUATANEJO GR"
+            },
+            {
+                "description": "ATRAS DEL SANS CLUB"
+            }
+        ]
+    },
+    {
+        "name": "MULLER ARQ.",
+        "works": [
+            {
+                "description": "PUNTA IXTAPA LOTE 18 A1"
+            },
+            {
+                "description": "PORTO ARCANO L.13"
+            },
+            {
+                "description": "CERRO DEL VIGIA CASA CLEMENT."
+            },
+            {
+                "description": "MARINA REAL CASA 1"
+            },
+            {
+                "description": "MARINA REAL CASA 6"
+            },
+            {
+                "description": "PUNTA IXTAPA L-13A"
+            },
+            {
+                "description": "ARCANO LOTE 20"
+            }
+        ]
+    },
+    {
+        "name": "MIGUEL ANGEL GALEANA",
+        "works": [
+            {
+                "description": "PLAYA DE LA ROPA POR LA GAVIOT"
+            },
+            {
+                "description": "ADELANTE DEL SOTAVENTO"
+            },
+            {
+                "description": "CERRO DEL ALMACEN"
+            },
+            {
+                "description": "PLAYA DE TRONCONES"
+            },
+            {
+                "description": "CERRO DEL VIJIA"
+            },
+            {
+                "description": "BARRA POTOSI"
+            },
+            {
+                "description": "BUENA VISTA"
+            },
+            {
+                "description": "ARCANO LOTE 17"
+            }
+        ]
+    },
+    {
+        "name": "ING. TUMALAN",
+        "works": [
+            {
+                "description": "EL RISCAL POR EL JB"
+            },
+            {
+                "description": "EL 20 PASANDO SAN LUIS LA LOMA"
+            }
+        ]
+    },
+    {
+        "name": "LUIS VALLE",
+        "works": [
+            {
+                "description": "FTE, A LOS DELFINES"
+            }
+        ]
+    },
+    {
+        "name": "SUNSET TROPICAL",
+        "works": [
+            {
+                "description": "LOS LLANOS"
+            }
+        ]
+    },
+    {
+        "name": "ING. HECTOR VEGA",
+        "works": [
+            {
+                "description": "PANTLA"
+            },
+            {
+                "description": "PÓR LA PLAZA KIOTO"
+            },
+            {
+                "description": "SAN JOSE IXTAPA"
+            }
+        ]
+    },
+    {
+        "name": "ALZAMAR",
+        "works": [
+            {
+                "description": "LOTE 94,95,96 PUNTA GARROBO"
+            }
+        ]
+    }
+]

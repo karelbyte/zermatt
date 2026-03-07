@@ -14,13 +14,23 @@ class ClientController extends Controller
 {
     public function index(Request $request): Response
     {
+        $search = $request->query('search');
+
         $clients = Client::query()
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'ilike', "%{$search}%")
+                    ->orWhere('rfc', 'ilike', "%{$search}%")
+                    ->orWhere('phone', 'ilike', "%{$search}%");
+            })
             ->orderBy('name')
             ->paginate(15)
             ->withQueryString();
 
         return Inertia::render('clients/index', [
             'clients' => $clients,
+            'filters' => [
+                'search' => $search,
+            ],
         ]);
     }
 

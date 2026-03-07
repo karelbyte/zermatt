@@ -24,14 +24,26 @@ class RemissionController extends Controller
 {
     public function index(Request $request): Response
     {
+        $search = $request->query('search');
+
         $remissions = Remission::query()
             ->with(['client:id,name', 'work:id,name', 'usage:id,description', 'pot:id,number', 'operator:id,name'])
+            ->when($search, function ($query, $search) {
+                $query->where('remision', 'ilike', "%{$search}%")
+                    ->orWhere('order_number', 'ilike', "%{$search}%")
+                    ->orWhereHas('client', function ($q) use ($search) {
+                        $q->where('name', 'ilike', "%{$search}%");
+                    });
+            })
             ->orderByDesc('id')
             ->paginate(15)
             ->withQueryString();
 
         return Inertia::render('remissions/index', [
             'remissions' => $remissions,
+            'filters' => [
+                'search' => $search,
+            ],
         ]);
     }
 

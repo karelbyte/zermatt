@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ConfirmModal } from '@/components/confirm-modal';
 import { EmptyState } from '@/components/empty-state';
 import Heading from '@/components/heading';
+import { Pagination } from '@/components/pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
@@ -156,27 +157,7 @@ export default function AdditivesIndex({ additives }: Props) {
                         </div>
 
                         {additives.last_page > 1 && (
-                            <div className="flex flex-wrap items-center justify-center gap-2">
-                                {additives.links.map((link, i) => (
-                                    <span key={i}>
-                                        {link.url ? (
-                                            <Link
-                                                href={link.url}
-                                                className={`inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm ${link.active
-                                                    ? 'bg-primary text-primary-foreground'
-                                                    : 'hover:bg-muted'
-                                                    }`}
-                                            >
-                                                {link.label}
-                                            </Link>
-                                        ) : (
-                                            <span className="px-3 py-1.5 text-muted-foreground">
-                                                {link.label}
-                                            </span>
-                                        )}
-                                    </span>
-                                ))}
-                            </div>
+                            <Pagination links={additives.links} className="mt-6" />
                         )}
                     </>
                 )}

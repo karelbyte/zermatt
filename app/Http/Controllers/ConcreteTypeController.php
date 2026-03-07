@@ -14,13 +14,23 @@ class ConcreteTypeController extends Controller
 {
     public function index(Request $request): Response
     {
+        $search = $request->query('search');
+
         $concreteTypes = ConcreteType::query()
+            ->when($search, function ($query, $search) {
+                $query->where('type', 'ilike', "%{$search}%")
+                    ->orWhere('concept', 'ilike', "%{$search}%")
+                    ->orWhere('description', 'ilike', "%{$search}%");
+            })
             ->orderBy('type')
             ->paginate(15)
             ->withQueryString();
 
         return Inertia::render('concrete-types/index', [
             'concreteTypes' => $concreteTypes,
+            'filters' => [
+                'search' => $search,
+            ],
         ]);
     }
 

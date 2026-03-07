@@ -1,10 +1,12 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Building2, Pencil, Plus, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { Search, Building2, Pencil, Plus, Trash2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { ConfirmModal } from '@/components/confirm-modal';
 import { EmptyState } from '@/components/empty-state';
 import Heading from '@/components/heading';
+import { Pagination } from '@/components/pagination';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
 import type { Client } from '@/types';
@@ -22,12 +24,30 @@ type PaginatedClients = {
 
 type Props = {
     clients: PaginatedClients;
+    filters: {
+        search: string | null;
+    };
 };
 
-export default function ClientsIndex({ clients }: Props) {
+export default function ClientsIndex({ clients, filters }: Props) {
     const { status } = usePage().props as { status?: string };
     const [clientToDelete, setClientToDelete] = useState<Client | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [search, setSearch] = useState(filters.search || '');
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (search !== (filters.search || '')) {
+                router.get(index().url, { search }, {
+                    preserveState: true,
+                    preserveScroll: true,
+                    replace: true
+                });
+            }
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, [search]);
 
     const handleConfirmDelete = () => {
         if (!clientToDelete) return;
@@ -56,12 +76,23 @@ export default function ClientsIndex({ clients }: Props) {
                         title="Clientes"
                         description="Gestiona los clientes de la aplicación"
                     />
-                    <Button asChild>
-                        <Link href={create().url}>
-                            <Plus className="mr-2 size-4" />
-                            Nuevo cliente
-                        </Link>
-                    </Button>
+                    <div className="flex items-center gap-2">
+                        <div className="relative w-full sm:w-64">
+                            <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
+                            <Input
+                                placeholder="Buscar..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                className="pl-9"
+                            />
+                        </div>
+                        <Button asChild>
+                            <Link href={create().url}>
+                                <Plus className="mr-2 size-4" />
+                                Nuevo cliente
+                            </Link>
+                        </Button>
+                    </div>
                 </div>
 
                 {status && (
@@ -73,16 +104,16 @@ export default function ClientsIndex({ clients }: Props) {
                 {clients.data.length === 0 ? (
                     <EmptyState
                         icon={Building2}
-                        title="No hay clientes"
-                        description="Aún no has registrado ningún cliente. Crea el primero para comenzar."
-                        action={
+                        title={search ? "No se encontraron resultados" : "No hay clientes"}
+                        description={search ? `No se encontraron resultados para "${search}"` : "Aún no has registrado ningún cliente. Crea el primero para comenzar."}
+                        action={!search && (
                             <Button asChild>
                                 <Link href={create().url}>
                                     <Plus className="mr-2 size-4" />
                                     Nuevo cliente
                                 </Link>
                             </Button>
-                        }
+                        )}
                     />
                 ) : (
                     <>
@@ -139,28 +170,7 @@ export default function ClientsIndex({ clients }: Props) {
                         </div>
 
                         {clients.last_page > 1 && (
-                            <div className="flex flex-wrap items-center justify-center gap-2">
-                                {clients.links.map((link, i) => (
-                                    <span key={i}>
-                                        {link.url ? (
-                                            <Link
-                                                href={link.url}
-                                                className={`inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm ${
-                                                    link.active
-                                                        ? 'bg-primary text-primary-foreground'
-                                                        : 'hover:bg-muted'
-                                                }`}
-                                            >
-                                                {link.label}
-                                            </Link>
-                                        ) : (
-                                            <span className="px-3 py-1.5 text-muted-foreground">
-                                                {link.label}
-                                            </span>
-                                        )}
-                                    </span>
-                                ))}
-                            </div>
+                            <Pagination links={clients.links} className="mt-6" />
                         )}
                     </>
                 )}
