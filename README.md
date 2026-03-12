@@ -7,7 +7,7 @@ Este repositorio contiene el código fuente del proyecto Zermatt.
 En un entorno de alojamiento compartido, para ejecutar migraciones de la base de datos con la versión PHP 8.4 se puede usar el siguiente comando:
 
 ```
-/usr/local/bin/ea-php84 artisan migrate
+/usr/local/bin/ea-php84 artisan migrate 
 ```
 
 Esto asegura que `artisan` se ejecute con PHP 8.4 en el host compartido.
