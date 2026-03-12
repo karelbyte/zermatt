@@ -36,7 +36,7 @@ class DailyProductionExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            ['RIVA CONSTRUCCIONES, S.A. DE C.V.'],
+            ['ZERMAT CONCRETOS, S.A. DE C.V.'],
             ['REPORTE DE PRODUCCION DEL DIA: ' . $this->date->format('d/m/y')],
             [''],
             [

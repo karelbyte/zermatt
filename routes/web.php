@@ -97,6 +97,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('humedad-absorcion', [MoistureAbsorptionController::class, 'edit'])->name('moisture-absorption.edit')->middleware('permission:Tipos de Concretos');
     Route::put('humedad-absorcion', [MoistureAbsorptionController::class, 'update'])->name('moisture-absorption.update')->middleware('permission:Tipos de Concretos');
+
+    Route::get('logs', [\App\Http\Controllers\ActivityLogController::class, 'index'])->name('logs.index')->middleware('permission:Logs');
+    Route::get('reportes', [\App\Http\Controllers\ReportController::class, 'index'])->name('reports.index')->middleware('permission:Reportes');
 });
 
 require __DIR__ . '/settings.php';

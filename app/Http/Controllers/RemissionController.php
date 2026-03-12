@@ -95,67 +95,99 @@ class RemissionController extends Controller
         ]);
     }
 
-    public function exportDailyReport(AdditiveService $additiveService, CementService $cementService)
+    public function exportDailyReport(Request $request, AdditiveService $additiveService, CementService $cementService)
     {
-        $todayRemissions = Remission::whereDate('updated_at', today())->get();
+        $date = $request->query('date', today()->toDateString());
+        $selectedDate = \Carbon\Carbon::parse($date);
+
+        $todayRemissions = Remission::whereDate('updated_at', $selectedDate)->get();
         $todayCementUsed = $todayRemissions->sum('cement_amount');
-        $todayCementReceived = \App\Models\Cement::whereDate('date', today())->where('status', 'closed')->sum('tons');
-        $currentCement = $cementService->getTotalKg();
+        $todayCementReceived = \App\Models\Cement::whereDate('date', $selectedDate)->where('status', 'closed')->sum('tons');
 
         $todayAdditivesUsed = $todayRemissions->sum('additive_amount');
-        $todayAdditivesReceived = \App\Models\Additive::whereDate('date', today())->where('status', 'closed')->sum('lit');
-        $currentAdditives = $additiveService->getTotalLiters();
+        $todayAdditivesReceived = \App\Models\Additive::whereDate('date', $selectedDate)->where('status', 'closed')->sum('lit');
+
+        // Calculate inventory up to the START of the selected date
+        $cementReceivedBefore = \App\Models\Cement::whereDate('date', '<', $selectedDate)
+            ->where('status', 'closed')
+            ->sum('tons');
+        $cementUsedBefore = Remission::whereDate('updated_at', '<', $selectedDate)
+            ->sum('cement_amount');
+        $previousCement = $cementReceivedBefore - $cementUsedBefore;
+
+        $additivesReceivedBefore = \App\Models\Additive::whereDate('date', '<', $selectedDate)
+            ->where('status', 'closed')
+            ->sum('lit');
+        $additivesUsedBefore = Remission::whereDate('updated_at', '<', $selectedDate)
+            ->sum('additive_amount');
+        $previousAdditives = $additivesReceivedBefore - $additivesUsedBefore;
 
         $inventoryStats = [
             'cement' => [
                 'received' => $todayCementReceived,
                 'used' => $todayCementUsed,
-                'previous' => $currentCement + $todayCementUsed - $todayCementReceived,
+                'previous' => $previousCement,
             ],
             'additives' => [
                 'received' => $todayAdditivesReceived,
                 'used' => $todayAdditivesUsed,
-                'previous' => $currentAdditives + $todayAdditivesUsed - $todayAdditivesReceived,
+                'previous' => $previousAdditives,
             ]
         ];
 
         return \Maatwebsite\Excel\Facades\Excel::download(
             new \App\Exports\DailyProductionExport(null, $inventoryStats),
-            'reporte-produccion-' . now()->format('Y-m-d') . '.xlsx'
+            'reporte-produccion-' . $selectedDate->format('Y-m-d') . '.xlsx'
         );
     }
 
-    public function exportDailyPdf(AdditiveService $additiveService, CementService $cementService)
+    public function exportDailyPdf(Request $request, AdditiveService $additiveService, CementService $cementService)
     {
+        $date = $request->query('date', today()->toDateString());
+        $selectedDate = \Carbon\Carbon::parse($date);
+
         $remissions = Remission::with(['client', 'work', 'concreteType', 'pot'])
-            ->whereDate('updated_at', today())
+            ->whereDate('updated_at', $selectedDate)
             ->get();
 
         $todayCementUsed = $remissions->sum('cement_amount');
-        $todayCementReceived = \App\Models\Cement::whereDate('date', today())->where('status', 'closed')->sum('tons');
-        $currentCement = $cementService->getTotalKg();
+        $todayCementReceived = \App\Models\Cement::whereDate('date', $selectedDate)->where('status', 'closed')->sum('tons');
 
         $todayAdditivesUsed = $remissions->sum('additive_amount');
-        $todayAdditivesReceived = \App\Models\Additive::whereDate('date', today())->where('status', 'closed')->sum('lit');
-        $currentAdditives = $additiveService->getTotalLiters();
+        $todayAdditivesReceived = \App\Models\Additive::whereDate('date', $selectedDate)->where('status', 'closed')->sum('lit');
+
+        // Calculate inventory up to the START of the selected date
+        $cementReceivedBefore = \App\Models\Cement::whereDate('date', '<', $selectedDate)
+            ->where('status', 'closed')
+            ->sum('tons');
+        $cementUsedBefore = Remission::whereDate('updated_at', '<', $selectedDate)
+            ->sum('cement_amount');
+        $previousCement = $cementReceivedBefore - $cementUsedBefore;
+
+        $additivesReceivedBefore = \App\Models\Additive::whereDate('date', '<', $selectedDate)
+            ->where('status', 'closed')
+            ->sum('lit');
+        $additivesUsedBefore = Remission::whereDate('updated_at', '<', $selectedDate)
+            ->sum('additive_amount');
+        $previousAdditives = $additivesReceivedBefore - $additivesUsedBefore;
 
         $inventoryStats = [
             'cement' => [
                 'received' => $todayCementReceived,
                 'used' => $todayCementUsed,
-                'previous' => $currentCement + $todayCementUsed - $todayCementReceived,
+                'previous' => $previousCement,
             ],
             'additives' => [
                 'received' => $todayAdditivesReceived,
                 'used' => $todayAdditivesUsed,
-                'previous' => $currentAdditives + $todayAdditivesUsed - $todayAdditivesReceived,
+                'previous' => $previousAdditives,
             ]
         ];
 
         $pdf = Pdf::loadView('reports.daily-production', compact('remissions', 'inventoryStats'));
         $pdf->setPaper('letter', 'landscape');
 
-        return $pdf->download('reporte-produccion-' . now()->format('Y-m-d') . '.pdf');
+        return $pdf->download('reporte-produccion-' . $selectedDate->format('Y-m-d') . '.pdf');
     }
 
     /**

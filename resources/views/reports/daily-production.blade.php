@@ -90,7 +90,7 @@
 </head>
 <body>
     <div class="header">
-        <img src="{{ public_path('zermatt1.jpeg') }}" alt="Logo" style="position: absolute; top: 10px; left: 10px; width: 100px;">
+        <img src="{{ public_path('zermatt01.jpeg') }}" alt="Logo" style="position: absolute; top: 10px; left: 10px; width: 100px;">
         <h1>Reporte de Producción del Día</h1>
         <div class="info">Fecha: {{ now()->format('d/m/Y H:i') }}</div>
     </div>

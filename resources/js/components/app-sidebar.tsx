@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Building2, CookingPot, FileText, FlaskConical, HardHat, Layers, LayoutGrid, Package, Tag, Truck, UserCog, Users, UserCheck2Icon } from 'lucide-react';
+import { BookOpen, Building2, CookingPot, FileText, FlaskConical, HardHat, Layers, LayoutGrid, Package, Tag, Truck, UserCog, Users, UserCheck2Icon, ScrollText, BarChart3 } from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -11,6 +11,7 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    useSidebar,
 } from '@/components/ui/sidebar';
 import type { NavItem } from '@/types';
 import AppLogo from './app-logo';
@@ -34,7 +35,11 @@ const mainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
     },
-
+    {
+        title: 'Reportes',
+        href: '/reportes',
+        icon: BarChart3,
+    },
     {
         title: 'Clientes',
         href: clientsIndex(),
@@ -92,10 +97,16 @@ const mainNavItems: NavItem[] = [
         href: remissionsIndex(),
         icon: FileText,
     },
+
     {
         title: 'Usuarios',
         href: usersIndex(),
         icon: Users,
+    },
+    {
+        title: 'Logs',
+        href: '/logs',
+        icon: ScrollText,
     },
 ];
 
@@ -129,11 +140,7 @@ export function AppSidebar() {
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <div className="flex items-center gap-2">
-                            <Link href={dashboard()} prefetch>
-                                <AppLogo />
-                            </Link>
-                        </div>
+                        <SidebarLogoWrapper />
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
@@ -147,5 +154,26 @@ export function AppSidebar() {
                 <NavUser />
             </SidebarFooter>
         </Sidebar>
+    );
+}
+
+function SidebarLogoWrapper() {
+    const { state } = useSidebar();
+    const isCollapsed = state === 'collapsed';
+
+    return (
+        <div className="flex items-center gap-2">
+            <Link href={dashboard()} prefetch>
+                {isCollapsed ? (
+                    <img
+                        src="/olla.png"
+                        alt="Zermatt"
+                        className="size-8 shrink-0 rounded-md object-contain"
+                    />
+                ) : (
+                    <AppLogo />
+                )}
+            </Link>
+        </div>
     );
 }

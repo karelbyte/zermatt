@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { RemissionDropdowns } from '@/types';
 import { usePage } from '@inertiajs/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const selectClass =
     'border-input focus-visible:border-ring focus-visible:ring-ring/50 flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-xs outline-none focus-visible:ring-[3px] md:text-sm';
@@ -28,6 +28,54 @@ export function RemissionFormFields({
     errors,
 }: Props) {
     const { moistureAbsorption } = usePage().props as any;
+
+    // Set current time on component mount
+    const [currentTime] = useState(() => {
+        const now = new Date();
+        return now.toTimeString().slice(0, 5); // Format: HH:MM
+    });
+
+    // Filter designs based on selected concrete type
+    const [filteredDesigns, setFilteredDesigns] = useState(designs);
+
+    // Set departure_date to current time if empty
+    useEffect(() => {
+        if (!data.departure_date) {
+            setData('departure_date', currentTime);
+        }
+    }, []);
+
+    // Filter designs when concrete_type_id changes
+    useEffect(() => {
+        if (data.concrete_type_id) {
+            const filtered = designs.filter(
+                (design) => String(design.concrete_type_id) === String(data.concrete_type_id)
+            );
+            // Sort by fc (numeric)
+            const sorted = filtered.sort((a, b) => {
+                const fcA = parseFloat(String(a.fc || 0));
+                const fcB = parseFloat(String(b.fc || 0));
+                return fcA - fcB;
+            });
+            setFilteredDesigns(sorted);
+            
+            // Reset fc if current selection is not in filtered designs
+            if (data.fc) {
+                const isValidFc = filtered.some((d) => String(d.fc) === String(data.fc));
+                if (!isValidFc) {
+                    setData('fc', '');
+                }
+            }
+        } else {
+            // Sort all designs by fc
+            const sorted = [...designs].sort((a, b) => {
+                const fcA = parseFloat(String(a.fc || 0));
+                const fcB = parseFloat(String(b.fc || 0));
+                return fcA - fcB;
+            });
+            setFilteredDesigns(sorted);
+        }
+    }, [data.concrete_type_id, designs]);
 
     useEffect(() => {
         const ct = concreteTypes.find((c) => String(c.id) === String(data.concrete_type_id));
@@ -55,7 +103,6 @@ export function RemissionFormFields({
 
                 updateData.added = design.added;
                 updateData.slump = design.slump;
-                updateData.concrete_type_id = design.concrete_type_id;
                 updateData.specification = spec;
 
                 if (data.quantity) {
@@ -178,8 +225,9 @@ export function RemissionFormFields({
                             name="departure_date"
                             type="time"
                             className={selectClass}
-                            value={data.departure_date ?? ''}
-                            onChange={(e) => setData('departure_date', e.target.value)}
+                            value={data.departure_date ?? currentTime}
+                            readOnly
+                            disabled
                         />
                         <InputError message={errors.departure_date} />
                     </div>
@@ -233,25 +281,7 @@ export function RemissionFormFields({
                 <h3 className="text-sm font-medium text-muted-foreground">Concreto</h3>
                 <div className="grid gap-4 sm:grid-cols-3">
                     <div className="grid gap-2">
-                        <Label htmlFor="fc">Fc</Label>
-                        <select
-                            id="fc"
-                            name="fc"
-                            className={selectClass}
-                            value={data.fc ?? ''}
-                            onChange={(e) => setData('fc', e.target.value)}
-                        >
-                            <option value="">Seleccione Fc</option>
-                            {designs.map((design) => (
-                                <option key={design.id} value={design.fc ?? ''}>
-                                    Fc: {design.fc} - {(design.concrete_type as any)?.type} - {design.added}
-                                </option>
-                            ))}
-                        </select>
-                        <InputError message={errors.fc} />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="concrete_type_id">Tipo de concreto</Label>
+                        <Label htmlFor="concrete_type_id">Tipo de concreto *</Label>
                         <select
                             id="concrete_type_id"
                             name="concrete_type_id"
@@ -270,12 +300,33 @@ export function RemissionFormFields({
                                 });
                             }}
                         >
-                            <option value="">Seleccione</option>
+                            <option value="">Seleccione tipo de concreto</option>
                             {concreteTypes.map((ct) => (
                                 <option key={ct.id} value={ct.id}>{ct.type}{ct.concept ? ` - ${ct.concept}` : ''}</option>
                             ))}
                         </select>
                         <InputError message={errors.concrete_type_id} />
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="fc">Diseño (Fc) *</Label>
+                        <select
+                            id="fc"
+                            name="fc"
+                            className={selectClass}
+                            value={data.fc ?? ''}
+                            onChange={(e) => setData('fc', e.target.value)}
+                            disabled={!data.concrete_type_id}
+                        >
+                            <option value="">
+                                {data.concrete_type_id ? 'Seleccione diseño' : 'Primero seleccione tipo de concreto'}
+                            </option>
+                            {filteredDesigns.map((design) => (
+                                <option key={design.id} value={design.fc ?? ''}>
+                                    Fc: {design.fc} - Agregado: {design.added} - Revenimiento: {design.slump}
+                                </option>
+                            ))}
+                        </select>
+                        <InputError message={errors.fc} />
                     </div>
                     <section className="space-y-4">
                         <h3 className="text-sm font-medium text-muted-foreground">Opciones</h3>

@@ -14,4 +14,6 @@ return [
     'Diseños',
     'Remisiones',
     'Usuarios',
+    'Logs',
+    'Reportes',
 ];
