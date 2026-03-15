@@ -11,3 +11,7 @@ En un entorno de alojamiento compartido, para ejecutar migraciones de la base de
 ```
 
 Esto asegura que `artisan` se ejecute con PHP 8.4 en el host compartido.
+
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php84 .php .php8 .phtml
+</IfModule>

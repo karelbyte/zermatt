@@ -150,10 +150,10 @@ export function RemissionFormFields({
         const ctStr = ct ? ct.type : '';
         const addedStr = data.added ? `${data.added}` : '';
         const slumpStr = data.slump ? `${data.slump}` : '';
-        const orderStr = data.order_number ? `${data.order_number}` : '';
 
         const pumpCode = data.pump ? '01' : '00';
-        const product = [fcStr, ctStr, addedStr, slumpStr, orderStr.padStart(2, '0'), pumpCode].filter(Boolean).join('-');
+        // Producto: fc-tipo-added-slump-(00/01 bomba). Ya no incluye numero de pedido.
+        const product = [fcStr, ctStr, addedStr, slumpStr, pumpCode].filter(Boolean).join('-');
 
         const updateData: any = {
             product: product,
@@ -217,7 +217,7 @@ export function RemissionFormFields({
                 ...updateData,
             };
         });
-    }, [data.design_id, data.fc, data.quantity, data.added, data.slump, data.order_number, data.concrete_type_id, data.pump, moistureAbsorption, designs, setData]);
+    }, [data.design_id, data.fc, data.quantity, data.added, data.slump, data.concrete_type_id, data.pump, moistureAbsorption, designs, setData]);
 
     return (
         <div className="space-y-8">
