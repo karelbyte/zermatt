@@ -7,6 +7,7 @@ use App\Http\Requests\Clients\UpdateClientRequest;
 use App\Models\Client;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -15,12 +16,13 @@ class ClientController extends Controller
     public function index(Request $request): Response
     {
         $search = $request->query('search');
+        $like = DB::connection()->getDriverName() === 'pgsql' ? 'ilike' : 'like';
 
         $clients = Client::query()
-            ->when($search, function ($query, $search) {
-                $query->where('name', 'ilike', "%{$search}%")
-                    ->orWhere('rfc', 'ilike', "%{$search}%")
-                    ->orWhere('phone', 'ilike', "%{$search}%");
+            ->when($search, function ($query, $search) use ($like) {
+                $query->where('name', $like, "%{$search}%")
+                    ->orWhere('rfc', $like, "%{$search}%")
+                    ->orWhere('phone', $like, "%{$search}%");
             })
             ->orderBy('name')
             ->paginate(15)

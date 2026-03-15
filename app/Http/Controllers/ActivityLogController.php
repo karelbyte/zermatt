@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -15,11 +16,12 @@ class ActivityLogController extends Controller
         $action = $request->query('action');
         $modelType = $request->query('model_type');
         $userId = $request->query('user_id');
+        $like = DB::connection()->getDriverName() === 'pgsql' ? 'ilike' : 'like';
 
         $logs = ActivityLog::query()
             ->with('user:id,name,email')
-            ->when($search, function ($query, $search) {
-                $query->where('description', 'ilike', "%{$search}%");
+            ->when($search, function ($query, $search) use ($like) {
+                $query->where('description', $like, "%{$search}%");
             })
             ->when($action, function ($query, $action) {
                 $query->where('action', $action);

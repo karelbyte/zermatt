@@ -19,6 +19,7 @@ interface PropRemission {
     id: number;
     order_number: string | number | null;
     remision: string | null;
+    status?: 'activa' | 'cancelada';
     client?: { name: string };
     work?: { name: string };
     product: string;
@@ -138,8 +139,8 @@ export default function Dashboard({
                                             <div className="text-[10px] text-muted-foreground uppercase">Pedido: {remission.order_number ?? '—'}</div>
                                         </td>
                                         <td className="p-3">
-                                            <div className="font-medium text-foreground">{remission.client?.name}</div>
-                                            <div className="text-xs text-muted-foreground">{remission.work?.name}</div>
+                                            <div className="font-medium text-foreground">{remission.status === 'cancelada' ? 'Cancelada' : remission.client?.name}</div>
+                                            <div className="text-xs text-muted-foreground">{remission.status === 'cancelada' ? 'Cancelada' : remission.work?.name}</div>
                                         </td>
                                         <td className="p-3 text-muted-foreground line-clamp-1 max-w-[200px]" title={remission.product}>
                                             {remission.product}

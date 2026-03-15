@@ -19,7 +19,7 @@ class UpdateRemissionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'order_number' => ['nullable', 'integer', 'min:0'],
+            'order_number' => ['nullable', 'integer', 'min:1'],
             'remision' => ['nullable', 'string', 'max:255'],
             'client_id' => ['required', 'integer', Rule::exists('clients', 'id')],
             'work_id' => ['required', 'integer', Rule::exists('works', 'id')],
@@ -33,6 +33,7 @@ class UpdateRemissionRequest extends FormRequest
             'impermeable' => ['boolean'],
             'fiber' => ['boolean'],
             'quantity' => ['nullable', 'numeric', 'min:0'],
+            'total_quantity' => ['nullable', 'numeric', 'min:0'],
             'pending_delivery' => ['nullable', 'numeric', 'min:0'],
             'specification' => ['nullable', 'string', 'max:500'],
             'product' => ['nullable', 'string', 'max:255'],
@@ -90,6 +91,7 @@ class UpdateRemissionRequest extends FormRequest
             'impermeable' => __('Imper'),
             'fiber' => __('Fibra'),
             'quantity' => __('Cantidad'),
+            'total_quantity' => __('Cantidad total a surtir'),
             'pending_delivery' => __('Pendiente de entrega'),
             'specification' => __('Especificación'),
             'product' => __('Producto'),

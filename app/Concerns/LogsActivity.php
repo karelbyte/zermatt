@@ -32,21 +32,21 @@ trait LogsActivity
         $newValues = null;
 
         if ($action === 'updated') {
-            $oldValues = $this->getOriginal();
-            $newValues = $this->getAttributes();
-            
-            // Remove timestamps and unchanged values
-            unset($oldValues['created_at'], $oldValues['updated_at']);
-            unset($newValues['created_at'], $newValues['updated_at']);
-            
-            // Only log changed values
-            $changes = array_diff_assoc($newValues, $oldValues);
+            // Use Eloquent's tracked changes to avoid array-to-string conversions
+            // when attributes are casted (e.g. JSON arrays like `permissions`).
+            $changes = $this->getChanges();
+            unset($changes['created_at'], $changes['updated_at']);
+
             if (empty($changes)) {
                 return;
             }
-            
-            $oldValues = array_intersect_key($oldValues, $changes);
-            $newValues = $changes;
+
+            $oldValues = [];
+            $newValues = [];
+            foreach ($changes as $key => $newValue) {
+                $oldValues[$key] = $this->getOriginal($key);
+                $newValues[$key] = $newValue;
+            }
         } elseif ($action === 'created') {
             $newValues = $this->getAttributes();
             unset($newValues['created_at'], $newValues['updated_at']);

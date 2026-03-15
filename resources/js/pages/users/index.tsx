@@ -30,6 +30,12 @@ export default function UsersIndex({ users }: Props) {
     const [userToDelete, setUserToDelete] = useState<User | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
 
+    const formatPermissions = (user: User) => {
+        if (user.is_admin) return 'Admin';
+        const permissions = (user.permissions ?? []).slice().sort((a, b) => a.localeCompare(b, 'es'));
+        return permissions.length ? permissions.join(', ') : '—';
+    };
+
     const handleConfirmDelete = () => {
         if (!userToDelete) return;
         setIsDeleting(true);
@@ -93,6 +99,7 @@ export default function UsersIndex({ users }: Props) {
                                     <tr>
                                         <th className="p-3 font-medium">Nombre</th>
                                         <th className="p-3 font-medium">Correo</th>
+                                        <th className="p-3 font-medium">Permisos</th>
                                         <th className="p-3 font-medium">Activo</th>
                                         <th className="p-3 text-right font-medium">
                                             Acciones
@@ -107,6 +114,7 @@ export default function UsersIndex({ users }: Props) {
                                         >
                                             <td className="p-3">{user.name}</td>
                                             <td className="p-3">{user.email}</td>
+                                            <td className="p-3 text-xs whitespace-normal">{formatPermissions(user)}</td>
                                             <td className="p-3">
                                                 {user.is_active ? 'Activo' : 'Inactivo'}
                                             </td>

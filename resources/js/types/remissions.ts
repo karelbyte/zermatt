@@ -2,6 +2,7 @@ import type { Design } from './designs';
 
 export type Remission = {
     id: number;
+    status?: 'activa' | 'cancelada';
     order_number: number | null;
     remision: string | null;
     client_id: number;
@@ -16,6 +17,8 @@ export type Remission = {
     impermeable: boolean;
     fiber: boolean;
     quantity: string | null;
+    total_quantity: string | null;
+    initial_total_quantity?: string | null;
     pending_delivery: string | null;
     specification: string | null;
     product: string | null;
@@ -42,6 +45,7 @@ export type Remission = {
     work?: { id: number; name: string };
     usage?: { id: number; description: string };
     concreteType?: { id: number; type: string };
+    concrete_type?: { id: number; type: string };
     pot?: { id: number; number: string };
     operator?: { id: number; name: string };
     [key: string]: unknown;
@@ -55,4 +59,11 @@ export type RemissionDropdowns = {
     pots: { id: number; number: string }[];
     operators: { id: number; name: string }[];
     designs: Design[];
+    last_order_number?: number | null;
+    suggested_order_number?: number;
+};
+
+export type RemissionPrintProps = {
+    remission: Remission;
+    delivered_to_date?: number | null;
 };

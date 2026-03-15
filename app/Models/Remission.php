@@ -32,6 +32,8 @@ class Remission extends Model
         'impermeable',
         'fiber',
         'quantity',
+        'total_quantity',
+        'initial_total_quantity',
         'pending_delivery',
         'specification',
         'product',
@@ -50,6 +52,8 @@ class Remission extends Model
         'water',
         'tp',
         'invoice',
+        'status',
+        'delivery_group_id',
     ];
 
     /**
@@ -63,8 +67,10 @@ class Remission extends Model
             'pump' => 'boolean',
             'impermeable' => 'boolean',
             'fiber' => 'boolean',
-            'quantity' => 'decimal:2',
-            'pending_delivery' => 'decimal:2',
+        'quantity' => 'decimal:2',
+        'total_quantity' => 'decimal:2',
+        'initial_total_quantity' => 'decimal:2',
+        'pending_delivery' => 'decimal:2',
             'additive_amount' => 'decimal:2',
             'fiber_amount' => 'decimal:2',
             'gravel' => 'decimal:2',

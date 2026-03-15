@@ -6,6 +6,7 @@ import type { BreadcrumbItem } from '@/types';
 import type { RemissionDropdowns } from '@/types';
 import RemissionController from '@/actions/App/Http/Controllers/RemissionController';
 import { index } from '@/routes/remissions';
+import { useEffect } from 'react';
 
 type Props = RemissionDropdowns;
 
@@ -16,12 +17,13 @@ export default function RemissionsCreate(props: Props) {
     ];
 
     const { data, setData, post, processing, errors } = useForm({
-        order_number: '',
+        order_number: props.suggested_order_number != null ? String(props.suggested_order_number) : '',
         remision: '',
         client_id: '',
         work_id: '',
         usage_id: '',
         fc: '',
+        design_id: '',
         concrete_type_id: '',
         concept: '',
         added: '',
@@ -30,6 +32,7 @@ export default function RemissionsCreate(props: Props) {
         impermeable: false,
         fiber: false,
         quantity: '',
+        total_quantity: '',
         pending_delivery: '',
         specification: '',
         product: '',
@@ -45,6 +48,37 @@ export default function RemissionsCreate(props: Props) {
         water: '',
         invoice: '',
     });
+
+    // If there is a previous remission with pending delivery for the same client + concrete type + fc,
+    // prefill total_quantity with the remaining amount (only if the user hasn't entered one yet).
+    useEffect(() => {
+        const clientId = String(data.client_id || '');
+        const concreteTypeId = String(data.concrete_type_id || '');
+        const fc = String(data.fc || '');
+
+        if (!clientId || !concreteTypeId || !fc) return;
+        if (String(data.total_quantity || '')) return;
+
+        const controller = new AbortController();
+        fetch(`/remissions/pending?client_id=${encodeURIComponent(clientId)}&concrete_type_id=${encodeURIComponent(concreteTypeId)}&fc=${encodeURIComponent(fc)}`, {
+            signal: controller.signal,
+            headers: { 'Accept': 'application/json' },
+            credentials: 'same-origin',
+        })
+            .then((r) => (r.ok ? r.json() : null))
+            .then((json) => {
+                const pending = json?.pending != null ? Number(json.pending) : 0;
+                if (pending > 0) {
+                    setData('total_quantity', pending.toFixed(2));
+                    setData('quantity', '');
+                }
+            })
+            .catch(() => {
+                // ignore
+            });
+
+        return () => controller.abort();
+    }, [data.client_id, data.concrete_type_id, data.fc]);
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();

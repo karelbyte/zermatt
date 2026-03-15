@@ -7,6 +7,7 @@ use App\Http\Requests\ConcreteTypes\UpdateConcreteTypeRequest;
 use App\Models\ConcreteType;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -15,12 +16,13 @@ class ConcreteTypeController extends Controller
     public function index(Request $request): Response
     {
         $search = $request->query('search');
+        $like = DB::connection()->getDriverName() === 'pgsql' ? 'ilike' : 'like';
 
         $concreteTypes = ConcreteType::query()
-            ->when($search, function ($query, $search) {
-                $query->where('type', 'ilike', "%{$search}%")
-                    ->orWhere('concept', 'ilike', "%{$search}%")
-                    ->orWhere('description', 'ilike', "%{$search}%");
+            ->when($search, function ($query, $search) use ($like) {
+                $query->where('type', $like, "%{$search}%")
+                    ->orWhere('concept', $like, "%{$search}%")
+                    ->orWhere('description', $like, "%{$search}%");
             })
             ->orderBy('type')
             ->paginate(15)

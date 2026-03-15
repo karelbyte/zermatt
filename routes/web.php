@@ -90,7 +90,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('concrete-types', ConcreteTypeController::class)->except(['show'])->middleware('permission:Tipos de Concretos');
     Route::resource('designs', DesignController::class)->except(['show'])->middleware('permission:Diseños');
     Route::resource('usages', UsageController::class)->except(['show'])->middleware('permission:Usos');
-    Route::resource('remissions', RemissionController::class)->except(['show'])->middleware('permission:Remisiones');
+    Route::resource('remissions', RemissionController::class)->except(['show', 'destroy'])->middleware('permission:Remisiones');
+    Route::get('remissions/pending', [RemissionController::class, 'pending'])->name('remissions.pending')->middleware('permission:Remisiones');
+    Route::patch('remissions/{remission}/cancel', [RemissionController::class, 'cancel'])->name('remissions.cancel')->middleware('permission:Remisiones');
     Route::get('remissions/export-daily', [RemissionController::class, 'exportDailyReport'])->name('remissions.export-daily')->middleware('permission:Remisiones');
     Route::get('remissions/export-daily-pdf', [RemissionController::class, 'exportDailyPdf'])->name('remissions.export-daily-pdf')->middleware('permission:Remisiones');
     Route::get('remissions/{remission}/print', [RemissionController::class, 'print'])->name('remissions.print')->middleware('permission:Remisiones');

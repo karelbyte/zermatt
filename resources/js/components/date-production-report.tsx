@@ -86,11 +86,21 @@ export function DateProductionReport({ remissions, inventoryStats, selectedDate 
                         {remissions.map((r) => (
                             <tr key={r.id} className="border-b border-sidebar-border/50 hover:bg-muted/30">
                                 <td className="p-2 border-r border-sidebar-border/50 font-medium">{r.remision ?? r.order_number}</td>
-                                <td className="p-2 border-r border-sidebar-border/50 truncate max-w-[120px]" title={r.client?.name}>{r.client?.name}</td>
-                                <td className="p-2 border-r border-sidebar-border/50 truncate max-w-[120px]" title={r.work?.name}>{r.work?.name}</td>
+                                <td
+                                    className="p-2 border-r border-sidebar-border/50 truncate max-w-[120px]"
+                                    title={r.status === 'cancelada' ? 'Cancelada' : r.client?.name}
+                                >
+                                    {r.status === 'cancelada' ? 'Cancelada' : r.client?.name}
+                                </td>
+                                <td
+                                    className="p-2 border-r border-sidebar-border/50 truncate max-w-[120px]"
+                                    title={r.status === 'cancelada' ? 'Cancelada' : r.work?.name}
+                                >
+                                    {r.status === 'cancelada' ? 'Cancelada' : r.work?.name}
+                                </td>
                                 <td className="p-2 border-r border-sidebar-border/50 text-center font-bold text-primary">{r.quantity}</td>
                                 <td className="p-2 border-r border-sidebar-border/50 text-center">{r.fc}</td>
-                                <td className="p-2 border-r border-sidebar-border/50 text-center">{r.concreteType?.type}</td>
+                                <td className="p-2 border-r border-sidebar-border/50 text-center">{r.concrete_type?.type ?? r.concreteType?.type}</td>
                                 <td className="p-2 border-r border-sidebar-border/50 text-center">{r.added}</td>
                                 <td className="p-2 border-r border-sidebar-border/50 text-center">{r.slump}</td>
                                 <td className="p-2 border-r border-sidebar-border/50 text-center">{r.pump ? 'P' : '-'}</td>

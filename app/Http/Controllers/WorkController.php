@@ -8,6 +8,7 @@ use App\Models\Client;
 use App\Models\Work;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -16,14 +17,15 @@ class WorkController extends Controller
     public function index(Request $request): Response
     {
         $search = $request->query('search');
+        $like = DB::connection()->getDriverName() === 'pgsql' ? 'ilike' : 'like';
 
         $works = Work::query()
             ->with('client:id,name')
-            ->when($search, function ($query, $search) {
-                $query->where('name', 'ilike', "%{$search}%")
-                    ->orWhere('description', 'ilike', "%{$search}%")
-                    ->orWhereHas('client', function ($q) use ($search) {
-                        $q->where('name', 'ilike', "%{$search}%");
+            ->when($search, function ($query, $search) use ($like) {
+                $query->where('name', $like, "%{$search}%")
+                    ->orWhere('description', $like, "%{$search}%")
+                    ->orWhereHas('client', function ($q) use ($search, $like) {
+                        $q->where('name', $like, "%{$search}%");
                     });
             })
             ->orderBy('name')

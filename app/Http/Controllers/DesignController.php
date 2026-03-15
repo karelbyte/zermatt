@@ -8,6 +8,7 @@ use App\Models\ConcreteType;
 use App\Models\Design;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -16,17 +17,24 @@ class DesignController extends Controller
     public function index(Request $request): Response
     {
         $search = $request->query('search');
+        $like = DB::connection()->getDriverName() === 'pgsql' ? 'ilike' : 'like';
 
         $designs = Design::query()
             ->with('concreteType:id,type,concept')
-            ->when($search, function ($query, $search) {
-                $query->whereHas('concreteType', function ($q) use ($search) {
-                    $q->where('type', 'ilike', "%{$search}%")
-                        ->orWhere('concept', 'ilike', "%{$search}%");
-                })
-                    ->orWhere('fc', 'ilike', "%{$search}%")
-                    ->orWhere('slump', 'ilike', "%{$search}%")
-                    ->orWhere('added', 'ilike', "%{$search}%");
+            ->when($search, function ($query, $search) use ($like) {
+                $query->where(function ($q) use ($search, $like) {
+                    $q->whereHas('concreteType', function ($ct) use ($search, $like) {
+                        $ct->where('type', $like, "%{$search}%")
+                            ->orWhere('concept', $like, "%{$search}%");
+                    });
+
+                    if (is_numeric($search)) {
+                        $n = (int) $search;
+                        $q->orWhere('fc', $n)
+                            ->orWhere('slump', $n)
+                            ->orWhere('added', $n);
+                    }
+                });
             })
             ->orderBy('id')
             ->paginate(15)

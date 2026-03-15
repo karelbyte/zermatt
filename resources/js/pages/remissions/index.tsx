@@ -1,5 +1,5 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Search, FileText, Pencil, Plus, Printer, Trash2 } from 'lucide-react';
+import { Search, FileText, Pencil, Plus, Printer, Ban } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { ConfirmModal } from '@/components/confirm-modal';
 import { EmptyState } from '@/components/empty-state';
@@ -10,7 +10,6 @@ import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
 import type { Remission } from '@/types';
-import RemissionController from '@/actions/App/Http/Controllers/RemissionController';
 import { create, edit, index, print } from '@/routes/remissions';
 
 type PaginatedRemissions = {
@@ -32,8 +31,8 @@ import { formatDate } from '@/lib/utils';
 
 export default function RemissionsIndex({ remissions, filters }: Props) {
     const { status } = usePage().props as { status?: string };
-    const [remissionToDelete, setRemissionToDelete] = useState<Remission | null>(null);
-    const [isDeleting, setIsDeleting] = useState(false);
+    const [remissionToCancel, setRemissionToCancel] = useState<Remission | null>(null);
+    const [isCancelling, setIsCancelling] = useState(false);
     const [search, setSearch] = useState(filters.search || '');
 
     useEffect(() => {
@@ -50,14 +49,14 @@ export default function RemissionsIndex({ remissions, filters }: Props) {
         return () => clearTimeout(timer);
     }, [search]);
 
-    const handleConfirmDelete = () => {
-        if (!remissionToDelete) return;
-        setIsDeleting(true);
-        router.delete(RemissionController.destroy(remissionToDelete).url, {
+    const handleConfirmCancel = () => {
+        if (!remissionToCancel) return;
+        setIsCancelling(true);
+        router.patch(`/remissions/${remissionToCancel.id}/cancel`, {}, {
             preserveScroll: true,
             onFinish: () => {
-                setIsDeleting(false);
-                setRemissionToDelete(null);
+                setIsCancelling(false);
+                setRemissionToCancel(null);
             },
         });
     };
@@ -138,11 +137,14 @@ export default function RemissionsIndex({ remissions, filters }: Props) {
                                     {remissions.data.map((r) => (
                                         <tr
                                             key={r.id}
-                                            className="border-b border-sidebar-border/50 hover:bg-muted/30"
+                                            className={`border-b border-sidebar-border/50 hover:bg-muted/30 ${r.status === 'cancelada' ? 'opacity-60' : ''}`}
                                         >
                                             <td className="p-3">
                                                 <div className="font-medium text-foreground">{r.remision ?? '—'}</div>
                                                 <div className="text-xs text-muted-foreground">Pedido: {r.order_number ?? '—'}</div>
+                                                {r.status === 'cancelada' && (
+                                                    <div className="mt-1 text-xs font-medium text-destructive">Cancelada</div>
+                                                )}
                                             </td>
                                             <td className="p-3">
                                                 <div className="font-medium text-foreground">{r.client?.name ?? '—'}</div>
@@ -162,21 +164,25 @@ export default function RemissionsIndex({ remissions, filters }: Props) {
                                                         <span className="sr-only">Imprimir</span>
                                                     </a>
                                                 </Button>
-                                                <Button variant="ghost" size="icon" asChild>
-                                                    <Link href={edit(r).url}>
-                                                        <Pencil className="size-4" />
-                                                        <span className="sr-only">Editar</span>
-                                                    </Link>
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="text-destructive hover:text-destructive"
-                                                    onClick={() => setRemissionToDelete(r)}
-                                                >
-                                                    <Trash2 className="size-4" />
-                                                    <span className="sr-only">Eliminar</span>
-                                                </Button>
+                                                {r.status !== 'cancelada' && (
+                                                    <Button variant="ghost" size="icon" asChild>
+                                                        <Link href={edit(r).url}>
+                                                            <Pencil className="size-4" />
+                                                            <span className="sr-only">Editar</span>
+                                                        </Link>
+                                                    </Button>
+                                                )}
+                                                {r.status !== 'cancelada' && (
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="text-destructive hover:text-destructive"
+                                                        onClick={() => setRemissionToCancel(r)}
+                                                    >
+                                                        <Ban className="size-4" />
+                                                        <span className="sr-only">Cancelar</span>
+                                                    </Button>
+                                                )}
                                             </td>
                                         </tr>
                                     ))}
@@ -191,15 +197,15 @@ export default function RemissionsIndex({ remissions, filters }: Props) {
                 )}
 
                 <ConfirmModal
-                    open={!!remissionToDelete}
-                    onOpenChange={(open) => !open && setRemissionToDelete(null)}
-                    title="¿Eliminar remisión?"
-                    description="Se eliminará la remisión. Esta acción no se puede deshacer."
-                    confirmLabel="Eliminar"
-                    cancelLabel="Cancelar"
+                    open={!!remissionToCancel}
+                    onOpenChange={(open) => !open && setRemissionToCancel(null)}
+                    title="¿Cancelar remisión?"
+                    description="Se cancelará la remisión y las cantidades se pondrán en 0."
+                    confirmLabel="Cancelar remisión"
+                    cancelLabel="Volver"
                     variant="destructive"
-                    loading={isDeleting}
-                    onConfirm={handleConfirmDelete}
+                    loading={isCancelling}
+                    onConfirm={handleConfirmCancel}
                 />
             </div>
         </AppLayout>

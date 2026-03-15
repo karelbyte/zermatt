@@ -141,8 +141,8 @@
                 @endphp
                 <tr>
                     <td class="text-center font-bold">{{ $r->remision ?? $r->order_number }}</td>
-                    <td>{{ Str::limit($r->client?->name, 25) }}</td>
-                    <td>{{ Str::limit($r->work?->name, 25) }}</td>
+                    <td>{{ $r->status === 'cancelada' ? 'CANCELADA' : Str::limit($r->client?->name, 25) }}</td>
+                    <td>{{ $r->status === 'cancelada' ? 'CANCELADA' : Str::limit($r->work?->name, 25) }}</td>
                     <td class="text-center font-bold">{{ number_format($r->quantity, 1) }}</td>
                     <td class="text-center">{{ $r->fc }}</td>
                     <td class="text-center">{{ $r->concreteType?->type }}</td>

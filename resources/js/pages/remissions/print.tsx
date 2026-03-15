@@ -1,16 +1,20 @@
 import { Head } from '@inertiajs/react';
-import type { Remission } from '@/types';
+import type { RemissionPrintProps } from '@/types';
 import { useEffect } from 'react';
 
-interface Props {
-    remission: Remission;
-}
-
-export default function PrintRemission({ remission }: Props) {
+export default function PrintRemission({ remission, delivered_to_date }: RemissionPrintProps) {
     useEffect(() => {
         // Auto-trigger print dialog
         window.print();
     }, []);
+
+    // Laravel may serialize camelCase relations as snake_case keys (e.g. `concreteType` -> `concrete_type`).
+    const concreteType = (remission as any).concreteType ?? (remission as any).concrete_type;
+    const deliveredToDate = delivered_to_date ?? null;
+    const initialTotal = remission.initial_total_quantity != null ? Number(remission.initial_total_quantity) : null;
+    const deliveredLabel = (deliveredToDate != null && initialTotal != null)
+        ? `${Number(deliveredToDate).toFixed(1)}/${Number(initialTotal).toFixed(1)}`
+        : `${remission.quantity ?? ''}`;
 
     // Use updated_at as requested, falling back to current date if missing
     const dateStr = remission.updated_at ?? new Date().toISOString();
@@ -30,7 +34,7 @@ export default function PrintRemission({ remission }: Props) {
             <Head title={`Imprimir Remisión ${remission.order_number}`} />
 
             {/* Background Image Container - Adjusted to Letter Size (8.5in x 11in) */}
-            <div className="relative w-[8.5in] h-[11in] mx-auto overflow-hidden text-black uppercase text-[10px]">
+            <div className="relative w-[8.5in] h-[11in] mx-auto overflow-hidden text-black uppercase text-[14px]">
                 {/* The letterhead image - Assuming the user will provide this file 
                 <img
                     src="/images/remission-bg.jpg"
@@ -49,36 +53,36 @@ export default function PrintRemission({ remission }: Props) {
                 <div className="absolute top-[125px] right-[44px] text-center w-10 font-semibold">{year}</div>
 
                 {/* Cliente y Obra */}
-                <div className="absolute top-[165px] left-[65px] w-[300px] truncate font-semibold">{remission.client?.name}</div>
-                <div className="absolute top-[165px] left-[550px] w-[200px] truncate font-semibold">{remission.work?.name}</div>
+                <div className="absolute top-[165px] left-[65px] w-[300px] truncate font-semibold">{remission.status === 'cancelada' ? 'CANCELADA' : remission.client?.name}</div>
+                <div className="absolute top-[165px] left-[420px] w-[280px] truncate font-semibold">{remission.status === 'cancelada' ? 'CANCELADA' : remission.work?.name}</div>
 
                 {/* Pedido, Producto Solicitado, Uso, Surtidos, Por Surtir, Horario */}
                 <div className="absolute top-[218px] left-[50px] w-20 text-center font-semibold">{remission.order_number}</div>
-                <div className="absolute top-[218px] left-[150px] w-[230px] truncate font-semibold">{remission.product ?? remission.concreteType?.type}</div>
+                <div className="absolute top-[218px] left-[150px] w-[230px] truncate font-semibold">{remission.product ?? concreteType?.type}</div>
                 <div className="absolute top-[218px] left-[400px] w-[70px] text-center font-semibold">{remission.usage?.description}</div>
-                <div className="absolute top-[218px] left-[510px] w-[50px] text-center font-semibold">{remission.quantity}</div>
+                <div className="absolute top-[218px] left-[510px] w-[50px] text-center font-semibold">{deliveredLabel}</div>
                 {/* survido, por_surtir, horario are not in DB currently, but we can put placeholders or empty */}
                 <div className="absolute top-[218px] left-[600px] w-[50px] text-center font-semibold">{remission.pending_delivery}</div>
 
 
                 {/* Detalle Producto */}
-                <div className="absolute top-[285px] left-[55px] w-[90px] text-centerfont-semibold">Fc: {remission.fc} Kg/Cm2</div>
-                <div className="absolute top-[305px] left-[55px] w-[90px] text-centerfont-semibold">TIPO: {remission.concreteType?.type}</div>
-                <div className="absolute top-[325px] left-[55px] w-[90px] text-centerfont-semibold">GRAVA: {remission.added}mm</div>
-                <div className="absolute top-[285px] left-[145px] w-[70px] text-center font-semibold">{remission.quantity}</div>
-                <div className="absolute top-[285px] left-[325px] w-[450px] leading-tight text-[9px] font-semibold">{remission.specification}</div>
+                <div className="absolute top-[285px] left-[55px] w-[90px] text-left text-[11px]">Fc: {remission.fc} <span className="lowercase">Kg/Cm2</span></div>
+                <div className="absolute top-[305px] left-[55px] w-[90px] text-left text-[11px]">TIPO: {concreteType?.type}</div>
+                <div className="absolute top-[325px] left-[55px] w-[90px] text-left text-[12px] ">GRAVA: {remission.added} <span className="lowercase">mm</span></div>
+                <div className="absolute top-[300px] left-[160px] w-[70px] text-center text-[12px] font-semibold">{remission.quantity}</div>
+                <div className="absolute top-[285px] left-[300px] w-[470px] leading-tight text-[14px] font-semibold">{remission.specification}</div>
 
                 {/* F'c and Slump (Revenimiento) */}
 
                 {/* Slump checkmarks based on common values in the form or value */}
 
-                {remission.fc === 100 && <div className="absolute top-[360px] left-[300px]  leading-none ">{remission.slump}</div>}
-                {remission.fc === 150 && <div className="absolute top-[357px] left-[328px] ]leading-none font-semibold">{remission.slump}</div>}
-                {remission.fc === 200 && <div className="absolute top-[360px] left-[360px]  leading-none font-semibold">{remission.slump}</div>}
+                {remission.fc === 100 && <div className="absolute top-[360px] left-[300px] leading-none ">{remission.slump}</div>}
+                {remission.fc === 150 && <div className="absolute top-[357px] left-[328px] leading-none font-semibold">{remission.slump}</div>}
+                {remission.fc === 200 && <div className="absolute top-[360px] left-[360px] leading-none font-semibold">{remission.slump}</div>}
                 {remission.fc === 250 && <div className="absolute top-[360px] left-[385px] leading-none font-semibold">{remission.slump}</div>}
-                {remission.fc === 300 && <div className="absolute top-[360px] left-[418px]  leading-none font-semibold">{remission.slump}</div>}
+                {remission.fc === 300 && <div className="absolute top-[360px] left-[418px] leading-none font-semibold">{remission.slump}</div>}
                 {remission.fc === 350 && <div className="absolute top-[360px] left-[448px] leading-none font-semibold">{remission.slump}</div>}
-                {remission.fc && remission.fc > 350 && <div className="absolute top-[360px] left-[300px]  leading-none font-semibold">{remission.slump}</div>}
+                {remission.fc && remission.fc > 350 && <div className="absolute top-[360px] left-[300px]leading-none font-semibold">{remission.slump}</div>}
                 {/* ... add more checkmark positions if needed ... */}
 
                 {/* Observaciones */}
@@ -87,12 +91,12 @@ export default function PrintRemission({ remission }: Props) {
                 </div>
 
                 {/* Horas y Operador */}
-                <div className="absolute top-[470px] left-[40px] w-12 text-center font-semibold">  {remission.departure_date}</div> {/* Salida Planta */}
+                <div className="absolute top-[470px] left-[50px] w-12 text-center font-semibold">  {remission.departure_date}</div> {/* Salida Planta */}
                 <div className="absolute top-[470px] left-[95px] w-12 text-center font-semibold"></div>  {/* Entrada Planta */}
                 <div className="absolute top-[470px] left-[150px] w-12 text-center font-semibold"></div> {/* Entrada Obra */}
                 <div className="absolute top-[205px] left-[205px] w-12 text-center font-semibold"></div> {/* Salida Obra */}
 
-                <div className="absolute top-[460px] left-[270px] w-[180px] text-center font-semibold uppercase">
+                <div className="absolute top-[460px] left-[270px] w-[180px] text-center font-semibold uppercase text-[12px]">
                     {remission.operator?.name}
                 </div>
             </div>

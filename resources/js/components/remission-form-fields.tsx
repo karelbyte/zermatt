@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { RemissionDropdowns } from '@/types';
 import { usePage } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 const selectClass =
     'border-input focus-visible:border-ring focus-visible:ring-ring/50 flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-xs outline-none focus-visible:ring-[3px] md:text-sm';
@@ -23,6 +23,7 @@ export function RemissionFormFields({
     pots,
     operators,
     designs,
+    last_order_number,
     data,
     setData,
     errors,
@@ -38,12 +39,53 @@ export function RemissionFormFields({
     // Filter designs based on selected concrete type
     const [filteredDesigns, setFilteredDesigns] = useState(designs);
 
+    const filteredWorks = useMemo(() => {
+        const clientId = data.client_id ? String(data.client_id) : '';
+        if (!clientId) return [];
+        return works.filter((w) => String(w.client_id) === clientId);
+    }, [works, data.client_id]);
+
     // Set departure_date to current time if empty
     useEffect(() => {
         if (!data.departure_date) {
             setData('departure_date', currentTime);
         }
     }, []);
+
+    // Keep pending_delivery in sync: pending = total_quantity - quantity.
+    useEffect(() => {
+        const totalRaw = data.total_quantity ?? '';
+        const total = parseFloat(String(totalRaw));
+
+        if (!totalRaw || isNaN(total)) {
+            if (data.pending_delivery) {
+                setData('pending_delivery', '');
+            }
+            return;
+        }
+
+        const qtyRaw = data.quantity ?? '';
+        const qtyParsed = parseFloat(String(qtyRaw));
+        const qty = !qtyRaw || isNaN(qtyParsed) ? 0 : qtyParsed;
+
+        const pending = Math.max(total - qty, 0);
+        const next = pending.toFixed(2);
+        if (String(data.pending_delivery ?? '') !== next) {
+            setData('pending_delivery', next);
+        }
+    }, [data.total_quantity, data.quantity, data.pending_delivery, setData]);
+
+    // If the client changes, ensure the selected work still belongs to that client.
+    useEffect(() => {
+        if (!data.work_id) return;
+
+        const selectedWork = works.find((w) => String(w.id) === String(data.work_id));
+        if (!selectedWork) return;
+
+        if (!data.client_id || String(selectedWork.client_id) !== String(data.client_id)) {
+            setData('work_id', '');
+        }
+    }, [data.client_id, data.work_id, works]);
 
     // Filter designs when concrete_type_id changes
     useEffect(() => {
@@ -59,8 +101,15 @@ export function RemissionFormFields({
             });
             setFilteredDesigns(sorted);
             
-            // Reset fc if current selection is not in filtered designs
-            if (data.fc) {
+            // Reset selected design if it doesn't belong to the selected concrete type.
+            if (data.design_id) {
+                const isValidDesign = filtered.some((d) => String(d.id) === String(data.design_id));
+                if (!isValidDesign) {
+                    setData('design_id', '');
+                    setData('fc', '');
+                }
+            } else if (data.fc) {
+                // Backwards-compatible reset if there is no design_id (older state).
                 const isValidFc = filtered.some((d) => String(d.fc) === String(data.fc));
                 if (!isValidFc) {
                     setData('fc', '');
@@ -77,6 +126,24 @@ export function RemissionFormFields({
         }
     }, [data.concrete_type_id, designs]);
 
+    // If we already have fc+added+slump (e.g. edit form), derive design_id so selection is unambiguous.
+    useEffect(() => {
+        if (data.design_id) return;
+        if (!data.concrete_type_id) return;
+        if (data.fc === '' || data.fc == null) return;
+
+        const match = designs.find((d) =>
+            String(d.concrete_type_id) === String(data.concrete_type_id) &&
+            String(d.fc) === String(data.fc) &&
+            String(d.added) === String(data.added ?? '') &&
+            String(d.slump) === String(data.slump ?? '')
+        );
+
+        if (match) {
+            setData('design_id', String(match.id));
+        }
+    }, [data.design_id, data.concrete_type_id, data.fc, data.added, data.slump, designs, setData]);
+
     useEffect(() => {
         const ct = concreteTypes.find((c) => String(c.id) === String(data.concrete_type_id));
         const fcStr = data.fc ? `${data.fc}` : '';
@@ -85,14 +152,25 @@ export function RemissionFormFields({
         const slumpStr = data.slump ? `${data.slump}` : '';
         const orderStr = data.order_number ? `${data.order_number}` : '';
 
-        const product = [fcStr, ctStr, addedStr, slumpStr, orderStr.padStart(2, '0')].filter(Boolean).join('-');
+        const pumpCode = data.pump ? '01' : '00';
+        const product = [fcStr, ctStr, addedStr, slumpStr, orderStr.padStart(2, '0'), pumpCode].filter(Boolean).join('-');
 
         const updateData: any = {
             product: product,
         };
 
-        if (data.fc) {
-            const design = designs.find((d) => String(d.fc) === String(data.fc));
+        const selectedDesign =
+            data.design_id
+                ? designs.find((d) => String(d.id) === String(data.design_id))
+                : designs.find((d) =>
+                    String(d.concrete_type_id) === String(data.concrete_type_id) &&
+                    String(d.fc) === String(data.fc) &&
+                    String(d.added) === String(data.added ?? '') &&
+                    String(d.slump) === String(data.slump ?? '')
+                );
+
+        if (selectedDesign) {
+            const design = selectedDesign;
             if (design) {
                 const ctDesign = concreteTypes.find((c) => c.id === design.concrete_type_id);
                 const pumpText = ', CON SERVICIO DE BOMBA PLUMA';
@@ -139,7 +217,7 @@ export function RemissionFormFields({
                 ...updateData,
             };
         });
-    }, [data.fc, data.quantity, data.added, data.slump, data.order_number, data.concrete_type_id, data.pump, moistureAbsorption, designs, setData]);
+    }, [data.design_id, data.fc, data.quantity, data.added, data.slump, data.order_number, data.concrete_type_id, data.pump, moistureAbsorption, designs, setData]);
 
     return (
         <div className="space-y-8">
@@ -147,12 +225,14 @@ export function RemissionFormFields({
                 <h3 className="text-sm font-medium text-muted-foreground">Datos generales</h3>
                 <div className="grid gap-4 sm:grid-cols-4">
                     <div className="grid gap-2">
-                        <Label htmlFor="order_number">Pedido</Label>
+                        <Label htmlFor="order_number">
+                            Pedido{last_order_number ? ` (ultimo pedido ${last_order_number})` : ''}
+                        </Label>
                         <Input
                             id="order_number"
                             name="order_number"
                             type="number"
-                            min={0}
+                            min={1}
                             value={data.order_number ?? ''}
                             onChange={(e) => setData('order_number', e.target.value)}
                         />
@@ -176,7 +256,20 @@ export function RemissionFormFields({
                             required
                             className={selectClass}
                             value={data.client_id ?? ''}
-                            onChange={(e) => setData('client_id', e.target.value)}
+                            onChange={(e) => {
+                                const nextClientId = e.target.value;
+                                setData('client_id', nextClientId);
+
+                                if (!nextClientId) {
+                                    setData('work_id', '');
+                                    return;
+                                }
+
+                                const selectedWork = works.find((w) => String(w.id) === String(data.work_id));
+                                if (selectedWork && String(selectedWork.client_id) !== String(nextClientId)) {
+                                    setData('work_id', '');
+                                }
+                            }}
                         >
                             <option value="">Seleccione cliente</option>
                             {clients.map((c) => (
@@ -192,11 +285,14 @@ export function RemissionFormFields({
                             name="work_id"
                             required
                             className={selectClass}
+                            disabled={!data.client_id}
                             value={data.work_id ?? ''}
                             onChange={(e) => setData('work_id', e.target.value)}
                         >
-                            <option value="">Seleccione obra</option>
-                            {works.map((w) => (
+                            <option value="">
+                                {data.client_id ? 'Seleccione obra' : 'Seleccione cliente primero'}
+                            </option>
+                            {filteredWorks.map((w) => (
                                 <option key={w.id} value={w.id}>{w.name}</option>
                             ))}
                         </select>
@@ -296,7 +392,7 @@ export function RemissionFormFields({
                                     if (prev.pump && !newSpec.includes(pumpText)) {
                                         newSpec += pumpText;
                                     }
-                                    return { ...prev, concrete_type_id: val, specification: newSpec };
+                                    return { ...prev, concrete_type_id: val, design_id: '', fc: '', specification: newSpec };
                                 });
                             }}
                         >
@@ -310,18 +406,32 @@ export function RemissionFormFields({
                     <div className="grid gap-2">
                         <Label htmlFor="fc">Diseño (Fc) *</Label>
                         <select
-                            id="fc"
-                            name="fc"
+                            id="design_id"
+                            name="design_id"
                             className={selectClass}
-                            value={data.fc ?? ''}
-                            onChange={(e) => setData('fc', e.target.value)}
+                            value={data.design_id ?? ''}
+                            onChange={(e) => {
+                                const nextId = e.target.value;
+                                setData('design_id', nextId);
+
+                                const selected = filteredDesigns.find((d) => String(d.id) === String(nextId));
+                                if (!selected) {
+                                    setData('fc', '');
+                                    return;
+                                }
+
+                                // Keep legacy fields in sync (these are persisted in DB).
+                                setData('fc', selected.fc ?? '');
+                                setData('added', selected.added ?? '');
+                                setData('slump', selected.slump ?? '');
+                            }}
                             disabled={!data.concrete_type_id}
                         >
                             <option value="">
                                 {data.concrete_type_id ? 'Seleccione diseño' : 'Primero seleccione tipo de concreto'}
                             </option>
                             {filteredDesigns.map((design) => (
-                                <option key={design.id} value={design.fc ?? ''}>
+                                <option key={design.id} value={design.id}>
                                     Fc: {design.fc} - Agregado: {design.added} - Revenimiento: {design.slump}
                                 </option>
                             ))}
@@ -412,6 +522,19 @@ export function RemissionFormFields({
                         <InputError message={errors.slump} />
                     </div>
                     <div className="grid gap-2">
+                        <Label htmlFor="total_quantity">Cantidad total a surtir</Label>
+                        <Input
+                            id="total_quantity"
+                            name="total_quantity"
+                            type="number"
+                            step="0.01"
+                            min={0}
+                            value={data.total_quantity ?? ''}
+                            onChange={(e) => setData('total_quantity', e.target.value)}
+                        />
+                        <InputError message={errors.total_quantity} />
+                    </div>
+                    <div className="grid gap-2">
                         <Label htmlFor="quantity">Cantidad</Label>
                         <Input
                             id="quantity"
@@ -433,7 +556,8 @@ export function RemissionFormFields({
                             step="0.01"
                             min={0}
                             value={data.pending_delivery ?? ''}
-                            onChange={(e) => setData('pending_delivery', e.target.value)}
+                            readOnly
+                            disabled
                         />
                         <InputError message={errors.pending_delivery} />
                     </div>
