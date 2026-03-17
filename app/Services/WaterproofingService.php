@@ -16,7 +16,7 @@ class WaterproofingService
     public function getTotalAmount(): float
     {
         $totalInput = (float) Waterproofing::where('status', 'closed')->sum('lit');
-        $totalUsed = (float) Remission::sum('waterproofing_amount');
+        $totalUsed = (float) Remission::where('status', '!=', 'cancelada')->sum('waterproofing_amount');
 
         return $totalInput - $totalUsed;
     }

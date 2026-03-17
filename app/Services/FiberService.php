@@ -16,7 +16,7 @@ class FiberService
     public function getTotalAmount(): float
     {
         $totalInput = (float) Fiber::where('status', 'closed')->sum('lit');
-        $totalUsed = (float) Remission::sum('fiber_amount');
+        $totalUsed = (float) Remission::where('status', '!=', 'cancelada')->sum('fiber_amount');
 
         return $totalInput - $totalUsed;
     }

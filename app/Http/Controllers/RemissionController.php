@@ -251,6 +251,7 @@ class RemissionController extends Controller
             'cement_amount' => 0,
             'additive_amount' => 0,
             'fiber_amount' => 0,
+            'waterproofing_amount' => 0,
             'gravel' => 0,
             'sand' => 0,
             'water' => 0,

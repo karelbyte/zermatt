@@ -128,6 +128,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('logs', [\App\Http\Controllers\ActivityLogController::class, 'index'])->name('logs.index')->middleware('permission:Logs');
     Route::get('reportes', [\App\Http\Controllers\ReportController::class, 'index'])->name('reports.index')->middleware('permission:Reportes');
+    Route::get('reportes/historico-cliente', [\App\Http\Controllers\ReportController::class, 'clientHistory'])->name('reports.client-history')->middleware('permission:Reportes');
+    Route::get('reportes/historico-cliente/pdf', [\App\Http\Controllers\ReportController::class, 'clientHistoryPdf'])->name('reports.client-history-pdf')->middleware('permission:Reportes');
+    Route::get('reportes/resumen-mensual', [\App\Http\Controllers\ReportController::class, 'monthlySummary'])->name('reports.monthly-summary')->middleware('permission:Reportes');
 });
 
 require __DIR__ . '/settings.php';

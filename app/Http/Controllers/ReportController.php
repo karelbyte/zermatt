@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Additive;
 use App\Models\Cement;
+use App\Models\Client;
 use App\Models\Remission;
 use App\Services\AdditiveService;
 use App\Services\CementService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -109,6 +111,99 @@ class ReportController extends Controller
                 ],
             ],
             'selected_date' => $selectedDate->toDateString(),
+        ]);
+    }
+
+    public function clientHistory(Request $request): Response
+    {
+        $clientId = $request->query('client_id');
+        $dateFrom = $request->query('date_from');
+        $dateTo = $request->query('date_to');
+
+        $clients = Client::orderBy('name')->get(['id', 'name']);
+
+        $remissions = collect();
+        $totalQuantity = 0;
+
+        if ($clientId && $dateFrom && $dateTo) {
+            $remissions = Remission::with(['work:id,name', 'concreteType'])
+                ->where('client_id', $clientId)
+                ->whereDate('updated_at', '>=', $dateFrom)
+                ->whereDate('updated_at', '<=', $dateTo)
+                ->where(function ($q) {
+                    $q->whereNull('status')->orWhere('status', '!=', 'cancelada');
+                })
+                ->orderByDesc('updated_at')
+                ->get();
+
+            $totalQuantity = $remissions->sum('quantity');
+        }
+
+        return Inertia::render('reports/client-history', [
+            'clients' => $clients,
+            'remissions' => $remissions,
+            'total_quantity' => $totalQuantity,
+            'filters' => [
+                'client_id' => $clientId,
+                'date_from' => $dateFrom,
+                'date_to' => $dateTo,
+            ],
+        ]);
+    }
+
+    public function clientHistoryPdf(Request $request)
+    {
+        $clientId = $request->query('client_id');
+        $dateFrom = $request->query('date_from');
+        $dateTo = $request->query('date_to');
+
+        $client = $clientId ? Client::find($clientId) : null;
+
+        $remissions = collect();
+        $totalQuantity = 0;
+
+        if ($clientId && $dateFrom && $dateTo) {
+            $remissions = Remission::with(['work:id,name', 'concreteType'])
+                ->where('client_id', $clientId)
+                ->whereDate('updated_at', '>=', $dateFrom)
+                ->whereDate('updated_at', '<=', $dateTo)
+                ->where(function ($q) {
+                    $q->whereNull('status')->orWhere('status', '!=', 'cancelada');
+                })
+                ->orderByDesc('updated_at')
+                ->get();
+
+            $totalQuantity = $remissions->sum('quantity');
+        }
+
+        $dateFromFormatted = $dateFrom ? \Carbon\Carbon::parse($dateFrom)->format('d/m/Y') : '-';
+        $dateToFormatted = $dateTo ? \Carbon\Carbon::parse($dateTo)->format('d/m/Y') : '-';
+
+        $pdf = Pdf::loadView('reports.client-history', compact(
+            'client', 'remissions', 'totalQuantity', 'dateFromFormatted', 'dateToFormatted'
+        ));
+        $pdf->setPaper('letter', 'portrait');
+
+        return $pdf->download('historico-cliente-' . ($client?->name ?? 'desconocido') . '.pdf');
+    }
+
+    public function monthlySummary(): Response
+    {
+        $isPgsql = \Illuminate\Support\Facades\DB::connection()->getDriverName() === 'pgsql';
+
+        $yearExpr  = $isPgsql ? 'EXTRACT(YEAR  FROM updated_at)::int' : 'YEAR(updated_at)';
+        $monthExpr = $isPgsql ? 'EXTRACT(MONTH FROM updated_at)::int' : 'MONTH(updated_at)';
+
+        $monthly = Remission::selectRaw(
+                "$yearExpr as year, $monthExpr as month, SUM(quantity) as total_quantity, COUNT(*) as total_remissions"
+            )
+            ->where('status', '!=', 'cancelada')
+            ->groupByRaw("$yearExpr, $monthExpr")
+            ->orderByRaw("$yearExpr DESC, $monthExpr DESC")
+            ->get();
+
+        return Inertia::render('reports/monthly-summary', [
+            'monthly' => $monthly,
         ]);
     }
 }
