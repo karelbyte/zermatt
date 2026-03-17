@@ -48,9 +48,9 @@ export default function PrintRemission({ remission, delivered_to_date }: Remissi
 
 
                 {/* Date - Shifted up 5px from previous position (130px -> 125px) */}
-                <div className="absolute top-[125px] right-[205px] text-center w-8 font-semibold">{day}</div>
-                <div className="absolute top-[125px] right-[118px] text-center w-8 font-semibold">{month}</div>
-                <div className="absolute top-[125px] right-[44px] text-center w-10 font-semibold">{year}</div>
+                <div className="absolute top-[125px] right-[215px] text-center w-8 font-semibold">{day}</div>
+                <div className="absolute top-[125px] right-[128px] text-center w-8 font-semibold">{month}</div>
+                <div className="absolute top-[125px] right-[50px] text-center w-10 font-semibold">{year}</div>
 
                 {/* Cliente y Obra */}
                 <div className="absolute top-[165px] left-[65px] w-[300px] truncate font-semibold">{remission.status === 'cancelada' ? 'CANCELADA' : remission.client?.name}</div>
@@ -66,7 +66,7 @@ export default function PrintRemission({ remission, delivered_to_date }: Remissi
 
 
                 {/* Detalle Producto */}
-                <div className="absolute top-[285px] left-[55px] w-[90px] text-left text-[11px]">Fc: {remission.fc} <span className="lowercase">Kg/Cm2</span></div>
+                <div className="absolute top-[285px] left-[55px] w-[90px] text-left text-[11px]">F'c: {remission.fc} <span className="lowercase">Kg/Cm2</span></div>
                 <div className="absolute top-[305px] left-[55px] w-[90px] text-left text-[11px]">TIPO: {concreteType?.type}</div>
                 <div className="absolute top-[325px] left-[55px] w-[90px] text-left text-[12px] ">GRAVA: {remission.added} <span className="lowercase">mm</span></div>
                 <div className="absolute top-[300px] left-[160px] w-[70px] text-center text-[12px] font-semibold">{remission.quantity}</div>
@@ -96,7 +96,7 @@ export default function PrintRemission({ remission, delivered_to_date }: Remissi
                 <div className="absolute top-[470px] left-[150px] w-12 text-center font-semibold"></div> {/* Entrada Obra */}
                 <div className="absolute top-[205px] left-[205px] w-12 text-center font-semibold"></div> {/* Salida Obra */}
 
-                <div className="absolute top-[460px] left-[270px] w-[180px] text-center font-semibold uppercase text-[12px]">
+                <div className="absolute top-[460px] left-[310px] w-[180px] text-center font-semibold uppercase text-[12px]">
                     {remission.operator?.name}
                 </div>
             </div>

@@ -44,6 +44,7 @@ export default function RemissionsEdit({ remission, ...dropdowns }: Props) {
         cement_amount: remission.cement_amount ?? '',
         additive_amount: remission.additive_amount != null ? String(remission.additive_amount) : '',
         fiber_amount: remission.fiber_amount != null ? String(remission.fiber_amount) : '',
+        waterproofing_amount: remission.waterproofing_amount != null ? String(remission.waterproofing_amount) : '',
         gravel: remission.gravel != null ? String(remission.gravel) : '',
         sand: remission.sand != null ? String(remission.sand) : '',
         water: remission.water != null ? String(remission.water) : '',

@@ -28,6 +28,7 @@ export type Remission = {
     operator_id: number | null;
     cement_amount: number | null;
     additive_amount: string | null;
+    waterproofing_amount: string | null;
     fiber_amount: string | null;
     gravel: string | null;
     sand: string | null;

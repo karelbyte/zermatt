@@ -9,6 +9,8 @@ interface Props {
     inventoryStats: {
         cement: { received: number; used: number; previous: number };
         additives: { received: number; used: number; previous: number };
+        fibers?: { received: number; used: number; previous: number };
+        waterproofings?: { received: number; used: number; previous: number };
     };
 }
 
@@ -86,9 +88,9 @@ export function DailyProductionReport({ remissions, inventoryStats }: Props) {
                                 <td className="p-2 border-r border-sidebar-border/50 text-center">{r.gravel}</td>
                                 <td className="p-2 border-r border-sidebar-border/50 text-center">{r.sand}</td>
                                 <td className="p-2 border-r border-sidebar-border/50 text-center">{r.water}</td>
-                                <td className="p-2 border-r border-sidebar-border/50 text-center">{r.additive_amount}</td>
-                                <td className="p-2 border-r border-sidebar-border/50 text-center">{r.impermeable ? '1' : '0'}</td>
-                                <td className="p-2 border-r border-sidebar-border/50 text-center">{r.fiber ? '1' : '0'}</td>
+                                <td className="p-2 border-r border-sidebar-border/50 text-center">{r.additive_amount || '0'}</td>
+                                <td className="p-2 border-r border-sidebar-border/50 text-center">{r.waterproofing_amount || '0'}</td>
+                                <td className="p-2 border-r border-sidebar-border/50 text-center">{r.fiber_amount || '0'}</td>
                                 <td className="p-2 border-r border-sidebar-border/50 text-center">{r.pot?.number}</td>
                                 <td className="p-2 text-center text-muted-foreground">{formatDate(r.departure_date)}</td>
                             </tr>
@@ -110,8 +112,10 @@ export function DailyProductionReport({ remissions, inventoryStats }: Props) {
                             <td className="p-2 text-center border-r border-sidebar-border/70">{remissions.reduce((acc, r) => acc + parseFloat(String(r.gravel || 0)), 0).toFixed(1)}</td>
                             <td className="p-2 text-center border-r border-sidebar-border/70">{remissions.reduce((acc, r) => acc + parseFloat(String(r.sand || 0)), 0).toFixed(1)}</td>
                             <td className="p-2 text-center border-r border-sidebar-border/70">{remissions.reduce((acc, r) => acc + parseFloat(String(r.water || 0)), 0).toFixed(1)}</td>
-                            <td className="p-2 text-center border-r border-sidebar-border/70">{remissions.reduce((acc, r) => acc + parseFloat(String(r.additive_amount || 0)), 0).toFixed(1)}</td>
-                            <td colSpan={4}></td>
+                            <td className="p-2 text-center border-r border-sidebar-border/70">{remissions.reduce((acc, r) => acc + parseFloat(String(r.additive_amount || 0)), 0).toFixed(2)}</td>
+                            <td className="p-2 text-center border-r border-sidebar-border/70">{remissions.reduce((acc, r) => acc + parseFloat(String(r.waterproofing_amount || 0)), 0).toFixed(2)}</td>
+                            <td className="p-2 text-center border-r border-sidebar-border/70">{remissions.reduce((acc, r) => acc + parseFloat(String(r.fiber_amount || 0)), 0).toFixed(2)}</td>
+                            <td colSpan={2}></td>
                         </tr>
                     </tfoot>
                 </table>
@@ -176,6 +180,50 @@ export function DailyProductionReport({ remissions, inventoryStats }: Props) {
                         <div className="flex justify-between border-t border-sidebar-border/70 pt-2 text-primary">
                             <span className="font-bold">EXISTENCIA ACTUAL:</span>
                             <span className="font-bold">{(inventoryStats.additives.previous + inventoryStats.additives.received - inventoryStats.additives.used).toLocaleString('es-MX', { maximumFractionDigits: 1 })}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="rounded-xl border border-sidebar-border/70 p-4 bg-muted/20">
+                    <h3 className="text-sm font-bold mb-3 border-b border-sidebar-border/70 pb-2">RESUMEN DE FIBRA</h3>
+                    <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                            <span>Existencia Anterior:</span>
+                            <span className="font-bold">{(inventoryStats.fibers?.previous ?? 0).toLocaleString('es-MX', { maximumFractionDigits: 1 })}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span>(+) Fibra Recibida:</span>
+                            <span className="font-bold text-green-600">{(inventoryStats.fibers?.received ?? 0).toLocaleString('es-MX', { maximumFractionDigits: 1 })}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span>(-) Fibra Utilizada:</span>
+                            <span className="font-bold text-red-600">{(inventoryStats.fibers?.used ?? 0).toLocaleString('es-MX', { maximumFractionDigits: 1 })}</span>
+                        </div>
+                        <div className="flex justify-between border-t border-sidebar-border/70 pt-2 text-primary">
+                            <span className="font-bold">EXISTENCIA ACTUAL:</span>
+                            <span className="font-bold">{((inventoryStats.fibers?.previous ?? 0) + (inventoryStats.fibers?.received ?? 0) - (inventoryStats.fibers?.used ?? 0)).toLocaleString('es-MX', { maximumFractionDigits: 1 })}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="rounded-xl border border-sidebar-border/70 p-4 bg-muted/20">
+                    <h3 className="text-sm font-bold mb-3 border-b border-sidebar-border/70 pb-2">RESUMEN DE IMPERMEABILIZANTES (LTS)</h3>
+                    <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                            <span>Existencia Anterior:</span>
+                            <span className="font-bold">{(inventoryStats.waterproofings?.previous ?? 0).toLocaleString('es-MX', { maximumFractionDigits: 1 })}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span>(+) Imper. Recibido:</span>
+                            <span className="font-bold text-green-600">{(inventoryStats.waterproofings?.received ?? 0).toLocaleString('es-MX', { maximumFractionDigits: 1 })}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span>(-) Imper. Utilizado:</span>
+                            <span className="font-bold text-red-600">{(inventoryStats.waterproofings?.used ?? 0).toLocaleString('es-MX', { maximumFractionDigits: 1 })}</span>
+                        </div>
+                        <div className="flex justify-between border-t border-sidebar-border/70 pt-2 text-primary">
+                            <span className="font-bold">EXISTENCIA ACTUAL:</span>
+                            <span className="font-bold">{((inventoryStats.waterproofings?.previous ?? 0) + (inventoryStats.waterproofings?.received ?? 0) - (inventoryStats.waterproofings?.used ?? 0)).toLocaleString('es-MX', { maximumFractionDigits: 1 })}</span>
                         </div>
                     </div>
                 </div>

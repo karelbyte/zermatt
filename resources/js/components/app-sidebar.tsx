@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Building2, CookingPot, FileText, FlaskConical, HardHat, Layers, LayoutGrid, Package, Tag, Truck, UserCog, Users, UserCheck2Icon, ScrollText, BarChart3 } from 'lucide-react';
+import { BookOpen, Building2, CookingPot, FileText, FlaskConical, HardHat, PaintBucket, Layers, LayoutGrid, Package, Tag, Truck, UserCog, Users, UserCheck2Icon, ScrollText, BarChart3, Waves } from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -22,6 +22,8 @@ import { index as potsIndex } from '@/routes/pots';
 import { index as operatorsIndex } from '@/routes/operators';
 import { index as cementsIndex } from '@/routes/cements';
 import { index as additivesIndex } from '@/routes/additives';
+import { index as fibersIndex } from '@/routes/fibers';
+import { index as waterproofingsIndex } from '@/routes/waterproofings';
 import { index as suppliersIndex } from '@/routes/suppliers';
 import { index as usersIndex } from '@/routes/users';
 import { index as concreteTypesIndex } from '@/routes/concrete-types';
@@ -76,6 +78,16 @@ const mainNavItems: NavItem[] = [
         title: 'Aditivos',
         href: additivesIndex(),
         icon: FlaskConical,
+    },
+    {
+        title: 'Fibras',
+        href: fibersIndex(),
+        icon: Waves,
+    },
+    {
+        title: 'Impermeabilizantes',
+        href: waterproofingsIndex(),
+        icon: PaintBucket,
     },
     {
         title: 'Usos',

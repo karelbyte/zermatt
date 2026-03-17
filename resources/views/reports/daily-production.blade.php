@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reporte Diario de Producción - {{ now()->format('d/m/Y') }}</title>
+    <title>Reporte de Producción - {{ $selectedDate->format('d/m/Y') }}</title>
     <style>
         @page {
             margin: 0.5cm;
@@ -91,8 +91,8 @@
 <body>
     <div class="header">
         <img src="{{ public_path('zermatt01.jpeg') }}" alt="Logo" style="position: absolute; top: 10px; left: 10px; width: 100px;">
-        <h1>Reporte de Producción del Día</h1>
-        <div class="info">Fecha: {{ now()->format('d/m/Y H:i') }}</div>
+        <h1>Reporte de Producción del Día {{ $selectedDate->format('d/m/Y') }}</h1>
+        <div class="info">Fecha Impresión: {{ now()->format('d/m/Y H:i') }}</div>
     </div>
 
     <table>
@@ -127,6 +127,8 @@
                 $totalSand = 0;
                 $totalWater = 0;
                 $totalAdditive = 0;
+                $totalFiber = 0;
+                $totalWaterproofing = 0;
             @endphp
             @forelse($remissions as $r)
                 @php
@@ -138,6 +140,8 @@
                     $totalSand += (float)$r->sand;
                     $totalWater += (float)$r->water;
                     $totalAdditive += (float)$r->additive_amount;
+                    $totalFiber += (float)$r->fiber_amount;
+                    $totalWaterproofing += (float)$r->waterproofing_amount;
                 @endphp
                 <tr>
                     <td class="text-center font-bold">{{ $r->remision ?? $r->order_number }}</td>
@@ -154,8 +158,8 @@
                     <td class="text-center">{{ number_format($r->sand, 1) }}</td>
                     <td class="text-center">{{ number_format($r->water, 1) }}</td>
                     <td class="text-center">{{ number_format($r->additive_amount, 1) }}</td>
-                    <td class="text-center">{{ $r->impermeable ? '1' : '0' }}</td>
-                    <td class="text-center">{{ $r->fiber ? '1' : '0' }}</td>
+                    <td class="text-center">{{ $r->waterproofing_amount ?: '0' }}</td>
+                    <td class="text-center">{{ $r->fiber_amount ?: '0' }}</td>
                     <td class="text-center">{{ $r->pot?->number }}</td>
                     <td class="text-center">{{ $r->departure_date }}</td>
                 </tr>
@@ -176,7 +180,9 @@
                 <td class="text-center">{{ number_format($totalSand, 1) }}</td>
                 <td class="text-center">{{ number_format($totalWater, 1) }}</td>
                 <td class="text-center">{{ number_format($totalAdditive, 1) }}</td>
-                <td colspan="4"></td>
+                <td class="text-center">{{ number_format($totalWaterproofing, 1) }}</td>
+                <td class="text-center">{{ number_format($totalFiber, 1) }}</td>
+                <td colspan="2"></td>
             </tr>
         </tfoot>
         @endif
@@ -254,6 +260,64 @@
                         </tr>
                     </tbody>
                 </table>
+            </td>
+        </tr>
+    </table>
+
+    <table class="footer-tables" style="margin-top: 10px;">
+        <tr>
+            <td width="33%">
+                <table class="summary-table">
+                    <thead>
+                        <tr><th colspan="2">RESUMEN DE FIBRA (LTS)</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Existencia Anterior:</td>
+                            <td class="text-right font-bold">{{ number_format($inventoryStats['fibers']['previous'] ?? 0, 1) }}</td>
+                        </tr>
+                        <tr>
+                            <td>(+) Fibra Recibida:</td>
+                            <td class="text-right font-bold" style="color: green;">{{ number_format($inventoryStats['fibers']['received'] ?? 0, 1) }}</td>
+                        </tr>
+                        <tr>
+                            <td>(-) Fibra Utilizada:</td>
+                            <td class="text-right font-bold" style="color: red;">{{ number_format($inventoryStats['fibers']['used'] ?? 0, 1) }}</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="font-bold">EXISTENCIA ACTUAL:</td>
+                            <td class="text-right font-bold">{{ number_format(($inventoryStats['fibers']['previous'] ?? 0) + ($inventoryStats['fibers']['received'] ?? 0) - ($inventoryStats['fibers']['used'] ?? 0), 1) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td width="33%">
+                <table class="summary-table">
+                    <thead>
+                        <tr><th colspan="2">RESUMEN DE IMPER. (LTS)</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Existencia Anterior:</td>
+                            <td class="text-right font-bold">{{ number_format($inventoryStats['waterproofings']['previous'] ?? 0, 1) }}</td>
+                        </tr>
+                        <tr>
+                            <td>(+) Imper. Recibido:</td>
+                            <td class="text-right font-bold" style="color: green;">{{ number_format($inventoryStats['waterproofings']['received'] ?? 0, 1) }}</td>
+                        </tr>
+                        <tr>
+                            <td>(-) Imper. Utilizado:</td>
+                            <td class="text-right font-bold" style="color: red;">{{ number_format($inventoryStats['waterproofings']['used'] ?? 0, 1) }}</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="font-bold">EXISTENCIA ACTUAL:</td>
+                            <td class="text-right font-bold">{{ number_format(($inventoryStats['waterproofings']['previous'] ?? 0) + ($inventoryStats['waterproofings']['received'] ?? 0) - ($inventoryStats['waterproofings']['used'] ?? 0), 1) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td width="33%">
+                <!-- Empty spacer -->
             </td>
         </tr>
     </table>

@@ -30,6 +30,8 @@ interface PropRemission {
 interface Props {
     total_additives: number;
     total_cement: number;
+    total_fibers: number;
+    total_waterproofings: number;
     count_clients: number;
     count_works: number;
     count_remissions: number;
@@ -39,6 +41,8 @@ interface Props {
     inventory_stats: {
         cement: { received: number; used: number; previous: number };
         additives: { received: number; used: number; previous: number };
+        fibers: { received: number; used: number; previous: number };
+        waterproofings: { received: number; used: number; previous: number };
     };
 }
 import { formatDate } from '@/lib/utils';
@@ -46,6 +50,8 @@ import { formatDate } from '@/lib/utils';
 export default function Dashboard({
     total_additives,
     total_cement,
+    total_fibers,
+    total_waterproofings,
     count_clients,
     count_works,
     count_remissions,

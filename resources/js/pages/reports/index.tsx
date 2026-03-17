@@ -16,6 +16,8 @@ interface Props {
     inventory_stats: {
         cement: { received: number; used: number; previous: number; current: number };
         additives: { received: number; used: number; previous: number; current: number };
+        fibers: { received: number; used: number; previous: number; current: number };
+        waterproofings: { received: number; used: number; previous: number; current: number };
     };
     selected_date: string;
 }

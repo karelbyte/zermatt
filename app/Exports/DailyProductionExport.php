@@ -79,8 +79,8 @@ class DailyProductionExport implements FromCollection, WithHeadings, WithMapping
             $remission->sand,
             $remission->water,
             $remission->additive_amount,
-            $remission->impermeable ? '1' : '0',
-            $remission->fiber ? '1' : '0',
+            $remission->waterproofing_amount,
+            $remission->fiber_amount,
             $remission->pot?->number,
             $remission->departure_date ? Carbon::parse($remission->departure_date)->format('H:i') : ''
         ];
@@ -125,6 +125,8 @@ class DailyProductionExport implements FromCollection, WithHeadings, WithMapping
                 $sheet->setCellValue('L' . $nextRow, '=SUM(L5:L' . $lastRow . ')');
                 $sheet->setCellValue('M' . $nextRow, '=SUM(M5:M' . $lastRow . ')');
                 $sheet->setCellValue('N' . $nextRow, '=SUM(N5:N' . $lastRow . ')');
+                $sheet->setCellValue('O' . $nextRow, '=SUM(O5:O' . $lastRow . ')');
+                $sheet->setCellValue('P' . $nextRow, '=SUM(P5:P' . $lastRow . ')');
 
                 $sheet->getStyle('A4:R' . $nextRow)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
                 $sheet->getStyle('A' . $nextRow . ':R' . $nextRow)->getFont()->setBold(true);
@@ -186,9 +188,49 @@ class DailyProductionExport implements FromCollection, WithHeadings, WithMapping
                     $sheet->setCellValue('I' . ($addInvRow + 4), $this->inventoryStats['additives']['previous'] + $this->inventoryStats['additives']['received'] - $this->inventoryStats['additives']['used']);
                     $sheet->getStyle('F' . ($addInvRow + 4) . ':I' . ($addInvRow + 4))->getFont()->setBold(true);
 
+                    // Fibers Inventory
+                    $fibInvRow = $addInvRow + 6;
+                    $sheet->setCellValue('F' . $fibInvRow, 'RESUMEN FIBRA (LTS)');
+                    $sheet->mergeCells('F' . $fibInvRow . ':I' . $fibInvRow);
+                    $sheet->getStyle('F' . $fibInvRow)->getFont()->setBold(true);
+
+                    $sheet->setCellValue('F' . ($fibInvRow + 1), 'Existencia Anterior:');
+                    $sheet->setCellValue('I' . ($fibInvRow + 1), $this->inventoryStats['fibers']['previous'] ?? 0);
+
+                    $sheet->setCellValue('F' . ($fibInvRow + 2), '(+) Fibra Recibido:');
+                    $sheet->setCellValue('I' . ($fibInvRow + 2), $this->inventoryStats['fibers']['received'] ?? 0);
+
+                    $sheet->setCellValue('F' . ($fibInvRow + 3), '(-) Fibra Utilizado:');
+                    $sheet->setCellValue('I' . ($fibInvRow + 3), $this->inventoryStats['fibers']['used'] ?? 0);
+
+                    $sheet->setCellValue('F' . ($fibInvRow + 4), 'EXISTENCIA ACTUAL:');
+                    $sheet->setCellValue('I' . ($fibInvRow + 4), ($this->inventoryStats['fibers']['previous'] ?? 0) + ($this->inventoryStats['fibers']['received'] ?? 0) - ($this->inventoryStats['fibers']['used'] ?? 0));
+                    $sheet->getStyle('F' . ($fibInvRow + 4) . ':I' . ($fibInvRow + 4))->getFont()->setBold(true);
+
+                    // Waterproofings Inventory
+                    $wtrInvRow = $fibInvRow + 6;
+                    $sheet->setCellValue('F' . $wtrInvRow, 'RESUMEN IMPER. (LTS)');
+                    $sheet->mergeCells('F' . $wtrInvRow . ':I' . $wtrInvRow);
+                    $sheet->getStyle('F' . $wtrInvRow)->getFont()->setBold(true);
+
+                    $sheet->setCellValue('F' . ($wtrInvRow + 1), 'Existencia Anterior:');
+                    $sheet->setCellValue('I' . ($wtrInvRow + 1), $this->inventoryStats['waterproofings']['previous'] ?? 0);
+
+                    $sheet->setCellValue('F' . ($wtrInvRow + 2), '(+) Imper. Recibido:');
+                    $sheet->setCellValue('I' . ($wtrInvRow + 2), $this->inventoryStats['waterproofings']['received'] ?? 0);
+
+                    $sheet->setCellValue('F' . ($wtrInvRow + 3), '(-) Imper. Utilizado:');
+                    $sheet->setCellValue('I' . ($wtrInvRow + 3), $this->inventoryStats['waterproofings']['used'] ?? 0);
+
+                    $sheet->setCellValue('F' . ($wtrInvRow + 4), 'EXISTENCIA ACTUAL:');
+                    $sheet->setCellValue('I' . ($wtrInvRow + 4), ($this->inventoryStats['waterproofings']['previous'] ?? 0) + ($this->inventoryStats['waterproofings']['received'] ?? 0) - ($this->inventoryStats['waterproofings']['used'] ?? 0));
+                    $sheet->getStyle('F' . ($wtrInvRow + 4) . ':I' . ($wtrInvRow + 4))->getFont()->setBold(true);
+
                     // Styling for summaries
                     $sheet->getStyle('F' . $invRow . ':I' . ($invRow + 4))->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
                     $sheet->getStyle('F' . $addInvRow . ':I' . ($addInvRow + 4))->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                    $sheet->getStyle('F' . $fibInvRow . ':I' . ($fibInvRow + 4))->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                    $sheet->getStyle('F' . $wtrInvRow . ':I' . ($wtrInvRow + 4))->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
                 }
 
                 // Styling for M3 summary

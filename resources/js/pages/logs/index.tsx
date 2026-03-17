@@ -15,6 +15,8 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { JsonViewer } from '@/components/json-viewer';
+import { useRef } from 'react';
 
 type ActivityLog = {
     id: number;
@@ -67,7 +69,7 @@ export default function LogsIndex({ logs, modelTypes, filters }: Props) {
     const [search, setSearch] = useState(filters.search || '');
     const [action, setAction] = useState(filters.action || 'all');
     const [modelType, setModelType] = useState(filters.model_type || 'all');
-
+    
     const actionNames: Record<string, string> = {
         created: 'Creado',
         updated: 'Actualizado',
@@ -75,6 +77,14 @@ export default function LogsIndex({ logs, modelTypes, filters }: Props) {
     };
 
     useEffect(() => {
+        // Only trigger update if local state differs from props (meaning user changed a filter)
+        const hasChanged =
+            search !== (filters.search || '') ||
+            action !== (filters.action || 'all') ||
+            modelType !== (filters.model_type || 'all');
+
+        if (!hasChanged) return;
+
         const timer = setTimeout(() => {
             const params: Record<string, string> = {};
             if (search) params.search = search;
@@ -89,7 +99,7 @@ export default function LogsIndex({ logs, modelTypes, filters }: Props) {
         }, 300);
 
         return () => clearTimeout(timer);
-    }, [search, action, modelType]);
+    }, [search, action, modelType, filters]);
 
     const getActionBadge = (actionValue: string) => {
         const variants: Record<string, 'default' | 'secondary' | 'destructive'> = {
@@ -231,16 +241,12 @@ export default function LogsIndex({ logs, modelTypes, filters }: Props) {
                                             </td>
                                             <td className="p-3 text-xs text-muted-foreground max-w-xs">
                                                 {log.old_values ? (
-                                                    <pre className="whitespace-pre-wrap break-words text-[10px]">
-                                                        {JSON.stringify(log.old_values, null, 2)}
-                                                    </pre>
+                                                    <JsonViewer data={log.old_values} />
                                                 ) : '—'}
                                             </td>
                                             <td className="p-3 text-xs text-muted-foreground max-w-xs">
                                                 {log.new_values ? (
-                                                    <pre className="whitespace-pre-wrap break-words text-[10px]">
-                                                        {JSON.stringify(log.new_values, null, 2)}
-                                                    </pre>
+                                                    <JsonViewer data={log.new_values} />
                                                 ) : '—'}
                                             </td>
                                         </tr>

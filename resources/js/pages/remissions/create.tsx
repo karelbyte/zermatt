@@ -43,6 +43,7 @@ export default function RemissionsCreate(props: Props) {
         cement_amount: '',
         additive_amount: '',
         fiber_amount: '',
+        waterproofing_amount: '',
         gravel: '',
         sand: '',
         water: '',

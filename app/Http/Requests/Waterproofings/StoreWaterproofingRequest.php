@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Http\Requests\Waterproofings;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class StoreWaterproofingRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'date' => ['required', 'date'],
+            'lit' => ['required', 'numeric', 'min:0'],
+            'supplier_id' => ['nullable', 'exists:suppliers,id'],
+            'document' => ['nullable', 'string', 'max:255'],
+            'status' => ['required', 'in:open,closed'],
+        ];
+    }
+}

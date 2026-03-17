@@ -4,6 +4,8 @@ export type * from './cement';
 export type * from './clients';
 export type * from './concrete-types';
 export type * from './designs';
+export type * from './fibers';
+export type * from './waterproofings';
 export type * from './moisture-absorption';
 export type * from './navigation';
 export type * from './pots';

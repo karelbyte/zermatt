@@ -38,9 +38,13 @@ use App\Models\Remission;
 use App\Models\Supplier;
 use App\Models\Cement;
 use App\Models\Additive;
+use App\Models\Fiber;
+use App\Models\Waterproofing;
+use App\Services\FiberService;
+use App\Services\WaterproofingService;
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function (AdditiveService $additiveService, CementService $cementService) {
+    Route::get('dashboard', function (AdditiveService $additiveService, CementService $cementService, FiberService $fiberService, WaterproofingService $waterproofingService) {
         $todayRemissions = Remission::whereDate('updated_at', today())->get();
         $todayCementUsed = $todayRemissions->sum('cement_amount');
         $todayCementReceived = Cement::whereDate('date', today())->where('status', 'closed')->sum('tons');
@@ -50,8 +54,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         $todayAdditivesReceived = Additive::whereDate('date', today())->where('status', 'closed')->sum('lit');
         $currentAdditives = $additiveService->getTotalLiters();
 
+        $todayFibersUsed = $todayRemissions->sum('fiber_amount');
+        $todayFibersReceived = Fiber::whereDate('date', today())->where('status', 'closed')->sum('lit');
+        $currentFibers = $fiberService->getTotalAmount();
+
+        $todayWaterproofingsUsed = $todayRemissions->sum('waterproofing_amount');
+        $todayWaterproofingsReceived = Waterproofing::whereDate('date', today())->where('status', 'closed')->sum('lit');
+        $currentWaterproofings = $waterproofingService->getTotalAmount();
+
         return Inertia::render('dashboard', [
             'total_additives' => $currentAdditives,
+            'total_fibers' => $currentFibers,
+            'total_waterproofings' => $currentWaterproofings,
             'total_cement' => $currentCement,
             'count_clients' => Client::count(),
             'count_works' => Work::count(),
@@ -74,6 +88,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'received' => $todayAdditivesReceived,
                     'used' => $todayAdditivesUsed,
                     'previous' => $currentAdditives + $todayAdditivesUsed - $todayAdditivesReceived,
+                ],
+                'fibers' => [
+                    'received' => $todayFibersReceived,
+                    'used' => $todayFibersUsed,
+                    'previous' => $currentFibers + $todayFibersUsed - $todayFibersReceived,
+                ],
+                'waterproofings' => [
+                    'received' => $todayWaterproofingsReceived,
+                    'used' => $todayWaterproofingsUsed,
+                    'previous' => $currentWaterproofings + $todayWaterproofingsUsed - $todayWaterproofingsReceived,
                 ]
             ]
         ]);
@@ -87,6 +111,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('suppliers', SupplierController::class)->except(['show'])->middleware('permission:Proveedores');
     Route::resource('cements', CementController::class)->except(['show'])->middleware('permission:Cemento');
     Route::resource('additives', AdditiveController::class)->except(['show'])->middleware('permission:Aditivos');
+    Route::resource('fibers', \App\Http\Controllers\FiberController::class)->except(['show'])->middleware('permission:Fibras');
+    Route::resource('waterproofings', \App\Http\Controllers\WaterproofingController::class)->except(['show'])->middleware('permission:Impermeabilizantes');
     Route::resource('concrete-types', ConcreteTypeController::class)->except(['show'])->middleware('permission:Tipos de Concretos');
     Route::resource('designs', DesignController::class)->except(['show'])->middleware('permission:Diseños');
     Route::resource('usages', UsageController::class)->except(['show'])->middleware('permission:Usos');

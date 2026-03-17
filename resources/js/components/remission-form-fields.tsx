@@ -39,6 +39,38 @@ export function RemissionFormFields({
     // Filter designs based on selected concrete type
     const [filteredDesigns, setFilteredDesigns] = useState(designs);
 
+    const updateSpecificationSuffixes = (baseSpec: string, pump: boolean, imper: boolean, fiber: boolean) => {
+        let newSpec = baseSpec || '';
+        
+        const pumpText = ', CON SERVICIO DE BOMBA PLUMA';
+        const tiroDirectoText = ', TIRO DIRECTO';
+        const imperText = ', CONCRETO CON IMPERMEABILIZANTE';
+        const fiberText = ', CONCRETO CON FIBRA';
+        const imperFiberText = ', CONCRETO CON IMPERMEABILIZANTE Y FIBRA';
+
+        newSpec = newSpec.replace(pumpText, '')
+                         .replace(tiroDirectoText, '')
+                         .replace(imperFiberText, '')
+                         .replace(imperText, '')
+                         .replace(fiberText, '');
+
+        if (pump) {
+            newSpec += pumpText;
+        } else {
+            newSpec += tiroDirectoText;
+        }
+
+        if (imper && fiber) {
+            newSpec += imperFiberText;
+        } else if (imper) {
+            newSpec += imperText;
+        } else if (fiber) {
+            newSpec += fiberText;
+        }
+
+        return newSpec;
+    };
+
     const filteredWorks = useMemo(() => {
         const clientId = data.client_id ? String(data.client_id) : '';
         if (!clientId) return [];
@@ -173,11 +205,8 @@ export function RemissionFormFields({
             const design = selectedDesign;
             if (design) {
                 const ctDesign = concreteTypes.find((c) => c.id === design.concrete_type_id);
-                const pumpText = ', CON SERVICIO DE BOMBA PLUMA';
                 let spec = ctDesign ? ctDesign.description || '' : '';
-                if (data.pump && !spec.includes(pumpText)) {
-                    spec += pumpText;
-                }
+                spec = updateSpecificationSuffixes(spec, !!data.pump, !!data.impermeable, !!data.fiber);
 
                 updateData.added = design.added;
                 updateData.slump = design.slump;
@@ -196,19 +225,19 @@ export function RemissionFormFields({
                         const humidityGravel = moistureAbsorption?.humidity_gravel || 0;
                         const absorptionGravel = moistureAbsorption?.absorption_gravel || 0;
 
-                        const sandWaterContrib = (baseSand * (humiditySand - absorptionSand)) / 100;
-                        const gravelWaterContrib = (baseGravel * (humidityGravel - absorptionGravel)) / 100;
+                        const totalHumidity = ((baseSand * humiditySand) / 100) + ((baseGravel * humidityGravel) / 100);
+                        const totalAbsorption = ((baseSand * absorptionSand) / 100) + ((baseGravel * absorptionGravel) / 100);
 
                         updateData.cement_amount = Math.round(baseCement).toString();
-                        updateData.sand = (baseSand * (1 + humiditySand / 100)).toFixed(2);
-                        updateData.gravel = (baseGravel * (1 + humidityGravel / 100)).toFixed(2);
-                        updateData.water = (baseWater - sandWaterContrib - gravelWaterContrib).toFixed(2);
+                        updateData.sand = (baseSand * (1 + (humiditySand - absorptionSand) / 100)).toFixed(2);
+                        updateData.gravel = (baseGravel * (1 + (humidityGravel - absorptionGravel) / 100)).toFixed(2);
+                        updateData.water = (baseWater - totalHumidity + totalAbsorption).toFixed(2);
                     }
                 }
             }
         }
 
-        // Only update if there is a change to avoid infinite loops if fields are in dependencies
+
         setData((d: any) => {
             const hasChanged = Object.keys(updateData).some(key => d[key] !== updateData[key]);
             if (!hasChanged) return d;
@@ -217,7 +246,7 @@ export function RemissionFormFields({
                 ...updateData,
             };
         });
-    }, [data.design_id, data.fc, data.quantity, data.added, data.slump, data.concrete_type_id, data.pump, moistureAbsorption, designs, setData]);
+    }, [data.design_id, data.fc, data.quantity, data.added, data.slump, data.concrete_type_id, data.pump, data.impermeable, data.fiber, moistureAbsorption, designs, setData]);
 
     return (
         <div className="space-y-8">
@@ -386,12 +415,9 @@ export function RemissionFormFields({
                             onChange={(e) => {
                                 const val = e.target.value;
                                 const ct = concreteTypes.find((c) => String(c.id) === String(val));
-                                const pumpText = ', CON SERVICIO DE BOMBA PLUMA';
                                 setData((prev: any) => {
                                     let newSpec = ct ? ct.description || '' : prev.specification || '';
-                                    if (prev.pump && !newSpec.includes(pumpText)) {
-                                        newSpec += pumpText;
-                                    }
+                                    newSpec = updateSpecificationSuffixes(newSpec, !!prev.pump, !!prev.impermeable, !!prev.fiber);
                                     return { ...prev, concrete_type_id: val, design_id: '', fc: '', specification: newSpec };
                                 });
                             }}
@@ -447,16 +473,8 @@ export function RemissionFormFields({
                                     name="pump"
                                     checked={!!data.pump}
                                     onCheckedChange={(checked) => {
-                                        const pumpText = ', CON SERVICIO DE BOMBA PLUMA';
                                         setData((prev: any) => {
-                                            let newSpec = prev.specification || '';
-                                            if (checked) {
-                                                if (!newSpec.includes(pumpText)) {
-                                                    newSpec += pumpText;
-                                                }
-                                            } else {
-                                                newSpec = newSpec.replace(pumpText, '');
-                                            }
+                                            const newSpec = updateSpecificationSuffixes(prev.specification || '', !!checked, !!prev.impermeable, !!prev.fiber);
                                             return { ...prev, pump: checked, specification: newSpec };
                                         });
                                     }}
@@ -468,7 +486,12 @@ export function RemissionFormFields({
                                     id="impermeable"
                                     name="impermeable"
                                     checked={!!data.impermeable}
-                                    onCheckedChange={(checked) => setData('impermeable', checked)}
+                                    onCheckedChange={(checked) => {
+                                        setData((prev: any) => {
+                                            const newSpec = updateSpecificationSuffixes(prev.specification || '', !!prev.pump, !!checked, !!prev.fiber);
+                                            return { ...prev, impermeable: checked, specification: newSpec };
+                                        });
+                                    }}
                                 />
                                 <Label htmlFor="impermeable">Imper</Label>
                             </div>
@@ -477,7 +500,12 @@ export function RemissionFormFields({
                                     id="fiber"
                                     name="fiber"
                                     checked={!!data.fiber}
-                                    onCheckedChange={(checked) => setData('fiber', checked)}
+                                    onCheckedChange={(checked) => {
+                                        setData((prev: any) => {
+                                            const newSpec = updateSpecificationSuffixes(prev.specification || '', !!prev.pump, !!prev.impermeable, !!checked);
+                                            return { ...prev, fiber: checked, specification: newSpec };
+                                        });
+                                    }}
                                 />
                                 <Label htmlFor="fiber">Fibra</Label>
                             </div>
@@ -497,69 +525,71 @@ export function RemissionFormFields({
                         />
                         <InputError message={errors.concept} />
                     </div>*/}
-                    <div className="grid gap-2">
-                        <Label htmlFor="added">Añadido (cm)</Label>
-                        <Input
-                            id="added"
-                            name="added"
-                            type="number"
-                            min={0}
-                            value={data.added ?? ''}
-                            onChange={(e) => setData('added', e.target.value)}
-                        />
-                        <InputError message={errors.added} />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="slump">Revenimiento</Label>
-                        <Input
-                            id="slump"
-                            name="slump"
-                            type="number"
-                            min={0}
-                            value={data.slump ?? ''}
-                            onChange={(e) => setData('slump', e.target.value)}
-                        />
-                        <InputError message={errors.slump} />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="total_quantity">Cantidad total a surtir</Label>
-                        <Input
-                            id="total_quantity"
-                            name="total_quantity"
-                            type="number"
-                            step="0.01"
-                            min={0}
-                            value={data.total_quantity ?? ''}
-                            onChange={(e) => setData('total_quantity', e.target.value)}
-                        />
-                        <InputError message={errors.total_quantity} />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="quantity">Cantidad</Label>
-                        <Input
-                            id="quantity"
-                            name="quantity"
-                            type="number"
-                            step="0.01"
-                            min={0}
-                            value={data.quantity ?? ''}
-                            onChange={(e) => setData('quantity', e.target.value)}
-                        />
-                        <InputError message={errors.quantity} />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="pending_delivery">Pendiente de entrega</Label>
-                        <Input
-                            id="pending_delivery"
-                            name="pending_delivery"
-                            type="number"
-                            step="0.01"
-                            min={0}
-                            value={data.pending_delivery ?? ''}
-                            readOnly
-                            disabled
-                        />
-                        <InputError message={errors.pending_delivery} />
+                    <div className="col-span-full grid gap-4 grid-cols-2 md:grid-cols-5">
+                        <div className="grid gap-2">
+                            <Label htmlFor="added">Añadido (cm)</Label>
+                            <Input
+                                id="added"
+                                name="added"
+                                type="number"
+                                min={0}
+                                value={data.added ?? ''}
+                                onChange={(e) => setData('added', e.target.value)}
+                            />
+                            <InputError message={errors.added} />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="slump">Revenimiento</Label>
+                            <Input
+                                id="slump"
+                                name="slump"
+                                type="number"
+                                min={0}
+                                value={data.slump ?? ''}
+                                onChange={(e) => setData('slump', e.target.value)}
+                            />
+                            <InputError message={errors.slump} />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="total_quantity">Cantidad total a surtir</Label>
+                            <Input
+                                id="total_quantity"
+                                name="total_quantity"
+                                type="number"
+                                step="0.01"
+                                min={0}
+                                value={data.total_quantity ?? ''}
+                                onChange={(e) => setData('total_quantity', e.target.value)}
+                            />
+                            <InputError message={errors.total_quantity} />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="quantity">Cantidad</Label>
+                            <Input
+                                id="quantity"
+                                name="quantity"
+                                type="number"
+                                step="0.01"
+                                min={0}
+                                value={data.quantity ?? ''}
+                                onChange={(e) => setData('quantity', e.target.value)}
+                            />
+                            <InputError message={errors.quantity} />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="pending_delivery">Pendiente de entrega</Label>
+                            <Input
+                                id="pending_delivery"
+                                name="pending_delivery"
+                                type="number"
+                                step="0.01"
+                                min={0}
+                                value={data.pending_delivery ?? ''}
+                                readOnly
+                                disabled
+                            />
+                            <InputError message={errors.pending_delivery} />
+                        </div>
                     </div>
                 </div>
             </section>
@@ -617,7 +647,7 @@ export function RemissionFormFields({
 
             <section className="space-y-4">
                 <h3 className="text-sm font-medium text-muted-foreground">Cantidades (materiales)</h3>
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     <div className="grid gap-2">
                         <Label htmlFor="cement_amount">Cemento</Label>
                         <Input
@@ -629,32 +659,6 @@ export function RemissionFormFields({
                             onChange={(e) => setData('cement_amount', e.target.value)}
                         />
                         <InputError message={errors.cement_amount} />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="additive_amount">Aditivo</Label>
-                        <Input
-                            id="additive_amount"
-                            name="additive_amount"
-                            type="number"
-                            step="0.01"
-                            min={0}
-                            value={data.additive_amount ?? ''}
-                            onChange={(e) => setData('additive_amount', e.target.value)}
-                        />
-                        <InputError message={errors.additive_amount} />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="fiber_amount">Fibra (cant.)</Label>
-                        <Input
-                            id="fiber_amount"
-                            name="fiber_amount"
-                            type="number"
-                            step="0.01"
-                            min={0}
-                            value={data.fiber_amount ?? ''}
-                            onChange={(e) => setData('fiber_amount', e.target.value)}
-                        />
-                        <InputError message={errors.fiber_amount} />
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="gravel">Grava</Label>
@@ -694,6 +698,45 @@ export function RemissionFormFields({
                             onChange={(e) => setData('water', e.target.value)}
                         />
                         <InputError message={errors.water} />
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="additive_amount">Aditivo</Label>
+                        <Input
+                            id="additive_amount"
+                            name="additive_amount"
+                            type="number"
+                            step="0.01"
+                            min={0}
+                            value={data.additive_amount ?? ''}
+                            onChange={(e) => setData('additive_amount', e.target.value)}
+                        />
+                        <InputError message={errors.additive_amount} />
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="waterproofing_amount">Impermeabilizante (cant.)</Label>
+                        <Input
+                            id="waterproofing_amount"
+                            name="waterproofing_amount"
+                            type="number"
+                            step="0.01"
+                            min={0}
+                            value={data.waterproofing_amount ?? ''}
+                            onChange={(e) => setData('waterproofing_amount', e.target.value)}
+                        />
+                        <InputError message={errors.waterproofing_amount} />
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="fiber_amount">Fibra (cant.)</Label>
+                        <Input
+                            id="fiber_amount"
+                            name="fiber_amount"
+                            type="number"
+                            step="0.01"
+                            min={0}
+                            value={data.fiber_amount ?? ''}
+                            onChange={(e) => setData('fiber_amount', e.target.value)}
+                        />
+                        <InputError message={errors.fiber_amount} />
                     </div>
                 </div>
             </section>

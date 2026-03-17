@@ -13,7 +13,7 @@ use Inertia\Response;
 
 class ReportController extends Controller
 {
-    public function index(Request $request, AdditiveService $additiveService, CementService $cementService): Response
+    public function index(Request $request, AdditiveService $additiveService, CementService $cementService, \App\Services\FiberService $fiberService, \App\Services\WaterproofingService $waterproofingService): Response
     {
         $date = $request->query('date', today()->toDateString());
         $selectedDate = \Carbon\Carbon::parse($date);
@@ -35,6 +35,16 @@ class ReportController extends Controller
             ->where('status', 'closed')
             ->sum('lit');
 
+        $todayFibersUsed = $dailyRemissions->sum('fiber_amount');
+        $todayFibersReceived = \App\Models\Fiber::whereDate('date', $selectedDate)
+            ->where('status', 'closed')
+            ->sum('lit');
+
+        $todayWaterproofingsUsed = $dailyRemissions->sum('waterproofing_amount');
+        $todayWaterproofingsReceived = \App\Models\Waterproofing::whereDate('date', $selectedDate)
+            ->where('status', 'closed')
+            ->sum('lit');
+
         // Calculate inventory up to the START of the selected date (previous day end)
         $cementReceivedBefore = Cement::whereDate('date', '<', $selectedDate)
             ->where('status', 'closed')
@@ -50,9 +60,25 @@ class ReportController extends Controller
             ->sum('additive_amount');
         $previousAdditives = $additivesReceivedBefore - $additivesUsedBefore;
 
+        $fibersReceivedBefore = \App\Models\Fiber::whereDate('date', '<', $selectedDate)
+            ->where('status', 'closed')
+            ->sum('lit');
+        $fibersUsedBefore = Remission::whereDate('updated_at', '<', $selectedDate)
+            ->sum('fiber_amount');
+        $previousFibers = $fibersReceivedBefore - $fibersUsedBefore;
+
+        $waterproofingsReceivedBefore = \App\Models\Waterproofing::whereDate('date', '<', $selectedDate)
+            ->where('status', 'closed')
+            ->sum('lit');
+        $waterproofingsUsedBefore = Remission::whereDate('updated_at', '<', $selectedDate)
+            ->sum('waterproofing_amount');
+        $previousWaterproofings = $waterproofingsReceivedBefore - $waterproofingsUsedBefore;
+
         // Calculate inventory at the END of the selected date
         $finalCement = $previousCement + $todayCementReceived - $todayCementUsed;
         $finalAdditives = $previousAdditives + $todayAdditivesReceived - $todayAdditivesUsed;
+        $finalFibers = $previousFibers + $todayFibersReceived - $todayFibersUsed;
+        $finalWaterproofings = $previousWaterproofings + $todayWaterproofingsReceived - $todayWaterproofingsUsed;
 
         return Inertia::render('reports/index', [
             'daily_remissions' => $dailyRemissions,
@@ -68,6 +94,18 @@ class ReportController extends Controller
                     'used' => $todayAdditivesUsed,
                     'previous' => $previousAdditives,
                     'current' => $finalAdditives,
+                ],
+                'fibers' => [
+                    'received' => $todayFibersReceived,
+                    'used' => $todayFibersUsed,
+                    'previous' => $previousFibers,
+                    'current' => $finalFibers,
+                ],
+                'waterproofings' => [
+                    'received' => $todayWaterproofingsReceived,
+                    'used' => $todayWaterproofingsUsed,
+                    'previous' => $previousWaterproofings,
+                    'current' => $finalWaterproofings,
                 ],
             ],
             'selected_date' => $selectedDate->toDateString(),
