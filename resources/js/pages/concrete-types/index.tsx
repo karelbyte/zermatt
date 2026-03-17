@@ -74,7 +74,7 @@ export default function ConcreteTypesIndex({ concreteTypes, filters }: Props) {
                     <Heading
                         variant="small"
                         title="Tipos de Concretos"
-                        description="Gestiona la lista de precios por tipo de concreto"
+                        description="Gestiona la lista de tipos de concretos"
                     />
                     <div className="flex items-center gap-2">
                         <div className="relative w-full sm:w-64">
@@ -89,7 +89,7 @@ export default function ConcreteTypesIndex({ concreteTypes, filters }: Props) {
                         <Button asChild>
                             <Link href={create().url}>
                                 <Plus className="mr-2 size-4" />
-                                Nuevo precio
+                                Nuevo
                             </Link>
                         </Button>
                     </div>
@@ -104,8 +104,8 @@ export default function ConcreteTypesIndex({ concreteTypes, filters }: Props) {
                 {concreteTypes.data.length === 0 ? (
                     <EmptyState
                         icon={Layers}
-                        title={search ? "No se encontraron resultados" : "No hay precios registrados"}
-                        description={search ? `No se encontraron resultados para "${search}"` : "Aún no has registrado ningún precio de concreto. Crea el primero para comenzar."}
+                        title={search ? "No se encontraron resultados" : "No hay concretos registrados"}
+                        description={search ? `No se encontraron resultados para "${search}"` : "Aún no has registrado ningún concreto. Crea el primero para comenzar."}
                         action={!search && (
                             <Button asChild>
                                 <Link href={create().url}>

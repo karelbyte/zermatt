@@ -17,19 +17,19 @@ type Props = {
 
 export default function ConcreteTypesEdit({ concreteType }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Precios', href: index().url },
+        { title: 'Concretos', href: index().url },
         { title: concreteType.type, href: edit(concreteType.id).url },
     ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={`Editar precio ${concreteType.type}`} />
+            <Head title={`Editar concreto ${concreteType.type}`} />
 
             <div className="space-y-6">
                 <Heading
                     variant="small"
-                    title="Editar precio de concreto"
-                    description="Modifica los datos del precio del concreto"
+                    title="Editar concreto"
+                    description="Modifica los datos del  concreto"
                 />
 
                 <Form

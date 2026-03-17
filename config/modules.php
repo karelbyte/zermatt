@@ -10,6 +10,8 @@ return [
     'Cemento',
     'Aditivos',
     'Usos',
+    'Fibras',
+    'Impermeabilizantes',
     'Tipos de Concretos',
     'Diseños',
     'Remisiones',
