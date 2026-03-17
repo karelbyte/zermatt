@@ -95,7 +95,7 @@ export default function WaterproofingsIndex({ waterproofings }: Props) {
                                 <thead className="border-b border-sidebar-border/70 bg-muted/50">
                                     <tr>
                                         <th className="p-3 font-medium">Fecha</th>
-                                        <th className="p-3 font-medium">Litros</th>
+                                        <th className="p-3 font-medium">Kg</th>
                                         <th className="p-3 font-medium">Proveedor</th>
                                         <th className="p-3 font-medium">Documento</th>
                                         <th className="p-3 font-medium text-center">Estado</th>
