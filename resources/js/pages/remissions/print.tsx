@@ -97,7 +97,15 @@ export default function PrintRemission({ remission, delivered_to_date }: Remissi
                 <div className="absolute top-[205px] left-[205px] w-12 text-center font-semibold"></div> {/* Salida Obra */}
 
                 <div className="absolute top-[460px] left-[310px] w-[180px] text-center font-semibold uppercase text-[12px]">
-                    {remission.operator?.name}
+                    <div>{remission.operator?.name}</div>
+                    <div>
+                        {(() => {
+                            const potName = (remission.pot as any)?.name as string | undefined;
+                            const potNumber = remission.pot?.number;
+                            const potText = potName ? potName : (potNumber ? `OLLA ${potNumber}` : '');
+                            return potText ? potText : '';
+                        })()}
+                    </div>
                 </div>
             </div>
 

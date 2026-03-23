@@ -359,7 +359,7 @@ class RemissionController extends Controller
         ];
 
         return \Maatwebsite\Excel\Facades\Excel::download(
-            new \App\Exports\DailyProductionExport(null, $inventoryStats),
+            new \App\Exports\DailyProductionExport($selectedDate, $inventoryStats),
             'reporte-produccion-' . $selectedDate->format('Y-m-d') . '.xlsx'
         );
     }
