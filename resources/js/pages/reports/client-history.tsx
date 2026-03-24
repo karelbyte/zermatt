@@ -31,6 +31,7 @@ interface Remission {
     updated_at: string;
     quantity: number;
     fc?: string | number;
+    pump?: boolean;
     work?: { id: number; name: string };
     concrete_type?: { id: number; type: string };
 }
@@ -183,6 +184,7 @@ export default function ClientHistory({ clients, remissions, total_quantity, fil
                                             <th className="p-3 font-medium">Remisión</th>
                                             <th className="p-3 font-medium">Pedido</th>
                                             <th className="p-3 font-medium text-left">Obra</th>
+                                            <th className="p-3 font-medium">Servicio</th>
                                             <th className="p-3 font-medium">Tipo</th>
                                             <th className="p-3 font-medium">Fc</th>
                                             <th className="p-3 font-medium">M³</th>
@@ -195,6 +197,7 @@ export default function ClientHistory({ clients, remissions, total_quantity, fil
                                                 <td className="p-3 text-center">{r.remision ?? '-'}</td>
                                                 <td className="p-3 text-center">{r.order_number ?? '-'}</td>
                                                 <td className="p-3">{r.work?.name ?? '-'}</td>
+                                                <td className="p-3 text-center">{r.pump ? 'Con Bomba' : 'Tiro Directo'}</td>
                                                 <td className="p-3 text-center">{(r.concrete_type?.type ?? '-')}</td>
                                                 <td className="p-3 text-center">{r.fc ?? '-'}</td>
                                                 <td className="p-3 text-center font-medium">{Number(r.quantity).toFixed(2)}</td>
@@ -203,7 +206,7 @@ export default function ClientHistory({ clients, remissions, total_quantity, fil
                                     </tbody>
                                     <tfoot className="bg-muted/50 font-semibold border-t border-sidebar-border/70">
                                         <tr>
-                                            <td colSpan={6} className="p-3 text-right">Total M³ de Concreto:</td>
+                                            <td colSpan={7} className="p-3 text-right">Total M³ de Concreto:</td>
                                             <td className="p-3 text-center">{Number(total_quantity).toFixed(2)}</td>
                                         </tr>
                                     </tfoot>

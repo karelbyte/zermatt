@@ -80,6 +80,7 @@
                 <th>Remisión</th>
                 <th>Pedido</th>
                 <th>Obra</th>
+                <th>Servicio</th>
                 <th>Tipo</th>
                 <th>Fc</th>
                 <th>M³</th>
@@ -92,6 +93,7 @@
                     <td class="text-center">{{ $r->remision ?? '-' }}</td>
                     <td class="text-center">{{ $r->order_number ?? '-' }}</td>
                     <td>{{ \Illuminate\Support\Str::limit($r->work?->name, 35) }}</td>
+                    <td class="text-center">{{ $r->pump ? 'Con Bomba' : 'Tiro Directo' }}</td>
                     <td class="text-center">{{ $r->concreteType?->type }}</td>
                     <td class="text-center">{{ $r->fc }}</td>
                     <td class="text-center font-bold">{{ number_format($r->quantity, 2) }}</td>
@@ -105,7 +107,7 @@
         @if($remissions->count() > 0)
         <tfoot>
             <tr class="total-row">
-                <td colspan="6" class="text-right">TOTAL M³ DE CONCRETO:</td>
+                <td colspan="7" class="text-right">TOTAL M³ DE CONCRETO:</td>
                 <td class="text-center">{{ number_format($totalQuantity, 2) }}</td>
             </tr>
         </tfoot>
