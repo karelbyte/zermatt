@@ -293,7 +293,7 @@ class RemissionController extends Controller
         $date = $request->query('date', today()->toDateString());
         $selectedDate = \Carbon\Carbon::parse($date);
 
-        $todayRemissions = Remission::whereDate('updated_at', $selectedDate)->get();
+        $todayRemissions = Remission::whereDate('created_at', $selectedDate)->get();
         $todayCementUsed = $todayRemissions->sum('cement_amount');
         $todayCementReceived = \App\Models\Cement::whereDate('date', $selectedDate)->where('status', 'closed')->sum('tons');
 
@@ -310,28 +310,28 @@ class RemissionController extends Controller
         $cementReceivedBefore = \App\Models\Cement::whereDate('date', '<', $selectedDate)
             ->where('status', 'closed')
             ->sum('tons');
-        $cementUsedBefore = Remission::whereDate('updated_at', '<', $selectedDate)
+        $cementUsedBefore = Remission::whereDate('created_at', '<', $selectedDate)
             ->sum('cement_amount');
         $previousCement = $cementReceivedBefore - $cementUsedBefore;
 
         $additivesReceivedBefore = \App\Models\Additive::whereDate('date', '<', $selectedDate)
             ->where('status', 'closed')
             ->sum('lit');
-        $additivesUsedBefore = Remission::whereDate('updated_at', '<', $selectedDate)
+        $additivesUsedBefore = Remission::whereDate('created_at', '<', $selectedDate)
             ->sum('additive_amount');
         $previousAdditives = $additivesReceivedBefore - $additivesUsedBefore;
 
         $fibersReceivedBefore = \App\Models\Fiber::whereDate('date', '<', $selectedDate)
             ->where('status', 'closed')
             ->sum('lit');
-        $fibersUsedBefore = Remission::whereDate('updated_at', '<', $selectedDate)
+        $fibersUsedBefore = Remission::whereDate('created_at', '<', $selectedDate)
             ->sum('fiber_amount');
         $previousFibers = $fibersReceivedBefore - $fibersUsedBefore;
 
         $waterproofingsReceivedBefore = \App\Models\Waterproofing::whereDate('date', '<', $selectedDate)
             ->where('status', 'closed')
             ->sum('lit');
-        $waterproofingsUsedBefore = Remission::whereDate('updated_at', '<', $selectedDate)
+        $waterproofingsUsedBefore = Remission::whereDate('created_at', '<', $selectedDate)
             ->sum('waterproofing_amount');
         $previousWaterproofings = $waterproofingsReceivedBefore - $waterproofingsUsedBefore;
 
@@ -370,7 +370,7 @@ class RemissionController extends Controller
         $selectedDate = \Carbon\Carbon::parse($date);
 
         $remissions = Remission::with(['client', 'work', 'concreteType', 'pot'])
-            ->whereDate('updated_at', $selectedDate)
+            ->whereDate('created_at', $selectedDate)
             ->get();
 
         $todayCementUsed = $remissions->sum('cement_amount');
@@ -389,28 +389,28 @@ class RemissionController extends Controller
         $cementReceivedBefore = \App\Models\Cement::whereDate('date', '<', $selectedDate)
             ->where('status', 'closed')
             ->sum('tons');
-        $cementUsedBefore = Remission::whereDate('updated_at', '<', $selectedDate)
+        $cementUsedBefore = Remission::whereDate('created_at', '<', $selectedDate)
             ->sum('cement_amount');
         $previousCement = $cementReceivedBefore - $cementUsedBefore;
 
         $additivesReceivedBefore = \App\Models\Additive::whereDate('date', '<', $selectedDate)
             ->where('status', 'closed')
             ->sum('lit');
-        $additivesUsedBefore = Remission::whereDate('updated_at', '<', $selectedDate)
+        $additivesUsedBefore = Remission::whereDate('created_at', '<', $selectedDate)
             ->sum('additive_amount');
         $previousAdditives = $additivesReceivedBefore - $additivesUsedBefore;
 
         $fibersReceivedBefore = \App\Models\Fiber::whereDate('date', '<', $selectedDate)
             ->where('status', 'closed')
             ->sum('lit');
-        $fibersUsedBefore = Remission::whereDate('updated_at', '<', $selectedDate)
+        $fibersUsedBefore = Remission::whereDate('created_at', '<', $selectedDate)
             ->sum('fiber_amount');
         $previousFibers = $fibersReceivedBefore - $fibersUsedBefore;
 
         $waterproofingsReceivedBefore = \App\Models\Waterproofing::whereDate('date', '<', $selectedDate)
             ->where('status', 'closed')
             ->sum('lit');
-        $waterproofingsUsedBefore = Remission::whereDate('updated_at', '<', $selectedDate)
+        $waterproofingsUsedBefore = Remission::whereDate('created_at', '<', $selectedDate)
             ->sum('waterproofing_amount');
         $previousWaterproofings = $waterproofingsReceivedBefore - $waterproofingsUsedBefore;
 

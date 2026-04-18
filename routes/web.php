@@ -4,6 +4,7 @@ use App\Http\Controllers\AdditiveController;
 use App\Http\Controllers\CementController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ConcreteTypeController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DesignController;
 use App\Http\Controllers\MoistureAbsorptionController;
 use App\Http\Controllers\OperatorController;
@@ -17,91 +18,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    if (Auth::check()) {
-        return redirect()->route('dashboard');
-    }
-
-    return redirect()->route('login');
-})->name('home');
-
-Route::get('register', function () {
-    return redirect()->route('login');
-})->name('register');
-
-use App\Services\AdditiveService;
-use App\Services\CementService;
-
-use App\Models\Client;
-use App\Models\Work;
-use App\Models\Remission;
-use App\Models\Supplier;
-use App\Models\Cement;
-use App\Models\Additive;
-use App\Models\Fiber;
-use App\Models\Waterproofing;
-use App\Services\FiberService;
-use App\Services\WaterproofingService;
-
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function (AdditiveService $additiveService, CementService $cementService, FiberService $fiberService, WaterproofingService $waterproofingService) {
-        $todayRemissions = Remission::whereDate('updated_at', today())->get();
-        $todayCementUsed = $todayRemissions->sum('cement_amount');
-        $todayCementReceived = Cement::whereDate('date', today())->where('status', 'closed')->sum('tons');
-        $currentCement = $cementService->getTotalKg();
-
-        $todayAdditivesUsed = $todayRemissions->sum('additive_amount');
-        $todayAdditivesReceived = Additive::whereDate('date', today())->where('status', 'closed')->sum('lit');
-        $currentAdditives = $additiveService->getTotalLiters();
-
-        $todayFibersUsed = $todayRemissions->sum('fiber_amount');
-        $todayFibersReceived = Fiber::whereDate('date', today())->where('status', 'closed')->sum('lit');
-        $currentFibers = $fiberService->getTotalAmount();
-
-        $todayWaterproofingsUsed = $todayRemissions->sum('waterproofing_amount');
-        $todayWaterproofingsReceived = Waterproofing::whereDate('date', today())->where('status', 'closed')->sum('lit');
-        $currentWaterproofings = $waterproofingService->getTotalAmount();
-
-        return Inertia::render('dashboard', [
-            'total_additives' => $currentAdditives,
-            'total_fibers' => $currentFibers,
-            'total_waterproofings' => $currentWaterproofings,
-            'total_cement' => $currentCement,
-            'count_clients' => Client::count(),
-            'count_works' => Work::count(),
-            'count_remissions' => Remission::count(),
-            'count_suppliers' => Supplier::count(),
-            'recent_remissions' => Remission::with(['client:id,name', 'work:id,name'])
-                ->orderByDesc('created_at')
-                ->limit(10)
-                ->get(),
-            'daily_remissions' => Remission::with(['client', 'work', 'concreteType', 'pot'])
-                ->whereDate('updated_at', today())
-                ->get(),
-            'inventory_stats' => [
-                'cement' => [
-                    'received' => $todayCementReceived,
-                    'used' => $todayCementUsed,
-                    'previous' => $currentCement + $todayCementUsed - $todayCementReceived,
-                ],
-                'additives' => [
-                    'received' => $todayAdditivesReceived,
-                    'used' => $todayAdditivesUsed,
-                    'previous' => $currentAdditives + $todayAdditivesUsed - $todayAdditivesReceived,
-                ],
-                'fibers' => [
-                    'received' => $todayFibersReceived,
-                    'used' => $todayFibersUsed,
-                    'previous' => $currentFibers + $todayFibersUsed - $todayFibersReceived,
-                ],
-                'waterproofings' => [
-                    'received' => $todayWaterproofingsReceived,
-                    'used' => $todayWaterproofingsUsed,
-                    'previous' => $currentWaterproofings + $todayWaterproofingsUsed - $todayWaterproofingsReceived,
-                ]
-            ]
-        ]);
-    })->middleware(['permission:Panel'])->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->middleware(['permission:Panel'])->name('dashboard');
 
     Route::resource('users', UserController::class)->except(['show'])->middleware('permission:Usuarios');
     Route::resource('clients', ClientController::class)->except(['show'])->middleware('permission:Clientes');

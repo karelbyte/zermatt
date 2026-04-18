@@ -22,7 +22,7 @@ class ReportController extends Controller
 
         // Get remissions for the selected date
         $dailyRemissions = Remission::with(['client', 'work', 'concreteType', 'pot'])
-            ->whereDate('updated_at', $selectedDate)
+            ->whereDate('created_at', $selectedDate)
             ->get();
 
         // Calculate cement stats for the selected date
@@ -51,28 +51,28 @@ class ReportController extends Controller
         $cementReceivedBefore = Cement::whereDate('date', '<', $selectedDate)
             ->where('status', 'closed')
             ->sum('tons');
-        $cementUsedBefore = Remission::whereDate('updated_at', '<', $selectedDate)
+        $cementUsedBefore = Remission::whereDate('created_at', '<', $selectedDate)
             ->sum('cement_amount');
         $previousCement = $cementReceivedBefore - $cementUsedBefore;
 
         $additivesReceivedBefore = Additive::whereDate('date', '<', $selectedDate)
             ->where('status', 'closed')
             ->sum('lit');
-        $additivesUsedBefore = Remission::whereDate('updated_at', '<', $selectedDate)
+        $additivesUsedBefore = Remission::whereDate('created_at', '<', $selectedDate)
             ->sum('additive_amount');
         $previousAdditives = $additivesReceivedBefore - $additivesUsedBefore;
 
         $fibersReceivedBefore = \App\Models\Fiber::whereDate('date', '<', $selectedDate)
             ->where('status', 'closed')
             ->sum('lit');
-        $fibersUsedBefore = Remission::whereDate('updated_at', '<', $selectedDate)
+        $fibersUsedBefore = Remission::whereDate('created_at', '<', $selectedDate)
             ->sum('fiber_amount');
         $previousFibers = $fibersReceivedBefore - $fibersUsedBefore;
 
         $waterproofingsReceivedBefore = \App\Models\Waterproofing::whereDate('date', '<', $selectedDate)
             ->where('status', 'closed')
             ->sum('lit');
-        $waterproofingsUsedBefore = Remission::whereDate('updated_at', '<', $selectedDate)
+        $waterproofingsUsedBefore = Remission::whereDate('created_at', '<', $selectedDate)
             ->sum('waterproofing_amount');
         $previousWaterproofings = $waterproofingsReceivedBefore - $waterproofingsUsedBefore;
 
@@ -128,12 +128,12 @@ class ReportController extends Controller
         if ($clientId && $dateFrom && $dateTo) {
             $remissions = Remission::with(['work:id,name', 'concreteType'])
                 ->where('client_id', $clientId)
-                ->whereDate('updated_at', '>=', $dateFrom)
-                ->whereDate('updated_at', '<=', $dateTo)
+                ->whereDate('created_at', '>=', $dateFrom)
+                ->whereDate('created_at', '<=', $dateTo)
                 ->where(function ($q) {
                     $q->whereNull('status')->orWhere('status', '!=', 'cancelada');
                 })
-                ->orderByDesc('updated_at')
+                ->orderByDesc('created_at')
                 ->get();
 
             $totalQuantity = $remissions->sum('quantity');
@@ -165,12 +165,12 @@ class ReportController extends Controller
         if ($clientId && $dateFrom && $dateTo) {
             $remissions = Remission::with(['work:id,name', 'concreteType'])
                 ->where('client_id', $clientId)
-                ->whereDate('updated_at', '>=', $dateFrom)
-                ->whereDate('updated_at', '<=', $dateTo)
+                ->whereDate('created_at', '>=', $dateFrom)
+                ->whereDate('created_at', '<=', $dateTo)
                 ->where(function ($q) {
                     $q->whereNull('status')->orWhere('status', '!=', 'cancelada');
                 })
-                ->orderByDesc('updated_at')
+                ->orderByDesc('created_at')
                 ->get();
 
             $totalQuantity = $remissions->sum('quantity');
@@ -191,8 +191,8 @@ class ReportController extends Controller
     {
         $isPgsql = \Illuminate\Support\Facades\DB::connection()->getDriverName() === 'pgsql';
 
-        $yearExpr  = $isPgsql ? 'EXTRACT(YEAR  FROM updated_at)::int' : 'YEAR(updated_at)';
-        $monthExpr = $isPgsql ? 'EXTRACT(MONTH FROM updated_at)::int' : 'MONTH(updated_at)';
+        $yearExpr  = $isPgsql ? 'EXTRACT(YEAR  FROM created_at)::int' : 'YEAR(created_at)';
+        $monthExpr = $isPgsql ? 'EXTRACT(MONTH FROM created_at)::int' : 'MONTH(created_at)';
 
         $monthly = Remission::selectRaw(
                 "$yearExpr as year, $monthExpr as month, SUM(quantity) as total_quantity, COUNT(*) as total_remissions"

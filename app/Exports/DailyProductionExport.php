@@ -23,7 +23,7 @@ class DailyProductionExport implements FromCollection, WithHeadings, WithMapping
     {
         $this->date = $date ? Carbon::parse($date) : Carbon::today();
         $this->remissions = Remission::with(['client', 'work', 'concreteType'])
-            ->whereDate('updated_at', $this->date)
+            ->whereDate('created_at', $this->date)
             ->get();
         $this->inventoryStats = $inventoryStats;
     }
