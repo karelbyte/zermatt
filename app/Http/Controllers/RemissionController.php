@@ -74,11 +74,11 @@ class RemissionController extends Controller
         // Suggest next remision number (global max + 1)
         $lastRemision = Remission::query()
             ->whereNotNull('remision')
-            ->whereRaw("remision ~ '^[0-9]+$'")
-            ->orderByRaw('remision::bigint DESC')
-            ->value('remision');
+            ->get(['remision'])
+            ->filter(fn($r) => is_numeric($r->remision))
+            ->max(fn($r) => (int) $r->remision);
 
-        $suggestedRemision = $lastRemision ? ((int) $lastRemision + 1) : null;
+        $suggestedRemision = $lastRemision ? ($lastRemision + 1) : null;
 
         return Inertia::render('remissions/create', [
             ...$this->dropdowns(),
