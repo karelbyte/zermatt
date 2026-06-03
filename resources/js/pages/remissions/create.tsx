@@ -18,7 +18,7 @@ export default function RemissionsCreate(props: Props) {
 
     const { data, setData, post, processing, errors } = useForm({
         order_number: props.suggested_order_number != null ? String(props.suggested_order_number) : '',
-        remision: '',
+        remision: props.suggested_remision != null ? String(props.suggested_remision) : '',
         client_id: '',
         work_id: '',
         usage_id: '',

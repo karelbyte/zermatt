@@ -62,6 +62,7 @@ export type RemissionDropdowns = {
     designs: Design[];
     last_order_number?: number | null;
     suggested_order_number?: number;
+    suggested_remision?: number | null;
 };
 
 export type RemissionPrintProps = {
